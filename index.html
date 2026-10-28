@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Robot Bi Adventure – Tin học 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef6ff;--ink:#14264a;--mut:#4f6189;--card:#fff;--line:#c4d6f2;--b:#1f6feb;--t:#12a8a0;--y:#ffd23f;--p:#7a4de0;--ok:#16895a;--bad:#d03b34;--cell:#e3eefc;--wall:#14264a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1730;--ink:#e8efff;--mut:#9fb2db;--card:#16223f;--line:#2b3d68;--b:#6aa3ff;--t:#3fd0c8;--p:#a58bff;--ok:#4cd698;--bad:#ff7b72;--cell:#1d2d52;--wall:#8fa8de}}
+:root[data-theme="dark"]{--bg:#0d1730;--ink:#e8efff;--mut:#9fb2db;--card:#16223f;--line:#2b3d68;--b:#6aa3ff;--t:#3fd0c8;--p:#a58bff;--ok:#4cd698;--bad:#ff7b72;--cell:#1d2d52;--wall:#8fa8de}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+.w{max-width:980px;margin:0 auto;padding:12px}
+h1{font-size:clamp(24px,5vw,36px);margin:0}h2{margin:0 0 8px;font-size:22px}h3{margin:0 0 4px;font-size:17px}
+.sub{color:var(--mut)}
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#bi{font-size:52px;line-height:1}
+.stat{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.pill{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:800}
+.xp{flex:1;min-width:120px;height:14px;background:var(--cell);border-radius:8px;overflow:hidden;border:2px solid var(--line)}.xp i{display:block;height:100%;background:linear-gradient(90deg,var(--t),var(--b))}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+nav button,.btn,.o,.pal button,.lv button{font:inherit;font-weight:800;cursor:pointer}
+nav button{border:2px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:999px}
+nav button[aria-selected=true]{background:var(--b);border-color:var(--b);color:#fff}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.g .card{margin:0}
+.btn{border:0;background:var(--b);color:#fff;padding:9px 15px;border-radius:12px}.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line)}.btn.y{background:var(--y);color:#14264a}.btn:disabled{opacity:.45;cursor:default}
+.tag{display:inline-block;background:var(--y);color:#14264a;font-weight:800;font-size:13px;padding:1px 9px;border-radius:7px;margin-bottom:5px}
+.sec{display:none}.sec.on{display:block}
+.lab{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}@media(max-width:720px){.lab{grid-template-columns:1fr}}
+.board{display:grid;gap:3px;width:min(90vw,340px);background:var(--line);padding:3px;border-radius:12px}
+.c{aspect-ratio:1;background:var(--cell);display:flex;align-items:center;justify-content:center;font-size:clamp(18px,5.5vw,28px);border-radius:6px;position:relative}
+.c.w2{background:var(--wall)}.c.pk{outline:3px solid var(--y)}.c.cl{cursor:pointer}
+.c i{position:absolute;font-style:normal;font-size:13px;color:var(--bad);left:50%;top:50%}
+.pal{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pal button{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:5px 9px}
+.prog{min-height:110px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px}
+.blk{display:flex;align-items:center;gap:5px;background:var(--b);color:#fff;border-radius:9px;padding:3px 8px;font-weight:700;font-size:15px}
+.blk.N,.blk.E{background:var(--p)}.blk.I,.blk.J{background:#d9801a}.blk.P{background:var(--ok)}.blk.now{outline:3px solid var(--y)}
+.blk select{font:inherit;border-radius:6px;border:0}.blk .m{margin-left:auto;display:flex;gap:3px}
+.blk .m button{background:rgba(255,255,255,.25);border:0;color:#fff;border-radius:6px;cursor:pointer;padding:0 6px}
+.msg{min-height:48px;padding:8px 12px;border-radius:12px;font-weight:700;margin-top:8px;background:var(--cell)}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.lv{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
+.lv button{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.lv button:disabled{opacity:.4;cursor:default}.lv button[aria-current=true]{background:var(--y);color:#14264a;border-color:var(--y)}
+.o{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:8px 12px;margin:5px 0;font-weight:700}.o.ok{border-color:var(--ok);background:var(--cell)}.o.bad{border-color:var(--bad)}.o.sel{border-color:var(--b)}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid var(--line);padding:5px 8px;text-align:left;font-size:14px}
+input[type=text]{font:inherit;padding:7px 10px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.win{animation:pop .5s}@keyframes pop{50%{transform:scale(1.04)}}@media(prefers-reduced-motion:reduce){.win{animation:none}}
+footer{color:var(--mut);font-size:13px;margin:14px 0}
+
+.tr{box-shadow:inset 0 0 0 3px var(--t)}.c.pd{outline:3px dashed var(--p);outline-offset:-3px}
+.c svg{width:86%;height:86%}.hop{animation:hop .35s}@keyframes hop{50%{transform:translateY(-14%)}}
+@media(prefers-reduced-motion:reduce){.hop{animation:none}}
+#bi svg{display:block}.bub{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:3px 10px;font-weight:700;font-size:14px;margin-top:4px;min-height:28px}
+.btn.pp{background:var(--p);color:#fff}.pdp{border:3px solid var(--p);border-radius:14px;padding:10px;margin:8px 0;background:var(--card)}
+.pdp td.you,.you{color:var(--p);font-weight:800}.pdp td.act{color:var(--t);font-weight:800}.bs{width:min(90vw,260px)}
+.ch{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.wl{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px;align-items:start;margin-bottom:12px}@media(max-width:720px){.wl{grid-template-columns:1fr}}
+#vol{width:90px;vertical-align:middle}details summary{cursor:pointer}.stat label{font-size:14px}
+.lc{display:flex;flex-direction:column;gap:6px}.lc h3{margin:2px 0}.lc .tag,.lc .btn{align-self:flex-start}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+#hoc select,#lp select,#ot select,#gx select{font:inherit;padding:7px 9px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);max-width:100%}
+.warn{background:#fff3c4;color:#5a4300;border-radius:10px;padding:6px 10px;font-size:14px}
+pre.vis{background:var(--cell);padding:10px;border-radius:10px;overflow-x:auto;font-family:Consolas,monospace;margin:0}
+.ok{color:var(--ok);font-weight:700}
+
+/* ===== PREMIUM: Thành phố tri thức kỳ diệu ===== */
+:root{--bg:#F0F8FF;--ink:#23365B;--mut:#55688c;--card:#fff;--line:#cfe2f7;--b:#3478F6;--t:#37D6C0;--y:#FFD65A;--p:#7B63E8;--ok:#128766;--bad:#cf3a45;--cell:#e6f1fd;--wall:#23365B;
+--sky:#65BFFF;--peach:#FFAA70;--coral:#FF8FA8;--lav:#9A83F7;--shadow:0 6px 18px rgba(35,54,91,.13);--panel:rgba(255,255,255,.66);--winbg:linear-gradient(135deg,#fff6cf,#d8fff6);
+--bld1:#cfe6fb;--bld2:#a9d2f5;--bld3:#86bdf0;--cloud:#fff;--sky1:#bfe4ff;--sky2:#F0F8FF;--r:18px;--fs:clamp(16px,.35vw + 15px,18px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1730;--ink:#eaf1ff;--mut:#a9bbe0;--card:#16223f;--line:#2b3d68;--b:#6aa3ff;--t:#3fd0c8;--y:#ffd65a;--p:#b2a0ff;--ok:#4cd698;--bad:#ff8a82;--cell:#1d2d52;--wall:#8fa8de;--panel:rgba(13,23,48,.72);--winbg:linear-gradient(135deg,#2b2a12,#10403c);--bld1:#1b2a52;--bld2:#233763;--bld3:#2e4680;--cloud:#2a3d6e;--sky1:#14264f;--sky2:#0d1730;--shadow:0 6px 18px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0d1730;--ink:#eaf1ff;--mut:#a9bbe0;--card:#16223f;--line:#2b3d68;--b:#6aa3ff;--t:#3fd0c8;--y:#ffd65a;--p:#b2a0ff;--ok:#4cd698;--bad:#ff8a82;--cell:#1d2d52;--wall:#8fa8de;--panel:rgba(13,23,48,.72);--winbg:linear-gradient(135deg,#2b2a12,#10403c);--bld1:#1b2a52;--bld2:#233763;--bld3:#2e4680;--cloud:#2a3d6e;--sky1:#14264f;--sky2:#0d1730;--shadow:0 6px 18px rgba(0,0,0,.4)}
+body{font-family:Nunito,"Be Vietnam Pro","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:var(--fs);line-height:1.6;background:linear-gradient(180deg,var(--sky1) 0,var(--sky2) 60%) fixed;min-height:100vh}
+.cityBg{position:fixed;inset:0;z-index:-1;pointer-events:none}.cityBg svg{width:100%;height:100%;display:block}
+.w{max-width:1000px;margin:0 auto;padding:12px 14px 28px;background:var(--panel);backdrop-filter:blur(3px);border-radius:0 0 28px 28px;min-height:100vh}
+@media(min-width:1040px){.w{margin:0 auto;border-radius:0 0 28px 28px}}
+h1{font-size:clamp(22px,4.5vw,34px);line-height:1.2;font-weight:800;letter-spacing:-.01em}h2{font-size:clamp(21px,3vw,27px);font-weight:800}h3{font-size:clamp(17px,2vw,19px);font-weight:800}
+/* thanh đầu trang */
+.top{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:8px 14px;box-shadow:var(--shadow);gap:14px}
+.top #bi svg{width:56px;height:70px;filter:drop-shadow(0 0 6px rgba(101,191,255,.6))}
+.top h1{font-size:clamp(17px,3vw,22px)}.top .sub{font-size:13px}
+.top .bub{max-width:420px}
+body[data-sec=home] .top{position:relative;overflow:hidden;padding:18px 20px;background:linear-gradient(135deg,#3478F6 0,#65BFFF 70%);border:0;color:#fff;min-height:210px;align-items:center}
+body[data-sec=home] .top::before{content:"";position:absolute;right:-30px;top:-30px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,90,.55),rgba(255,214,90,0) 70%)}
+body[data-sec=home] .top::after{content:"⚙️  ★  </>  ✦";position:absolute;right:16px;bottom:8px;font-size:20px;letter-spacing:.35em;opacity:.55}
+body[data-sec=home] .top h1{font-size:clamp(26px,5vw,42px);color:#fff;text-shadow:0 2px 6px rgba(20,38,74,.35)}
+body[data-sec=home] .top .sub{color:#eaf4ff;font-size:clamp(14px,2vw,16px)}
+body[data-sec=home] .top #bi svg{width:clamp(110px,22vw,170px);height:auto;animation:bob 3s ease-in-out infinite}
+body[data-sec=home] .top .bub{background:#fff;color:#23365b;border-color:#fff}
+@keyframes bob{50%{transform:translateY(-8px)}}
+/* chỉ số */
+.stat{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:8px 12px;box-shadow:var(--shadow)}
+.pill{border-radius:999px;padding:4px 14px;background:var(--cell);border-color:transparent}
+#sst{background:#fff3c4;color:#5a4300}#sco{background:#ffe9d6;color:#6a3a10}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) #sst{background:#3a3210;color:#ffe9a0}:root:not([data-theme=light]) #sco{background:#3a2a1c;color:#ffd7b0}}
+.xp{height:16px;border-radius:10px}.xp i{background:linear-gradient(90deg,var(--y),var(--t));transition:width .5s ease}
+/* điều hướng */
+nav{position:sticky;top:0;z-index:20;padding:6px;margin:10px -2px;background:var(--panel);backdrop-filter:blur(6px);border-radius:16px;box-shadow:var(--shadow)}
+nav button{min-height:40px;padding:7px 13px;border-radius:12px;border-color:transparent;background:var(--cell);transition:transform .15s,background .15s}
+nav button[aria-selected=true]{background:linear-gradient(135deg,var(--b),#5aa2ff);color:#fff;box-shadow:0 3px 0 rgba(20,38,74,.25)}
+@media(hover:hover){nav button:hover{transform:translateY(-2px)}}
+@media(max-width:720px){nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}nav button{flex:0 0 auto}}
+/* thẻ, nút */
+.card{border-radius:var(--r);border:2px solid var(--line);box-shadow:var(--shadow)}
+@media(hover:hover){.card.lc:hover,button.card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(35,54,91,.18)}}
+.card.lc,button.card{transition:transform .18s,box-shadow .18s}
+.btn{min-height:44px;border-radius:14px;box-shadow:0 3px 0 rgba(20,38,74,.22);transition:transform .1s,box-shadow .1s,filter .15s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(20,38,74,.22)}
+@media(hover:hover){.btn:hover:not(:disabled){filter:brightness(1.06)}}
+.btn.alt{background:var(--card)}.btn.y{background:linear-gradient(135deg,#FFD65A,#ffc43a);color:#23365B}.btn.pp{background:linear-gradient(135deg,#7B63E8,#9A83F7)}
+.btn.big{font-size:18px;padding:12px 22px}
+button:focus-visible,select:focus-visible,input:focus-visible,.c:focus-visible{outline:3px solid #ff9a1f;outline-offset:2px}
+.tag{border-radius:999px;padding:2px 12px;background:var(--y);color:#23365B}
+.warn{background:#fff3c4;color:#5a4300;border-radius:12px;padding:8px 12px;font-size:14px}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .warn{background:#3a3210;color:#ffe9a0}}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.sec.on{animation:sin .3s ease}@keyframes sin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* thẻ khu vực chức năng */
+.g button.card.ar{text-align:left;font:inherit;color:inherit;cursor:pointer;margin:0;border-top:7px solid var(--ac,var(--b));display:flex;flex-direction:column;gap:4px}
+button.ar[data-k="1"]{--ac:var(--b)}button.ar[data-k="2"]{--ac:var(--t)}button.ar[data-k="3"]{--ac:var(--peach)}button.ar[data-k="4"]{--ac:var(--lav)}button.ar[data-k="5"]{--ac:var(--coral)}
+button.ar .ico{font-size:34px;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--cell)}
+button.ar h3{margin:4px 0 0}
+/* thẻ bài học theo chủ đề */
+.lc{border-top:7px solid var(--ac,var(--b))}
+.lc.c1{--ac:var(--sky)}.lc.c2{--ac:var(--t)}.lc.c3{--ac:var(--b)}.lc.c4{--ac:var(--coral)}.lc.c5{--ac:var(--lav)}.lc.c6{--ac:var(--peach)}
+/* bản đồ thế giới */
+.wm .world{display:flex;flex-direction:column;gap:6px;border-top:7px solid var(--ac)}
+.world.w1{--ac:var(--sky)}.world.w2{--ac:var(--t)}.world.w3{--ac:var(--y)}.world.w4{--ac:var(--peach)}.world.w5{--ac:var(--lav)}
+.world .wi{border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#bfe4ff,#eaf6ff)}.world .wi svg{display:block;width:100%;height:auto}
+.world.lock .wi{filter:grayscale(.85) opacity(.8)}
+.world .btn{align-self:flex-start}
+/* mê cung */
+.board{border-radius:18px;background:linear-gradient(135deg,#9fd3ff,#c6e8ff);box-shadow:var(--shadow);padding:4px;gap:3px}
+.c{background:linear-gradient(145deg,#f7fbff,#dcecfc);border-radius:8px}
+.c.w2{background:repeating-linear-gradient(45deg,#2f466f 0 6px,#23365B 6px 12px);box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.c.sp::before{content:"XP";position:absolute;left:3px;top:2px;font-size:9px;font-weight:800;color:#0e7a66;background:#d8fff6;border-radius:5px;padding:0 3px}
+.c.sp{background:linear-gradient(145deg,#e8fff9,#bff3e8)}
+.c.gl{background:radial-gradient(circle,#fff1b8,#ffd65a);box-shadow:0 0 14px 3px rgba(255,214,90,.8);animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 22px 6px rgba(255,214,90,.95)}}
+.c.cl:hover{filter:brightness(1.07)}
+.tr{box-shadow:inset 0 0 0 3px var(--t),inset 0 0 12px rgba(55,214,192,.35)}
+.c svg{filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.c.pd{outline:3px dashed #7B63E8}
+/* khối lệnh: màu + ký hiệu */
+.blk{min-height:40px;border-radius:12px;padding:4px 10px;font-weight:800;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.blk::before{font-weight:800;min-width:20px;text-align:center}
+.blk.F{background:#3478F6}.blk.F::before{content:"➜"}
+.blk.L,.blk.R{background:#7B63E8}.blk.L::before{content:"↺"}.blk.R::before{content:"↻"}
+.blk.N,.blk.E{background:#c25e0e}.blk.N::before{content:"⟳"}.blk.E::before{content:"■"}
+.blk.I,.blk.J{background:#FFD65A;color:#23365B}.blk.I::before,.blk.J::before{content:"❓"}
+.blk.P{background:#37D6C0;color:#0b3b36}.blk.P::before{content:"★"}
+.blk.I .m button,.blk.J .m button,.blk.P .m button{background:rgba(0,0,0,.15);color:#23365B}
+.blk.now{outline:4px solid #fff;box-shadow:0 0 0 7px #ff9a1f}
+.blk .m button{min-width:30px;min-height:28px}
+.pal button{min-height:44px;border-radius:12px;border-left:7px solid var(--b);box-shadow:0 2px 0 rgba(20,38,74,.15)}
+.pal button.kL,.pal button.kR{border-left-color:#7B63E8}.pal button.kN,.pal button.kE{border-left-color:#c25e0e}.pal button.kI,.pal button.kJ{border-left-color:#FFD65A}.pal button.kP{border-left-color:#37D6C0}
+.pal button.kF::before{content:"➜ "}.pal button.kL::before{content:"↺ "}.pal button.kR::before{content:"↻ "}.pal button.kN::before{content:"⟳ "}.pal button.kE::before{content:"■ "}.pal button.kI::before,.pal button.kJ::before{content:"❓ "}.pal button.kP::before{content:"★ "}
+.prog{border-radius:14px;background:var(--card)}
+/* thông báo */
+.msg{border-radius:14px;font-size:clamp(15px,1.8vw,17px)}
+.msg.ok{background:var(--winbg);border:2px solid var(--y)}
+.msg.ok.win{position:relative}.msg.ok.win::after{content:"✦ ★ ✦";position:absolute;right:10px;top:4px;color:#e0a800;letter-spacing:.3em;animation:tw 1.4s ease-in-out 3}
+@keyframes tw{50%{opacity:.25;transform:scale(1.2)}}
+.msg.bad{border:2px solid #f3b3b8}
+/* tủ đồ */
+.wl .card:first-child{background:linear-gradient(180deg,#e9f6ff,#fff);}
+#wpv{display:grid;place-items:center;width:min(240px,100%);aspect-ratio:1;margin:0 auto;border-radius:50%;background:radial-gradient(circle,#fff6cf,#d8f0ff 70%);border-bottom:10px solid #c59b6d;box-shadow:0 10px 0 rgba(0,0,0,.08)}
+#wit .btn,#wct .btn{min-height:44px}
+/* thành tích */
+#bdg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}#bdg h3{grid-column:1/-1;margin:0}
+#bdg div:not(:first-child){background:var(--cell);border:2px solid var(--line);border-radius:14px;padding:12px}
+/* bảng */
+table{border-radius:12px;overflow:hidden}th{background:var(--cell);position:sticky;top:0}tr:nth-child(even) td{background:rgba(52,120,246,.05)}
+/* chữ trang chủ */
+#home h2,#hoc>h2,#lp>h2,#ot>h2,#tt>h2,#gv>h2{margin-top:14px}
+footer{text-align:center}
+@media(max-width:560px){.w{padding:8px 10px 24px}.top{flex-direction:row}.board{width:min(92vw,340px)}.btn{padding:9px 12px}.stat{gap:6px}#vol{width:70px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media print{.cityBg,nav,.stat{display:none}.w{background:#fff;backdrop-filter:none}body{background:#fff}}
+
+#svb{position:sticky;top:0;z-index:99;background:#fff3c4;color:#5a4300;border-bottom:3px solid #e0a800;padding:10px 14px;font-weight:700;text-align:center}
+.hbo{margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--cell);border-left:6px solid var(--t);line-height:1.55}.hbo:empty{display:none}.hbo:focus{outline:3px solid var(--y)}
+.sumb{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--cell);border:2px solid var(--line);text-align:left;font-weight:400}.sumb h4,.sumb b{display:block;margin:6px 0 2px}.sumb ul{margin:2px 0 6px 18px;padding:0}
+.rec{border-top:6px solid var(--y)}.wi summary{cursor:pointer;font-weight:800}.wi h4{margin:10px 0 4px}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr auto;gap:8px;align-items:center;margin:5px 0}.brow .bt{height:14px;background:var(--cell);border:1px solid var(--line);border-radius:99px;overflow:hidden}.brow .bt i{display:block;height:100%;background:linear-gradient(90deg,var(--t),var(--b));border-radius:99px}.brow .bv{font-weight:700;font-size:14px;white-space:nowrap}
+@media(max-width:520px){.brow{grid-template-columns:1fr auto}.brow .bt{grid-column:1/3;order:3}}
+#hb select,#gy select,#lp select{font:inherit;padding:7px 9px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}#gy select,#hb select{max-width:100%;width:100%}@media(min-width:700px){#gy select,#hb select{width:auto}}
+#bdg small{color:var(--sub,inherit);opacity:.85}
+/* ===== THEME KẸO NGỌT: sáng, sang, hài hoà, hợp học sinh tiểu học ===== */
+:root{--ink:#1F2A5C;--mut:#5A6794;--bg:#FFF9F0;--card:#FFFFFF;--line:#E3E8FB;--cell:#EEF3FF;
+--b:#3B7CF6;--t:#14C9B0;--y:#FFC93C;--p:#8B5CF6;--coral:#FF7A9C;--peach:#FF9F55;--sky:#5CC0FF;--lav:#A78BFA;--mint:#59D9A0;
+--sec:#3B7CF6;--sec2:#14C9B0;--shadow:0 8px 22px rgba(80,90,170,.14);--r:20px}
+body{background:radial-gradient(900px 500px at 8% -5%,#FFE4EE 0,transparent 60%),radial-gradient(800px 500px at 100% 0,#DDF6FF 0,transparent 60%),radial-gradient(900px 600px at 50% 105%,#FFF1C9 0,transparent 60%),linear-gradient(180deg,#F4F9FF,#FFF9F0)!important;color:var(--ink)}
+body[data-sec=home],body[data-sec=hoc]{--sec:#3B7CF6;--sec2:#5CC0FF}body[data-sec=lp]{--sec:#14C9B0;--sec2:#59D9A0}body[data-sec=ot]{--sec:#8B5CF6;--sec2:#C084FC}
+body[data-sec=lap]{--sec:#FF9F55;--sec2:#FFC93C}body[data-sec=hb]{--sec:#FF7A9C;--sec2:#FFB36B}body[data-sec=lm]{--sec:#F59E0B;--sec2:#FFD34D}
+body[data-sec=tu]{--sec:#EC6BC2;--sec2:#A78BFA}body[data-sec=game]{--sec:#6C5CE7;--sec2:#5CC0FF}body[data-sec=tt]{--sec:#F5B301;--sec2:#FF9F55}body[data-sec=gv]{--sec:#0FB5A0;--sec2:#3B7CF6}
+h1,h2{color:var(--ink)}
+.sec>h2,.sec>h2:first-child{display:inline-block;font-weight:900;background:linear-gradient(90deg,var(--sec),var(--sec2));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;letter-spacing:.2px}
+h3{color:var(--ink)}
+.card{background:linear-gradient(180deg,#fff,#FBFCFF)!important;border:2px solid var(--line)!important;border-top:6px solid var(--sec)!important;border-radius:var(--r)!important;box-shadow:var(--shadow)!important}
+.card .card{border-top-width:2px!important;box-shadow:none!important}
+.card h3,.card h4{color:var(--ink)}
+.sub,.sub *{color:var(--mut)}
+/* thanh công cụ */
+nav,#nav{background:rgba(255,255,255,.88)!important;border:2px solid #fff!important;box-shadow:0 10px 26px rgba(80,90,170,.18)!important;border-radius:22px!important;backdrop-filter:blur(8px)}
+#nav button{color:var(--ink)!important;border:2px solid transparent!important;font-weight:800;transition:transform .12s,box-shadow .12s}
+#nav button:nth-child(6n+1){background:#DCEBFF!important}#nav button:nth-child(6n+2){background:#D5F7F0!important}#nav button:nth-child(6n+3){background:#FFE3EC!important}
+#nav button:nth-child(6n+4){background:#EBE2FF!important}#nav button:nth-child(6n+5){background:#FFEBCF!important}#nav button:nth-child(6n){background:#FFF5C2!important}
+#nav button:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(80,90,170,.18)}
+#nav button[aria-selected=true]{background:linear-gradient(135deg,var(--sec),var(--sec2))!important;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.28);box-shadow:0 6px 14px rgba(80,90,170,.3)}
+/* nút */
+.btn{background:linear-gradient(180deg,#5B96FF,#3B7CF6)!important;color:#fff!important;border:0!important;border-radius:16px!important;font-weight:800;box-shadow:0 5px 0 #2A5FC9,0 10px 16px rgba(59,124,246,.25)!important;text-shadow:0 1px 1px rgba(0,0,0,.2)}
+.btn:hover{filter:brightness(1.06);transform:translateY(-1px)}.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #2A5FC9!important}
+.btn.alt{background:linear-gradient(180deg,#fff,#EEF3FF)!important;color:#27408F!important;text-shadow:none;box-shadow:0 4px 0 #CBD6F5,0 8px 12px rgba(80,90,170,.1)!important;border:2px solid #D6DFFA!important}
+.btn.y,.btn.big{background:linear-gradient(180deg,#FFE066,#FFC02E)!important;color:#5A3A00!important;text-shadow:none;box-shadow:0 5px 0 #E39B00,0 10px 16px rgba(255,170,0,.3)!important}
+.btn.pp{background:linear-gradient(180deg,#A98BFF,#7B5CE8)!important;box-shadow:0 5px 0 #5B3FC4,0 10px 16px rgba(123,92,232,.25)!important}
+.btn:disabled,.btn[disabled]{filter:grayscale(.5) opacity(.6);box-shadow:none!important}
+.big{font-size:clamp(18px,2.4vw,24px)}
+/* thẻ bài, thế giới, khu vực */
+.lc{background:linear-gradient(180deg,#fff,#F6F9FF)!important}
+.lc.c1{border-top-color:#5CC0FF!important}.lc.c2{border-top-color:#14C9B0!important}.lc.c3{border-top-color:#3B7CF6!important}.lc.c4{border-top-color:#FF7A9C!important}.lc.c5{border-top-color:#A78BFA!important}.lc.c6{border-top-color:#FF9F55!important}
+.tag{background:linear-gradient(90deg,#E0ECFF,#E6FBF6)!important;color:#27408F!important;font-weight:800;border-radius:99px}
+button.ar,.world{border-radius:20px!important}
+button.ar[data-k="1"]{background:linear-gradient(160deg,#fff,#DCEBFF)!important}button.ar[data-k="2"]{background:linear-gradient(160deg,#fff,#D5F7F0)!important}button.ar[data-k="3"]{background:linear-gradient(160deg,#fff,#FFEBCF)!important}button.ar[data-k="4"]{background:linear-gradient(160deg,#fff,#EBE2FF)!important}button.ar[data-k="5"]{background:linear-gradient(160deg,#fff,#FFE3EC)!important}
+.world.w1{background:linear-gradient(180deg,#fff,#E3F1FF)!important}.world.w2{background:linear-gradient(180deg,#fff,#DDF8EE)!important}.world.w3{background:linear-gradient(180deg,#fff,#FFF3CC)!important}.world.w4{background:linear-gradient(180deg,#fff,#FFE9D6)!important}.world.w5{background:linear-gradient(180deg,#fff,#EDE5FF)!important}
+.world h3,.world h4,button.ar b,button.ar strong{color:var(--ink)}
+/* tiến độ */
+.bar,.pbar,.prog-bar{background:#E6ECFB!important;border-radius:99px}
+.bar i,.pbar i,.brow .bt i,.bt i{background:linear-gradient(90deg,#14C9B0,#3B7CF6,#8B5CF6)!important}
+/* câu trả lời, thông báo */
+.o{background:#fff!important;border:2px solid #D6DFFA!important;color:var(--ink)!important;border-radius:14px!important;font-weight:700;box-shadow:0 3px 0 #D6DFFA}
+.o:hover{background:#F0F5FF!important;border-color:#3B7CF6!important;transform:translateY(-1px)}
+.msg{border-radius:14px}.msg.ok{background:linear-gradient(135deg,#E4FFF3,#FFF8D6)!important;color:#0B5E45!important;border:2px solid #7CE0B8!important}
+.msg.bad{background:#FFE9ED!important;color:#9A1F34!important;border:2px solid #FFB3C1!important}
+.warn{background:#FFF2C2!important;color:#5A4300!important;border-radius:12px}
+.hbo{background:linear-gradient(135deg,#FFF0F5,#FFF8E6)!important;border-left-color:#FF7A9C!important}
+.sumb{background:linear-gradient(135deg,#F1F7FF,#F0FFF9)!important;border-color:#CFE3FF!important}
+.rec{border-top-color:#FFC93C!important;background:linear-gradient(135deg,#FFFBEA,#FFF1F5)!important}
+/* bàn cờ và khối lệnh */
+.board{background:linear-gradient(180deg,#EAF6FF,#E4FBF3)!important;border:3px solid #BFE0FF!important;border-radius:20px!important}
+.c{border-color:#D7E8FA!important}.c.w2{background:linear-gradient(135deg,#6C7BC4,#4C5A9E)!important}
+.pal button{border-radius:14px!important;font-weight:800}
+.blk{border-radius:14px!important;font-weight:800}
+/* bảng */
+table{border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;background:#fff}
+th{background:linear-gradient(90deg,#DCEBFF,#D5F7F0)!important;color:#1F2A5C!important;font-weight:900}
+td{border-bottom:1px solid #E8EDFB}tr:nth-child(even) td{background:#F8FAFF}
+input,select,textarea{border:2px solid #D2DCF8!important;border-radius:12px!important;background:#fff!important;color:var(--ink)!important}
+input:focus,select:focus,textarea:focus{border-color:#3B7CF6!important;box-shadow:0 0 0 4px rgba(59,124,246,.18)!important;outline:0}
+#bdg div:not(:first-child){background:linear-gradient(135deg,#FFFBEA,#F2F7FF)!important;border:2px solid #FFE08A!important}
+footer{color:var(--mut)}
+/* ---- chế độ tối: dịu mắt, vẫn tươi ---- */
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#F1F4FF;--mut:#B3C0E8;--card:#1A2548;--line:#33457A;--cell:#223260}
+:root:not([data-theme=light]) body{background:radial-gradient(800px 500px at 5% 0,#3A2150 0,transparent 60%),radial-gradient(800px 500px at 100% 0,#10405A 0,transparent 60%),linear-gradient(180deg,#0E1636,#141B3F)!important}
+:root:not([data-theme=light]) .card,:root:not([data-theme=light]) .lc{background:linear-gradient(180deg,#1C2850,#172143)!important;border-color:#33457A!important}
+:root:not([data-theme=light]) nav,:root:not([data-theme=light]) #nav{background:rgba(22,31,66,.9)!important;border-color:#33457A!important}
+:root:not([data-theme=light]) #nav button:not([aria-selected=true]){background:#27376F!important;color:#F1F4FF!important}
+:root:not([data-theme=light]) .btn.alt{background:linear-gradient(180deg,#2A3A74,#222F62)!important;color:#E7EDFF!important;border-color:#3C4F91!important;box-shadow:0 4px 0 #18214A!important}
+:root:not([data-theme=light]) .o{background:#223260!important;color:#F1F4FF!important;border-color:#3C4F91!important;box-shadow:0 3px 0 #18214A}
+:root:not([data-theme=light]) .world,:root:not([data-theme=light]) button.ar{background:linear-gradient(180deg,#223260,#1A2548)!important}
+:root:not([data-theme=light]) table,:root:not([data-theme=light]) td,:root:not([data-theme=light]) tr:nth-child(even) td{background:#1A2548!important;color:#F1F4FF}
+:root:not([data-theme=light]) th{background:linear-gradient(90deg,#2B3F80,#1F5E6B)!important;color:#fff!important}
+:root:not([data-theme=light]) input,:root:not([data-theme=light]) select,:root:not([data-theme=light]) textarea{background:#223260!important;color:#F1F4FF!important;border-color:#3C4F91!important}
+:root:not([data-theme=light]) .hbo,:root:not([data-theme=light]) .sumb,:root:not([data-theme=light]) .rec,:root:not([data-theme=light]) #bdg div:not(:first-child){background:#223260!important;color:#F1F4FF}
+:root:not([data-theme=light]) .tag{background:#2B3F80!important;color:#DDE6FF!important}
+:root:not([data-theme=light]) .msg.ok{background:#12423A!important;color:#B8F5DD!important;border-color:#2D8F74!important}
+:root:not([data-theme=light]) .msg.bad{background:#4A1F2C!important;color:#FFC7D1!important;border-color:#A8455A!important}
+:root:not([data-theme=light]) .board{background:linear-gradient(180deg,#1C2B58,#17314A)!important;border-color:#33457A!important}}
+.pal button.kF,.blk.F{background:linear-gradient(180deg,#E6F0FF,#CFE2FF)!important}.pal button.kL,.pal button.kR,.blk.L,.blk.R{background:linear-gradient(180deg,#F1EAFF,#E0D4FF)!important}
+.pal button.kN,.pal button.kE,.blk.N,.blk.E{background:linear-gradient(180deg,#FFF1DC,#FFE0B8)!important}.pal button.kI,.pal button.kJ,.blk.I,.blk.J{background:linear-gradient(180deg,#DDFAF3,#C2F1E5)!important}
+.pal button.kP,.blk.P{background:linear-gradient(180deg,#FFF9D6,#FFEC9E)!important}.pal button,.blk{color:#1F2A5C!important;border:2px solid rgba(31,42,92,.12)!important}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .pal button,:root:not([data-theme=light]) .blk{background:#2B3F80!important;color:#F1F4FF!important;border-color:#4A62A8!important}
+:root:not([data-theme=light]) .sec>h2{filter:brightness(1.25)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .c:not(.w2):not(.gl):not(.sp){background:#2A3C70!important;border-color:#3C4F91!important}}
+/* ---- xoá màu xám: mọi trạng thái đều có màu ---- */
+:root{--mut:#4A56A6}
+.sub,.sub *,footer,label,#hoc label,.row label{color:#4A56A6}
+.world.lock .wi{filter:saturate(.75) hue-rotate(-8deg) opacity(.9)!important}
+.world.lock{background:linear-gradient(180deg,#fff,#EFE7FF)!important}
+.btn:disabled,.btn[disabled]{filter:none!important;opacity:1!important;background:linear-gradient(180deg,#E9DFFF,#D6C6FF)!important;color:#5B3FC4!important;box-shadow:0 4px 0 #BFA9FF!important;text-shadow:none!important}
+.lv button{background:linear-gradient(180deg,#E3FBF2,#C9F3E3)!important;color:#0B7A67!important;border:2px solid #7CE0B8!important;font-weight:900}
+.lv button:disabled{opacity:1!important;background:linear-gradient(180deg,#F1EAFF,#E2D6FF)!important;color:#7A5BE0!important;border-color:#CDBEFF!important}
+.lv button[aria-current]{background:linear-gradient(180deg,#FFE066,#FFC02E)!important;color:#5A3A00!important;border-color:#F5A800!important}
+.lv span.sub{font-weight:900}.lv span.sub:nth-of-type(1){color:#2F6DE0}.lv span.sub:nth-of-type(2){color:#0FA58F}.lv span.sub:nth-of-type(3){color:#D98A00}.lv span.sub:nth-of-type(4){color:#E5602A}.lv span.sub:nth-of-type(5){color:#7B5CE8}
+.c{background:#E3F2FF!important;border-color:#BFE0FF!important}.c:nth-child(even){background:#DDF8EE!important;border-color:#B4EBD5!important}
+.board .c.gl{background:linear-gradient(135deg,#FFE680,#FFC93C)!important}.board .c.sp{background:linear-gradient(135deg,#C9E3FF,#9CCBFF)!important}
+.bar,.pbar,.prog-bar,.bt{background:linear-gradient(90deg,#DDF0FF,#FFE9F1)!important;border:1px solid #CFE0FF!important}
+.sec>h2 + .sub{font-weight:700}
+.tag{background:linear-gradient(90deg,#DCEBFF,#D5F7F0)!important;color:#1F3F9A!important}
+table td{color:#1F2A5C}.hbo,.sumb{color:#1F2A5C}
+#vars,.vars{color:#3B4BA0;font-weight:700}
+.lc .sub,.world .sub,button.ar .sub,button.ar span{color:#4A56A6}
+select option{color:#1F2A5C}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--mut:#C3D0FF}:root:not([data-theme=light]) .sub,:root:not([data-theme=light]) .sub *,:root:not([data-theme=light]) label{color:#C3D0FF}
+:root:not([data-theme=light]) .lv button{background:#12524A!important;color:#B8F5DD!important;border-color:#2D8F74!important}
+:root:not([data-theme=light]) .lv button:disabled{background:#3A2F78!important;color:#D8CCFF!important;border-color:#6A58C4!important}
+:root:not([data-theme=light]) .lv button[aria-current]{background:linear-gradient(180deg,#FFE066,#FFC02E)!important;color:#5A3A00!important}
+:root:not([data-theme=light]) .btn:disabled{background:linear-gradient(180deg,#4A3C94,#3B2F7C)!important;color:#E4DBFF!important;box-shadow:0 4px 0 #281F5C!important}
+:root:not([data-theme=light]) .world.lock{background:linear-gradient(180deg,#2A2459,#201B48)!important}
+:root:not([data-theme=light]) .lv span.sub{filter:brightness(1.5)}
+:root:not([data-theme=light]) .c{background:#2A3C70!important}:root:not([data-theme=light]) .c:nth-child(even){background:#1F4A58!important}}
+.pal button.kF,.blk.F{background:linear-gradient(180deg,#BFDAFF,#8FBEFF)!important;border-color:#5B9BF5!important}
+.pal button.kL,.pal button.kR,.blk.L,.blk.R{background:linear-gradient(180deg,#DCCBFF,#BFA5FF)!important;border-color:#8B5CF6!important}
+.pal button.kN,.pal button.kE,.blk.N,.blk.E{background:linear-gradient(180deg,#FFDDA8,#FFC070)!important;border-color:#F59E0B!important}
+.pal button.kI,.pal button.kJ,.blk.I,.blk.J{background:linear-gradient(180deg,#A8F0DC,#6FE0C4)!important;border-color:#14C9B0!important}
+.pal button.kP,.blk.P{background:linear-gradient(180deg,#FFF0A0,#FFD84D)!important;border-color:#F5B301!important}
+.pal button,.blk{color:#1F2A5C!important;box-shadow:0 3px 0 rgba(31,42,92,.18)}
+</style></head><body><div class="cityBg" aria-hidden="true"><svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><g fill="var(--cloud)" opacity=".9"><ellipse cx="170" cy="90" rx="95" ry="26"/><ellipse cx="235" cy="72" rx="62" ry="30"/><ellipse cx="1110" cy="140" rx="115" ry="30"/><ellipse cx="1185" cy="118" rx="72" ry="32"/><ellipse cx="650" cy="58" rx="85" ry="22"/></g><g fill="#FFD65A" opacity=".85"><path d="M420 120l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z"/><path d="M880 80l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><path d="M1320 60l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><path d="M90 200l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/></g><g><ellipse cx="330" cy="250" rx="70" ry="13" fill="#7fd6a0"/><path d="M268 252Q330 330 392 252Z" fill="#c59b6d"/><rect x="316" y="214" width="28" height="30" rx="9" fill="#3478F6"/><circle cx="324" cy="226" r="3" fill="#fff"/><circle cx="336" cy="226" r="3" fill="#fff"/></g><g><ellipse cx="1040" cy="300" rx="55" ry="10" fill="#7fd6a0"/><path d="M990 302Q1040 360 1090 302Z" fill="#c59b6d"/><path d="M1040 262l8 16 17 2-12 12 3 17-16-8-16 8 3-17-12-12 17-2z" fill="#FFD65A" stroke="#d9a400"/></g><g transform="translate(770 190)" fill="none" stroke="var(--bld3)" stroke-width="3"><rect x="-14" y="-7" width="28" height="14" rx="3" fill="var(--bld2)"/><path d="M-14 0h-18M14 0h18" stroke-width="5"/></g><g transform="translate(560 150)" fill="var(--bld3)" opacity=".75"><circle r="22"/><circle r="9" fill="var(--sky2)"/><path d="M-4-30h8v8h-8zM-4 22h8v8h-8zM-30-4h8v8h-8zM22-4h8v8h-8z"/></g><g fill="var(--bld1)" opacity=".9"><rect x="0" y="430" width="90" height="170" rx="8"/><rect x="100" y="370" width="70" height="230" rx="8"/><rect x="180" y="460" width="110" height="140" rx="8"/><rect x="300" y="340" width="80" height="260" rx="8"/><rect x="390" y="410" width="100" height="190" rx="8"/><rect x="500" y="300" width="70" height="300" rx="8"/><rect x="580" y="440" width="120" height="160" rx="8"/><rect x="710" y="360" width="90" height="240" rx="8"/><rect x="810" y="400" width="110" height="200" rx="8"/><rect x="930" y="320" width="80" height="280" rx="8"/><rect x="1020" y="430" width="100" height="170" rx="8"/><rect x="1130" y="350" width="90" height="250" rx="8"/><rect x="1230" y="410" width="110" height="190" rx="8"/><rect x="1350" y="380" width="100" height="220" rx="8"/></g><g fill="var(--bld2)"><rect x="20" y="480" width="100" height="120" rx="10"/><rect x="230" y="450" width="90" height="150" rx="10"/><rect x="440" y="490" width="110" height="110" rx="10"/><rect x="660" y="430" width="100" height="170" rx="10"/><rect x="870" y="470" width="90" height="130" rx="10"/><rect x="1080" y="440" width="110" height="160" rx="10"/><rect x="1290" y="480" width="110" height="120" rx="10"/></g><g fill="#FFD65A" opacity=".8"><rect x="24" y="486" width="6" height="8" rx="1.5"/><rect x="38" y="486" width="6" height="8" rx="1.5"/><rect x="52" y="486" width="6" height="8" rx="1.5"/><rect x="66" y="486" width="6" height="8" rx="1.5"/><rect x="80" y="486" width="6" height="8" rx="1.5"/><rect x="94" y="486" width="6" height="8" rx="1.5"/><rect x="24" y="502" width="6" height="8" rx="1.5"/><rect x="38" y="502" width="6" height="8" rx="1.5"/><rect x="52" y="502" width="6" height="8" rx="1.5"/><rect x="66" y="502" width="6" height="8" rx="1.5"/><rect x="80" y="502" width="6" height="8" rx="1.5"/><rect x="94" y="502" width="6" height="8" rx="1.5"/><rect x="24" y="518" width="6" height="8" rx="1.5"/><rect x="38" y="518" width="6" height="8" rx="1.5"/><rect x="52" y="518" width="6" height="8" rx="1.5"/><rect x="66" y="518" width="6" height="8" rx="1.5"/><rect x="80" y="518" width="6" height="8" rx="1.5"/><rect x="94" y="518" width="6" height="8" rx="1.5"/><rect x="24" y="534" width="6" height="8" rx="1.5"/><rect x="38" y="534" width="6" height="8" rx="1.5"/><rect x="52" y="534" width="6" height="8" rx="1.5"/><rect x="66" y="534" width="6" height="8" rx="1.5"/><rect x="80" y="534" width="6" height="8" rx="1.5"/><rect x="94" y="534" width="6" height="8" rx="1.5"/><rect x="24" y="550" width="6" height="8" rx="1.5"/><rect x="38" y="550" width="6" height="8" rx="1.5"/><rect x="52" y="550" width="6" height="8" rx="1.5"/><rect x="66" y="550" width="6" height="8" rx="1.5"/><rect x="80" y="550" width="6" height="8" rx="1.5"/><rect x="94" y="550" width="6" height="8" rx="1.5"/><rect x="24" y="566" width="6" height="8" rx="1.5"/><rect x="38" y="566" width="6" height="8" rx="1.5"/><rect x="52" y="566" width="6" height="8" rx="1.5"/><rect x="66" y="566" width="6" height="8" rx="1.5"/><rect x="80" y="566" width="6" height="8" rx="1.5"/><rect x="94" y="566" width="6" height="8" rx="1.5"/><rect x="234" y="456" width="6" height="8" rx="1.5"/><rect x="248" y="456" width="6" height="8" rx="1.5"/><rect x="262" y="456" width="6" height="8" rx="1.5"/><rect x="276" y="456" width="6" height="8" rx="1.5"/><rect x="290" y="456" width="6" height="8" rx="1.5"/><rect x="234" y="472" width="6" height="8" rx="1.5"/><rect x="248" y="472" width="6" height="8" rx="1.5"/><rect x="262" y="472" width="6" height="8" rx="1.5"/><rect x="276" y="472" width="6" height="8" rx="1.5"/><rect x="290" y="472" width="6" height="8" rx="1.5"/><rect x="234" y="488" width="6" height="8" rx="1.5"/><rect x="248" y="488" width="6" height="8" rx="1.5"/><rect x="262" y="488" width="6" height="8" rx="1.5"/><rect x="276" y="488" width="6" height="8" rx="1.5"/><rect x="290" y="488" width="6" height="8" rx="1.5"/><rect x="234" y="504" width="6" height="8" rx="1.5"/><rect x="248" y="504" width="6" height="8" rx="1.5"/><rect x="262" y="504" width="6" height="8" rx="1.5"/><rect x="276" y="504" width="6" height="8" rx="1.5"/><rect x="290" y="504" width="6" height="8" rx="1.5"/><rect x="234" y="520" width="6" height="8" rx="1.5"/><rect x="248" y="520" width="6" height="8" rx="1.5"/><rect x="262" y="520" width="6" height="8" rx="1.5"/><rect x="276" y="520" width="6" height="8" rx="1.5"/><rect x="290" y="520" width="6" height="8" rx="1.5"/><rect x="234" y="536" width="6" height="8" rx="1.5"/><rect x="248" y="536" width="6" height="8" rx="1.5"/><rect x="262" y="536" width="6" height="8" rx="1.5"/><rect x="276" y="536" width="6" height="8" rx="1.5"/><rect x="290" y="536" width="6" height="8" rx="1.5"/><rect x="234" y="552" width="6" height="8" rx="1.5"/><rect x="248" y="552" width="6" height="8" rx="1.5"/><rect x="262" y="552" width="6" height="8" rx="1.5"/><rect x="276" y="552" width="6" height="8" rx="1.5"/><rect x="290" y="552" width="6" height="8" rx="1.5"/><rect x="234" y="568" width="6" height="8" rx="1.5"/><rect x="248" y="568" width="6" height="8" rx="1.5"/><rect x="262" y="568" width="6" height="8" rx="1.5"/><rect x="276" y="568" width="6" height="8" rx="1.5"/><rect x="290" y="568" width="6" height="8" rx="1.5"/><rect x="444" y="496" width="6" height="8" rx="1.5"/><rect x="458" y="496" width="6" height="8" rx="1.5"/><rect x="472" y="496" width="6" height="8" rx="1.5"/><rect x="486" y="496" width="6" height="8" rx="1.5"/><rect x="500" y="496" width="6" height="8" rx="1.5"/><rect x="514" y="496" width="6" height="8" rx="1.5"/><rect x="444" y="512" width="6" height="8" rx="1.5"/><rect x="458" y="512" width="6" height="8" rx="1.5"/><rect x="472" y="512" width="6" height="8" rx="1.5"/><rect x="486" y="512" width="6" height="8" rx="1.5"/><rect x="500" y="512" width="6" height="8" rx="1.5"/><rect x="514" y="512" width="6" height="8" rx="1.5"/><rect x="444" y="528" width="6" height="8" rx="1.5"/><rect x="458" y="528" width="6" height="8" rx="1.5"/><rect x="472" y="528" width="6" height="8" rx="1.5"/><rect x="486" y="528" width="6" height="8" rx="1.5"/><rect x="500" y="528" width="6" height="8" rx="1.5"/><rect x="514" y="528" width="6" height="8" rx="1.5"/><rect x="444" y="544" width="6" height="8" rx="1.5"/><rect x="458" y="544" width="6" height="8" rx="1.5"/><rect x="472" y="544" width="6" height="8" rx="1.5"/><rect x="486" y="544" width="6" height="8" rx="1.5"/><rect x="500" y="544" width="6" height="8" rx="1.5"/><rect x="514" y="544" width="6" height="8" rx="1.5"/><rect x="444" y="560" width="6" height="8" rx="1.5"/><rect x="458" y="560" width="6" height="8" rx="1.5"/><rect x="472" y="560" width="6" height="8" rx="1.5"/><rect x="486" y="560" width="6" height="8" rx="1.5"/><rect x="500" y="560" width="6" height="8" rx="1.5"/><rect x="514" y="560" width="6" height="8" rx="1.5"/><rect x="664" y="436" width="6" height="8" rx="1.5"/><rect x="678" y="436" width="6" height="8" rx="1.5"/><rect x="692" y="436" width="6" height="8" rx="1.5"/><rect x="706" y="436" width="6" height="8" rx="1.5"/><rect x="720" y="436" width="6" height="8" rx="1.5"/><rect x="734" y="436" width="6" height="8" rx="1.5"/><rect x="664" y="452" width="6" height="8" rx="1.5"/><rect x="678" y="452" width="6" height="8" rx="1.5"/><rect x="692" y="452" width="6" height="8" rx="1.5"/><rect x="706" y="452" width="6" height="8" rx="1.5"/><rect x="720" y="452" width="6" height="8" rx="1.5"/><rect x="734" y="452" width="6" height="8" rx="1.5"/><rect x="664" y="468" width="6" height="8" rx="1.5"/><rect x="678" y="468" width="6" height="8" rx="1.5"/><rect x="692" y="468" width="6" height="8" rx="1.5"/><rect x="706" y="468" width="6" height="8" rx="1.5"/><rect x="720" y="468" width="6" height="8" rx="1.5"/><rect x="734" y="468" width="6" height="8" rx="1.5"/><rect x="664" y="484" width="6" height="8" rx="1.5"/><rect x="678" y="484" width="6" height="8" rx="1.5"/><rect x="692" y="484" width="6" height="8" rx="1.5"/><rect x="706" y="484" width="6" height="8" rx="1.5"/><rect x="720" y="484" width="6" height="8" rx="1.5"/><rect x="734" y="484" width="6" height="8" rx="1.5"/><rect x="664" y="500" width="6" height="8" rx="1.5"/><rect x="678" y="500" width="6" height="8" rx="1.5"/><rect x="692" y="500" width="6" height="8" rx="1.5"/><rect x="706" y="500" width="6" height="8" rx="1.5"/><rect x="720" y="500" width="6" height="8" rx="1.5"/><rect x="734" y="500" width="6" height="8" rx="1.5"/><rect x="664" y="516" width="6" height="8" rx="1.5"/><rect x="678" y="516" width="6" height="8" rx="1.5"/><rect x="692" y="516" width="6" height="8" rx="1.5"/><rect x="706" y="516" width="6" height="8" rx="1.5"/><rect x="720" y="516" width="6" height="8" rx="1.5"/><rect x="734" y="516" width="6" height="8" rx="1.5"/><rect x="664" y="532" width="6" height="8" rx="1.5"/><rect x="678" y="532" width="6" height="8" rx="1.5"/><rect x="692" y="532" width="6" height="8" rx="1.5"/><rect x="706" y="532" width="6" height="8" rx="1.5"/><rect x="720" y="532" width="6" height="8" rx="1.5"/><rect x="734" y="532" width="6" height="8" rx="1.5"/><rect x="664" y="548" width="6" height="8" rx="1.5"/><rect x="678" y="548" width="6" height="8" rx="1.5"/><rect x="692" y="548" width="6" height="8" rx="1.5"/><rect x="706" y="548" width="6" height="8" rx="1.5"/><rect x="720" y="548" width="6" height="8" rx="1.5"/><rect x="734" y="548" width="6" height="8" rx="1.5"/><rect x="664" y="564" width="6" height="8" rx="1.5"/><rect x="678" y="564" width="6" height="8" rx="1.5"/><rect x="692" y="564" width="6" height="8" rx="1.5"/><rect x="706" y="564" width="6" height="8" rx="1.5"/><rect x="720" y="564" width="6" height="8" rx="1.5"/><rect x="734" y="564" width="6" height="8" rx="1.5"/><rect x="874" y="476" width="6" height="8" rx="1.5"/><rect x="888" y="476" width="6" height="8" rx="1.5"/><rect x="902" y="476" width="6" height="8" rx="1.5"/><rect x="916" y="476" width="6" height="8" rx="1.5"/><rect x="930" y="476" width="6" height="8" rx="1.5"/><rect x="874" y="492" width="6" height="8" rx="1.5"/><rect x="888" y="492" width="6" height="8" rx="1.5"/><rect x="902" y="492" width="6" height="8" rx="1.5"/><rect x="916" y="492" width="6" height="8" rx="1.5"/><rect x="930" y="492" width="6" height="8" rx="1.5"/><rect x="874" y="508" width="6" height="8" rx="1.5"/><rect x="888" y="508" width="6" height="8" rx="1.5"/><rect x="902" y="508" width="6" height="8" rx="1.5"/><rect x="916" y="508" width="6" height="8" rx="1.5"/><rect x="930" y="508" width="6" height="8" rx="1.5"/><rect x="874" y="524" width="6" height="8" rx="1.5"/><rect x="888" y="524" width="6" height="8" rx="1.5"/><rect x="902" y="524" width="6" height="8" rx="1.5"/><rect x="916" y="524" width="6" height="8" rx="1.5"/><rect x="930" y="524" width="6" height="8" rx="1.5"/><rect x="874" y="540" width="6" height="8" rx="1.5"/><rect x="888" y="540" width="6" height="8" rx="1.5"/><rect x="902" y="540" width="6" height="8" rx="1.5"/><rect x="916" y="540" width="6" height="8" rx="1.5"/><rect x="930" y="540" width="6" height="8" rx="1.5"/><rect x="874" y="556" width="6" height="8" rx="1.5"/><rect x="888" y="556" width="6" height="8" rx="1.5"/><rect x="902" y="556" width="6" height="8" rx="1.5"/><rect x="916" y="556" width="6" height="8" rx="1.5"/><rect x="930" y="556" width="6" height="8" rx="1.5"/><rect x="874" y="572" width="6" height="8" rx="1.5"/><rect x="888" y="572" width="6" height="8" rx="1.5"/><rect x="902" y="572" width="6" height="8" rx="1.5"/><rect x="916" y="572" width="6" height="8" rx="1.5"/><rect x="930" y="572" width="6" height="8" rx="1.5"/><rect x="1084" y="446" width="6" height="8" rx="1.5"/><rect x="1098" y="446" width="6" height="8" rx="1.5"/><rect x="1112" y="446" width="6" height="8" rx="1.5"/><rect x="1126" y="446" width="6" height="8" rx="1.5"/><rect x="1140" y="446" width="6" height="8" rx="1.5"/><rect x="1154" y="446" width="6" height="8" rx="1.5"/><rect x="1084" y="462" width="6" height="8" rx="1.5"/><rect x="1098" y="462" width="6" height="8" rx="1.5"/><rect x="1112" y="462" width="6" height="8" rx="1.5"/><rect x="1126" y="462" width="6" height="8" rx="1.5"/><rect x="1140" y="462" width="6" height="8" rx="1.5"/><rect x="1154" y="462" width="6" height="8" rx="1.5"/><rect x="1084" y="478" width="6" height="8" rx="1.5"/><rect x="1098" y="478" width="6" height="8" rx="1.5"/><rect x="1112" y="478" width="6" height="8" rx="1.5"/><rect x="1126" y="478" width="6" height="8" rx="1.5"/><rect x="1140" y="478" width="6" height="8" rx="1.5"/><rect x="1154" y="478" width="6" height="8" rx="1.5"/><rect x="1084" y="494" width="6" height="8" rx="1.5"/><rect x="1098" y="494" width="6" height="8" rx="1.5"/><rect x="1112" y="494" width="6" height="8" rx="1.5"/><rect x="1126" y="494" width="6" height="8" rx="1.5"/><rect x="1140" y="494" width="6" height="8" rx="1.5"/><rect x="1154" y="494" width="6" height="8" rx="1.5"/><rect x="1084" y="510" width="6" height="8" rx="1.5"/><rect x="1098" y="510" width="6" height="8" rx="1.5"/><rect x="1112" y="510" width="6" height="8" rx="1.5"/><rect x="1126" y="510" width="6" height="8" rx="1.5"/><rect x="1140" y="510" width="6" height="8" rx="1.5"/><rect x="1154" y="510" width="6" height="8" rx="1.5"/><rect x="1084" y="526" width="6" height="8" rx="1.5"/><rect x="1098" y="526" width="6" height="8" rx="1.5"/><rect x="1112" y="526" width="6" height="8" rx="1.5"/><rect x="1126" y="526" width="6" height="8" rx="1.5"/><rect x="1140" y="526" width="6" height="8" rx="1.5"/><rect x="1154" y="526" width="6" height="8" rx="1.5"/><rect x="1084" y="542" width="6" height="8" rx="1.5"/><rect x="1098" y="542" width="6" height="8" rx="1.5"/><rect x="1112" y="542" width="6" height="8" rx="1.5"/><rect x="1126" y="542" width="6" height="8" rx="1.5"/><rect x="1140" y="542" width="6" height="8" rx="1.5"/><rect x="1154" y="542" width="6" height="8" rx="1.5"/><rect x="1084" y="558" width="6" height="8" rx="1.5"/><rect x="1098" y="558" width="6" height="8" rx="1.5"/><rect x="1112" y="558" width="6" height="8" rx="1.5"/><rect x="1126" y="558" width="6" height="8" rx="1.5"/><rect x="1140" y="558" width="6" height="8" rx="1.5"/><rect x="1154" y="558" width="6" height="8" rx="1.5"/><rect x="1294" y="486" width="6" height="8" rx="1.5"/><rect x="1308" y="486" width="6" height="8" rx="1.5"/><rect x="1322" y="486" width="6" height="8" rx="1.5"/><rect x="1336" y="486" width="6" height="8" rx="1.5"/><rect x="1350" y="486" width="6" height="8" rx="1.5"/><rect x="1364" y="486" width="6" height="8" rx="1.5"/><rect x="1294" y="502" width="6" height="8" rx="1.5"/><rect x="1308" y="502" width="6" height="8" rx="1.5"/><rect x="1322" y="502" width="6" height="8" rx="1.5"/><rect x="1336" y="502" width="6" height="8" rx="1.5"/><rect x="1350" y="502" width="6" height="8" rx="1.5"/><rect x="1364" y="502" width="6" height="8" rx="1.5"/><rect x="1294" y="518" width="6" height="8" rx="1.5"/><rect x="1308" y="518" width="6" height="8" rx="1.5"/><rect x="1322" y="518" width="6" height="8" rx="1.5"/><rect x="1336" y="518" width="6" height="8" rx="1.5"/><rect x="1350" y="518" width="6" height="8" rx="1.5"/><rect x="1364" y="518" width="6" height="8" rx="1.5"/><rect x="1294" y="534" width="6" height="8" rx="1.5"/><rect x="1308" y="534" width="6" height="8" rx="1.5"/><rect x="1322" y="534" width="6" height="8" rx="1.5"/><rect x="1336" y="534" width="6" height="8" rx="1.5"/><rect x="1350" y="534" width="6" height="8" rx="1.5"/><rect x="1364" y="534" width="6" height="8" rx="1.5"/><rect x="1294" y="550" width="6" height="8" rx="1.5"/><rect x="1308" y="550" width="6" height="8" rx="1.5"/><rect x="1322" y="550" width="6" height="8" rx="1.5"/><rect x="1336" y="550" width="6" height="8" rx="1.5"/><rect x="1350" y="550" width="6" height="8" rx="1.5"/><rect x="1364" y="550" width="6" height="8" rx="1.5"/><rect x="1294" y="566" width="6" height="8" rx="1.5"/><rect x="1308" y="566" width="6" height="8" rx="1.5"/><rect x="1322" y="566" width="6" height="8" rx="1.5"/><rect x="1336" y="566" width="6" height="8" rx="1.5"/><rect x="1350" y="566" width="6" height="8" rx="1.5"/><rect x="1364" y="566" width="6" height="8" rx="1.5"/></g><path d="M0 585Q360 548 720 575T1440 562" fill="none" stroke="#37D6C0" stroke-width="7" opacity=".55" stroke-linecap="round"/><path d="M0 585Q360 548 720 575T1440 562" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="14 18" opacity=".7"/></svg></div><div class="w">
+<div class="top"><div id="bi" aria-hidden="true">🤖</div><div><h1>Cùng Robot Bi chinh phục thành phố lập trình</h1><div class="sub">Tin học 5 – Kết nối tri thức với cuộc sống · Toàn bộ chương trình (6 chủ đề) · Cô Nguyễn Thị Hồng Nguyên, TH&amp;THCS Đại Đồng</div><div class="bub" id="bub" aria-live="polite"></div></div></div>
+<div class="stat"><span class="pill" id="slv"></span><span class="pill" id="sst"></span><span class="pill" id="sco"></span><button class="btn alt" id="snd" aria-pressed="true" aria-label="Bật hoặc tắt âm thanh" title="Bật/tắt âm thanh">🔊</button><label class="sub">Âm lượng <input type="range" id="vol" min="0" max="100" step="5" value="40"></label><label class="sub"><input type="checkbox" id="vc"> Giọng nói của Bi</label><div class="xp" title="Điểm kinh nghiệm"><i id="sxp"></i></div></div>
+<nav id="nav" role="tablist"></nav>
+
+<section class="sec" id="home"><div class="card"><h2>Xin chào, mình là Bi!</h2><p>Thành phố lập trình đang bị lỗi. Em hãy xếp lệnh giúp Bi vượt 12 màn ở 5 thế giới nhé. Sai cũng không sao: em được thử lại và xin gợi ý.</p><button class="btn y big" id="go">🚀 BẮT ĐẦU HÀNH TRÌNH</button></div>
+<div id="hm"></div><h3 style="margin-top:14px">Tất cả khu vực</h3><div class="g" id="areas"></div>
+<details class="card" style="margin-top:12px"><summary><b>❓ Hướng dẫn nhanh các tính năng</b></summary>
+<p><b>🔮 Dự đoán trước khi chạy</b> (trong “Mê cung lập trình”): xếp lệnh, bấm nút tím, trả lời câu hỏi, bấm “Chốt dự đoán”, rồi bấm Chạy hoặc Từng bước. Bi sẽ so sánh dự đoán với kết quả thật. Sửa chương trình thì cần dự đoán lại.</p>
+<p><b>⚡ Thử thách ít lệnh nhất</b>: giải màn bằng ít khối nhất. Mỗi khối (kể cả Lặp và Hết lặp) tính 1; xem thêm mục “Cách đếm số khối”.</p>
+<p><b>👕 Tủ đồ của Bi</b>: chọn danh mục, chọn món, bấm “Mặc thử”, rồi “Lưu trang phục”. Món khóa mở bằng xu (có bước xác nhận), sao hoặc thành tích.</p>
+<p><b>🔊 Âm thanh</b>: nút loa để bật/tắt, thanh trượt chỉnh âm lượng, ô “Giọng nói của Bi” để Bi nói (nếu trình duyệt hỗ trợ; nếu không, lời Bi hiện trong khung chữ cạnh tên trang).</p>
+<p><b>📜 Lịch sử bước chạy</b>: dưới chương trình, bấm “Xem lại các bước Bi đã chạy”. Nếu muốn giảm chuyển động, hãy bật chế độ giảm chuyển động của thiết bị; trang sẽ tắt hiệu ứng nhún.</p></details></section>
+
+<section class="sec" id="hoc"></section>
+
+<section class="sec" id="lap">
+<div id="wi"></div><div class="lv" id="lv" role="group" aria-label="Chọn màn"></div>
+<div class="card"><span class="tag" id="lt"></span><h3 id="ln"></h3><div id="ls"></div><div class="sub" id="lg"></div></div>
+<div class="lab"><div><div class="board" id="bd" role="img"></div><div class="sub" id="vars" style="margin-top:6px"></div><div class="msg" id="msg" aria-live="polite"></div></div>
+<div><b>Bảng lệnh</b><div class="pal" id="pal"></div>
+<b>Chương trình của em</b> <span class="sub" id="cnt"></span><div class="prog" id="prog"></div>
+<p><button class="btn" id="run">▶ Chạy</button> <button class="btn alt" id="stp">⏭ Từng bước</button> <button class="btn alt" id="pau">⏸ Tạm dừng</button> <button class="btn alt" id="rep">↻ Chạy lại</button> <button class="btn pp" id="pdb">🔮 Dự đoán trước khi chạy</button></p>
+<p><button class="btn alt" id="clr">🗑 Xóa chương trình</button> <button class="btn alt" id="rst">🔄 Đặt lại bản đồ</button> <button class="btn alt" id="hint">💡 Gợi ý</button> <button class="btn alt" id="sol" hidden>🔑 Xem lời giải</button></p>
+<div id="pd"></div><div class="sub" id="hbox"></div><details id="hist" class="card" style="margin-top:8px"><summary>📜 Xem lại các bước Bi đã chạy</summary><ol id="hl"></ol></details></div></div></section>
+
+<section class="sec" id="lm"></section><section class="sec" id="lp"></section><section class="sec" id="ot"></section>
+<section class="sec" id="hb"></section><section class="sec" id="tu"></section>
+
+<section class="sec" id="game"><div class="lv" id="gl"></div><div class="card" id="gm">Chọn một trò chơi.</div></section>
+
+<section class="sec" id="tt"><h2>Thành tích của em</h2><div class="card" id="bdg"></div><div class="card" id="wl"></div></section>
+
+<section class="sec" id="gv"><h2>Dành cho giáo viên</h2><p class="sub">Số liệu chỉ lưu trong trình duyệt của máy đang dùng. Muốn gom dữ liệu nhiều máy cần cơ chế đồng bộ riêng (chưa có), hiện dùng nút sao chép CSV rồi dán vào Excel.</p>
+<div class="card"><label>Mã học sinh (ẩn danh): <input type="text" id="code" maxlength="12" placeholder="ví dụ HS07"></label><div style="overflow-x:auto;margin-top:10px"><table id="tb"></table></div><p id="gs"></p>
+<p><button class="btn" id="cp">Sao chép tóm tắt</button> <button class="btn alt" id="cv">Sao chép CSV</button> <button class="btn alt" id="wp">Xóa dữ liệu máy này</button> <span class="sub" id="gmsg"></span></p></div>
+<div id="gx"></div><div id="gy"></div><div class="card" id="aud"></div><div class="card"><h3>Giới thiệu và lưu ý</h3><p>Hướng dẫn nhanh cho giáo viên: học sinh nhập mã ẩn danh ở tab này, chơi ở các tab còn lại; cuối buổi xem bảng, sao chép tóm tắt hoặc CSV. Sách giáo khoa dạy Scratch, còn trò chơi này là mô phỏng Robot Bi để luyện các cấu trúc điều khiển; các câu mang nhãn “cần GV đối chiếu” dùng luật của trò chơi.</p><p>Trang chạy hoàn toàn trên máy học sinh, không gọi AI thời gian thực. Lời nhắn của Bi là quy tắc soạn sẵn. Nội dung do AI (Claude) hỗ trợ soạn theo mục lục sách; giáo viên cần đối chiếu với SGK Tin học 5 trước khi dùng. Không hỏi họ tên, không gửi dữ liệu ra ngoài.</p></div></section>
+<footer>Sản phẩm dự Ngày hội “Nhà giáo sáng tạo với công nghệ số và trí tuệ nhân tạo năm 2026”.</footer></div>
+
+<script id="core">
+const DX=[0,1,0,-1],DY=[-1,0,1,0],B5=['....G','.....','.....','.....','S....'],ZZ=['G....','.####','.....','####.','S....'];
+const rp=(m,r,s)=>m.map((x,i)=>i===r?s:x);
+const LV=[
+{w:1,n:"Đi đúng thứ tự",t:"Bài 10",s:"Bi phải đến cổng thành 🏁.",g:"Các lệnh chạy lần lượt từ trên xuống.",map:B5,max:14,tools:"FLR",sol:"F F F F L F F F F",h:["Đi hết hàng dưới trước.","Tiến 4 ô, rồi rẽ trái, rồi tiến 4 ô."],k:"Tuần tự: lệnh trước chạy trước, lệnh sau chạy sau."},
+{w:1,n:"Sắp xếp lại chương trình",t:"Bài 10",s:"Ai đó xếp lẫn thứ tự lệnh của Bi!",g:"Dùng nút ▲ ▼ để đổi chỗ lệnh.",map:B5,max:14,tools:"FLR",pre:"L F F F F F F F F",sol:"F F F F L F F F F",h:["Bi đang rẽ quá sớm.","Đưa lệnh Rẽ trái xuống giữa hai nhóm Tiến."],k:"Đổi thứ tự lệnh có thể làm kết quả khác hẳn."},
+{w:2,n:"Rừng vòng lặp",t:"Bài 11–12",s:"Đường rừng dài, tay Bi mỏi rồi!",g:"Chỉ được dùng tối đa 7 khối. Hãy dùng Lặp.",map:B5,max:7,tools:"FLRNE",sol:"N4 F E L N4 F E",h:["“Tiến 4 ô” xuất hiện hai lần.","Lặp 4 lần [Tiến], rẽ trái, lặp 4 lần [Tiến]."],k:"Lặp giúp chương trình ngắn hơn khi một việc làm nhiều lần."},
+{w:2,n:"Mê cung chữ Z",t:"Bài 11–12",s:"Mê cung có tường ngăn lối.",g:"Đi theo đường zíc-zắc đến 🏁, tối đa 15 khối.",map:ZZ,max:15,tools:"FLRNE",sol:"N4 F E L N2 F E L N4 F E R N2 F E",h:["Có 4 đoạn thẳng: 4, 2, 4, 2 ô.","Dùng Lặp cho từng đoạn, nhớ rẽ đúng hướng: trái, trái, phải."],k:"Mỗi đoạn thẳng lặp là một nhóm lệnh gọn."},
+{w:3,n:"Chạm tường thì rẽ",t:"Bài 13",s:"Bi chưa biết đường, chỉ biết khi chạm tường là phải rẽ.",g:"Dùng khối “Nếu chạm tường thì rẽ trái” trong vòng Lặp.",map:B5,max:8,tools:"FLRNEI",sol:"N8 I F E",h:["Mỗi vòng: kiểm tra tường trước, rồi tiến.","Lặp 8 lần [Nếu chạm tường thì rẽ trái, Tiến]."],k:"Rẽ nhánh: kiểm tra điều kiện rồi mới chọn việc làm."},
+{w:3,n:"Rẽ trái hay rẽ phải?",t:"Bài 13",s:"Lần này đường đi xuống phía dưới.",g:"Chọn khối điều kiện phù hợp với bản đồ.",map:['S....','.....','.....','.....','....G'],max:8,tools:"FLRNEIJ",sol:"N8 J F E",h:["Hết hàng trên Bi cần quay xuống.","Quay xuống là rẽ phải."],k:"Chọn hành động đúng với điều kiện của bản đồ."},
+{w:4,n:"Nhặt sao",t:"Bài 16",s:"Kho báu có những ngôi sao ⭐.",g:"Nhặt đủ 2 sao rồi đến cổng. Biến điểm tăng 1 mỗi sao.",map:['.....','.....','.....','.....','S*.*G'],max:8,tools:"FLRNEP",need:2,sol:"N4 F P E",h:["Nhặt ngay sau khi tiến.","Lặp 4 lần [Tiến, Nhặt sao]."],k:"Biến “điểm” lưu số sao: điểm = điểm + 1."},
+{w:4,n:"Cổng chỉ mở khi đủ điểm",t:"Bài 15–16",s:"Cổng thành chỉ mở khi điểm = 3.",g:"Nhặt đủ 3 sao trên đường lên cổng.",map:['....G','....*','....*','....*','S....'],max:9,tools:"FLRNEP",need:3,sol:"N4 F E L N4 F P E",h:["Sao nằm ở cột bên phải.","Đi 4 ô, rẽ trái, rồi lặp [Tiến, Nhặt sao]."],k:"Biểu thức so sánh: điểm đã bằng 3 chưa? Nếu rồi thì cổng mở."},
+{w:5,n:"Tìm lệnh sai",t:"Bài 16",s:"Chương trình của Bi chạy sai. Hãy tìm lệnh lỗi.",g:"Chạy từng bước để quan sát.",map:B5,max:14,tools:"FLRNE",pre:"N4 F E R N4 F E",sol:"N4 F E L N4 F E",h:["Bi đi xuống thay vì đi lên.","Hướng rẽ bị sai."],k:"Chạy từng bước giúp thấy lệnh sai nằm ở đâu."},
+{w:5,n:"Sửa vòng lặp",t:"Bài 16",s:"Bi nhặt thiếu sao rồi dừng sớm.",g:"Sửa chương trình có sẵn.",map:['S**.G','.....','.....','.....','.....'],max:8,tools:"FLRNEP",need:2,pre:"N3 F P E",sol:"N4 F P E",h:["Bi dừng trước cổng 1 ô.","Số lần lặp chưa đủ."],k:"Số lần lặp phải khớp với số bước cần đi."},
+{w:5,n:"Kết hợp nhiều cấu trúc",t:"Bài 13–15",s:"Đường dài có sao nằm rải rác.",g:"Dùng lặp, điều kiện và biến để nhặt 3 sao.",map:['....G','.....','....*','.....','S*.*.'],max:8,tools:"FLRNEIPJ",need:3,sol:"N8 I F P E",h:["Lặp 8 lần, mỗi vòng có 3 việc.","Nếu chạm tường rẽ trái; tiến; nhặt sao."],k:"Lặp + điều kiện + biến cùng giải một bài toán."},
+{w:5,n:"Giải cứu thành phố",t:"Bài 10–16",s:"Thử thách cuối: cứu thành phố!",g:"Nhặt 3 sao, đi hết mê cung zíc-zắc. Tối đa 18 khối.",map:rp(rp(rp(ZZ,4,'S.*..'),3,'####*'),1,'*####'),max:18,tools:"FLRNEIPJ",need:3,sol:"F F P F F L F P F L N4 F E R F P F",h:["Sao ở ô thứ 3 hàng dưới, cuối cột phải và đầu cột trái.","Viết kịch bản trước: tiến, nhặt, rẽ... rồi mới xếp lệnh."],k:"Kịch bản rõ ràng giúp chuyển thành chương trình nhanh hơn."}];
+const WN=["","Làm quen với Bi","Rừng vòng lặp","Thành phố điều kiện","Kho báu biến số","Phòng thí nghiệm sửa lỗi"];
+const NM={F:"Tiến 1 ô",L:"Rẽ trái ↺",R:"Rẽ phải ↻",N:"Lặp",E:"Hết lặp",I:"Nếu chạm tường thì rẽ trái",J:"Nếu chạm tường thì rẽ phải",P:"Nhặt sao (điểm +1)"};
+const tk=s=>s.trim().split(/\s+/).map(a=>a[0]==='N'?{t:'N',n:+a.slice(1)}:{t:a});
+function pm(L){const g=L.map.map(r=>r.split(''));let s,G,st=[];g.forEach((r,y)=>r.forEach((c,x)=>{if(c==='S')s={x,y};if(c==='G')G={x,y};if(c==='*')st.push(x+','+y)}));return{g,s,G,st,W:g[0].length,H:g.length}}
+function exec(prog,L){const m=pm(L),need=L.need||0;let x=m.s.x,y=m.s.y,d=1,sc=0,st=new Set(m.st),lp=[],pc=0,n=0,res=null;
+const snap=pc=>({x,y,d,sc,st:[...st],pc});const F=[snap(-1)];
+let o=0;for(const b of prog){if(b.t==='N')o++;if(b.t==='E'&&--o<0)break}
+if(o!==0)return{F,res:{ok:false,code:'inv',msg:'Mỗi khối Lặp cần một khối Hết lặp, và ngược lại.'}};
+const wl=(a,b)=>a<0||b<0||a>=m.W||b>=m.H||m.g[b][a]==='#';
+while(pc<prog.length&&!res){if(++n>300){res={ok:false,code:'loop',msg:'Chương trình chạy quá dài, có thể bị lặp mãi. Kiểm tra số lần lặp.'};break}
+const b=prog[pc];let nx=pc+1;
+if(b.t==='N')lp.push({s:pc+1,n:b.n});else if(b.t==='E'){const t=lp[lp.length-1];if(--t.n>0)nx=t.s;else lp.pop()}
+else if(b.t==='L')d=(d+3)%4;else if(b.t==='R')d=(d+1)%4;
+else if(b.t==='I'){if(wl(x+DX[d],y+DY[d]))d=(d+3)%4}else if(b.t==='J'){if(wl(x+DX[d],y+DY[d]))d=(d+1)%4}
+else if(b.t==='P'){const k=x+','+y;if(st.delete(k))sc++}
+else if(b.t==='F'){const a=x+DX[d],c=y+DY[d];if(wl(a,c))res={ok:false,code:'wall',msg:'Bi đụng tường ở khối số '+(pc+1)+'. Kiểm tra hướng đi hoặc số lần tiến.'};else{x=a;y=c}}
+F.push(snap(pc));pc=nx;
+if(!res&&x===m.G.x&&y===m.G.y)res=sc>=need?{ok:true,code:'win'}:{ok:false,code:'gate',msg:'Bi tới cổng nhưng điểm = '+sc+', cần '+need+'. Chương trình thiếu lệnh nhặt sao.'}}
+if(!res)res={ok:false,code:'end',msg:'Bi dừng ở hàng '+(y+1)+', cột '+(x+1)+', chưa tới 🏁.'};
+return{F,res,sc}}
+</script>
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const defS=()=>({code:"",ok:{},att:{},hint:{},tm:{},xp:0,co:0,got:{},err:{},gm:{},pd:{l:0,lok:0,q:0,qok:0},pdr:{},lm:{},wd:{own:[],on:{w:"w0",h:"h0",g:"g0",a:"a0",e:"e0"}},snd:{on:1,vol:40,vc:1},bgs:[],bgi:0,les:{done:{},seen:{},last:"",rw:{}},pq:{},qs:{},rv:[],ex:{att:0,ok:0,tot:0},hb:{},lh:{},bgd:{},asg:"",qh:[]});
+let LOADERR=0;let S=defS();
+try{const d=JSON.parse(localStorage.getItem("bi5v2")||"{}"),f=defS();if(d&&typeof d==="object")for(const k in f){if(d[k]!==undefined&&d[k]!==null&&typeof d[k]===typeof f[k]&&Array.isArray(d[k])===Array.isArray(f[k]))S[k]=d[k]}
+for(const k of["pd","snd"])for(const j in f[k])if(typeof S[k][j]!=="number")S[k][j]=f[k][j];
+if(!Array.isArray(S.wd.own))S.wd.own=[];if(!S.wd.on||typeof S.wd.on!=="object")S.wd.on=f.wd.on;S.wd.on=Object.assign({},f.wd.on,S.wd.on);
+S.snd.vol=Math.min(100,Math.max(0,S.snd.vol))}catch(e){S=defS();try{localStorage.setItem('bi5v2_bak',localStorage.getItem('bi5v2')||'')}catch(_){}LOADERR=1}
+let SAVEERR=0;const save=()=>{try{localStorage.setItem("bi5v2",JSON.stringify(S));SAVEERR=0;svWarn()}catch(e){SAVEERR=1;svWarn()}};
+const lvl=()=>1+Math.floor(S.xp/60),stars=()=>Object.values(S.ok).reduce((a,b)=>a+b,0);
+function renderTop(){$("#slv").textContent="🎖️ Cấp "+lvl();$("#sst").textContent="⭐ "+stars();$("#sco").textContent="💰 "+S.co;$("#sxp").style.width=(S.xp%60)/60*100+"%"}
+function show(id){document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id===id));document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.i===id));if(id==="tt")ach();if(id==="gv"){rep();repX();repY()}if(id==="lap")wmap();PK=null;TR=null;if(id==="lm")lmDraw();if(id==="tu")WD.open();NS=0;qw=null;document.body.dataset.sec=id;if(id==="home"){mood("🤖");biSay("Xin chào! Mình cùng khám phá thành phố tri thức nhé!")}if(id==="hoc")LS.render();if(id==="lp")PR.render();if(id==="ot")RV.render();if(id==="hb")HB.render();if(id==="home"){HM();recHome()}}
+[["home","🏠 Trang chủ"],["hoc","📘 Học cùng Bi"],["lp","✏️ Luyện tập"],["ot","📝 Ôn tập"],["lap","🗺️ Thực hành cùng Bi"],["hb","💬 Hỏi Bi"],["lm","⚡ Ít lệnh nhất"],["tu","👕 Tủ đồ"],["game","🎮 Trò chơi"],["tt","🏅 Thành tích"],["gv","👩‍🏫 Giáo viên"]].forEach(([i,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.i=i;b.onclick=()=>show(i);$("#nav").appendChild(b)});
+const ARD={"Hỏi Bi":"Bi gợi ý để em tự tìm lời giải","Học cùng Bi":"18 bài theo sách giáo khoa","Luyện tập":"Làm bài theo từng bài học","Ôn tập tổng hợp":"Đề ngẫu nhiên đủ chủ đề","Thực hành cùng Bi":"Xếp lệnh đưa Bi tới đích","Thử thách ít lệnh nhất":"Giải bằng ít khối nhất","Tủ đồ của Bi":"Mặc đồ cho Bi","Trò chơi thử thách":"Săn lỗi, ghép cặp, dự đoán","Đấu trường kiến thức":"10 câu ngẫu nhiên","Thành tích của em":"Huy hiệu và tiến trình","Dành cho giáo viên":"Theo dõi và xuất CSV"},ARC={"Học cùng Bi":1,"Luyện tập":2,"Ôn tập tổng hợp":3,"Thực hành cùng Bi":4,"Thử thách ít lệnh nhất":5,"Tủ đồ của Bi":3,"Trò chơi thử thách":4,"Đấu trường kiến thức":5,"Thành tích của em":1,"Dành cho giáo viên":2};const AR=[["📘","Học cùng Bi","hoc"],["✏️","Luyện tập","lp"],["📝","Ôn tập tổng hợp","ot"],["🗺️","Thực hành cùng Bi","lap"],["💬","Hỏi Bi","hb"],["⚡","Thử thách ít lệnh nhất","lm"],["👕","Tủ đồ của Bi","tu"],["🎮","Trò chơi thử thách","game"],["🏟️","Đấu trường kiến thức","game"],["🏅","Thành tích của em","tt"],["👩‍🏫","Dành cho giáo viên","gv"]];
+AR.forEach(([e,t,i])=>{const c=document.createElement("button");c.className="card ar";c.dataset.k=ARC[t]||1;c.innerHTML="<div class='ico' aria-hidden='true'>"+e+"</div><h3>"+t+"</h3><div class='sub'>"+(ARD[t]||"")+"</div>";c.onclick=()=>{show(i);if(t.startsWith("Đấu"))G.arena()};$("#areas").appendChild(c)});
+$("#go").onclick=()=>show("lap");
+function mood(e){BM=e;$("#bi").innerHTML=biSVG(S.wd.on,64,e)}
+/* học */
+[["Bài 10","Cấu trúc tuần tự","Các lệnh chạy lần lượt từ trên xuống. Ví dụ: Tiến, Tiến, Rẽ trái.",0],["Bài 11–12","Cấu trúc lặp","Công việc được thực hiện lặp lại. Scratch có 3 lệnh lặp: số lần biết trước, liên tục, lặp lại cho đến khi. Trong trò chơi Bi dùng Lặp n lần.",2],["Bài 13","Cấu trúc rẽ nhánh","Dạng thiếu: nếu <điều kiện> thì <công việc>. Dạng đủ: thêm “nếu không thì <công việc 2>”. Ví dụ ở trò chơi: Nếu chạm tường thì rẽ trái.",4],["Bài 14","Biến","Trong Scratch, thông tin nhập từ bàn phím được lưu trong biến “trả lời”. Trong trò chơi Bi, biến “điểm” tăng thêm 1 mỗi lần nhặt sao, giống trò “Mèo bắt bóng” ở Bài 16.",6],["Bài 15","Biểu thức","Có 4 phép toán số học (cộng, trừ, nhân, chia) và 3 phép so sánh (bé hơn, bằng, lớn hơn). Biểu thức so sánh cho kết quả đúng hoặc sai.",7],["Bài 16","Từ kịch bản đến chương trình","Nghĩ các bước trước, xếp lệnh, chạy thử, tìm và sửa lỗi.",8]].forEach(([b,t,d,l])=>{const c=document.createElement("div");c.className="card";c.innerHTML="<span class='tag'>"+b+"</span><h3>"+t+"</h3><p>"+d+"</p>";const k=document.createElement("button");k.className="btn alt";k.textContent="Thử với Bi";k.onclick=()=>{cur=Math.min(l,open());pick(Math.min(l,open()));show("lap")};c.appendChild(k);0});
+/* mê cung */
+let cur=0,prog=[],A=null,hi=0,t0=Date.now();
+const open=()=>{let i=0;while(i<LV.length-1&&S.ok[i])i++;return i};
+function wmap(){const v=$("#lv");v.innerHTML="";let w=0;LV.forEach((l,i)=>{if(l.w!==w){w=l.w;const s=document.createElement("span");s.className="sub";s.textContent=" "+WN[w]+": ";v.appendChild(s)}const b=document.createElement("button");b.textContent=S.ok[i]?"★"+S.ok[i]:i+1;b.disabled=i>open();b.title=l.n;if(i===cur)b.setAttribute("aria-current","true");b.onclick=()=>pick(i);v.appendChild(b)})}
+function pick(i){stop();cur=i;try{WI2()}catch(e){}hi=0;t0=Date.now();newLevel();const L=LV[i];prog=L.pre?tk(L.pre):[];$("#lt").textContent="Màn "+(i+1)+" · "+L.t;$("#ln").textContent=L.n;$("#ls").textContent=L.s;$("#lg").textContent=L.g;$("#hbox").textContent="";$("#sol").hidden=true;
+$("#pal").innerHTML="";[...L.tools].forEach(c=>{const b=document.createElement("button");b.textContent=NM[c];b.className="k"+c;b.onclick=()=>{if(A)return;if(prog.length>=L.max){say("Đã đủ "+L.max+" khối. Hãy bỏ bớt hoặc dùng Lặp.","bad");return}prog.push(c==='N'?{t:'N',n:4}:{t:c});sfx("add");drawP()};$("#pal").appendChild(b)});
+drawP();frame(null);say("Xếp lệnh rồi bấm 🔮 Dự đoán trước khi chạy (hoặc bấm Chạy luôn). Em đoán Bi sẽ đến đâu?");mood("🤩");wmap();biSay("Hãy suy nghĩ trước khi chạy nhé!")}
+function drawP(){chk();const p=$("#prog");p.innerHTML="";let dp=0;prog.forEach((b,i)=>{if(b.t==='E')dp=Math.max(0,dp-1);const d=document.createElement("div");d.className="blk "+b.t+(A&&A.F[A.i]&&A.F[A.i].pc===i?" now":"");d.style.marginLeft=dp*16+"px";d.append(NM[b.t]);
+if(b.t==='N'){const s=document.createElement("select");s.setAttribute("aria-label","Số lần lặp");for(let n=2;n<=10;n++){const o=new Option(n,n);o.selected=n===b.n;s.add(o)}s.disabled=!!A;s.onchange=()=>{b.n=+s.value;chk()};d.append(" ",s," lần");dp++}
+const m=document.createElement("span");m.className="m";[["▲",-1],["▼",1],["✕",0]].forEach(([t,k])=>{const x=document.createElement("button");x.textContent=t;x.setAttribute("aria-label",k?"Đổi chỗ":"Xóa khối");x.disabled=!!A;x.onclick=()=>{if(!k){prog.splice(i,1);sfx("del")}else if(prog[i+k]){[prog[i],prog[i+k]]=[prog[i+k],prog[i]];sfx("mv")}drawP()};m.appendChild(x)});d.appendChild(m);p.appendChild(d)});
+if(!prog.length)p.innerHTML="<span class='sub'>Bấm khối ở bảng lệnh để thêm vào.</span>";$("#cnt").textContent="("+prog.length+"/"+LV[cur].max+" khối)"}
+function board(el,L,f,click){const m=pm(L);el.style.gridTemplateColumns="repeat("+m.W+",1fr)";el.innerHTML="";f=f||{x:m.s.x,y:m.s.y,d:1,st:m.st,sc:0};m.g.forEach((r,y)=>r.forEach((c,x)=>{const e=document.createElement("div");e.className="c"+(c==='#'?" w2":"")+(c==='S'?" sp":"")+(c==='G'?" gl":"")+(click?" cl":"")+(TR&&TR.has(x+','+y)?" tr":"")+(PK===x+','+y?" pd":"");if(x===m.G.x&&y===m.G.y)e.textContent="🏁";else if(f.st.includes(x+','+y))e.textContent="⭐";if(x===f.x&&y===f.y)e.innerHTML=biSVG(S.wd.on,"86%","",1)+"<i style='transform:translate(-50%,-50%) rotate("+f.d*90+"deg) translateY(-22px)'>▲</i>";if(click){e.tabIndex=0;e.setAttribute("role","button");e.setAttribute("aria-label","Hàng "+(y+1)+", cột "+(x+1));e.onclick=()=>click(x,y,e);e.onkeydown=v=>{if(v.key==="Enter"||v.key===" "){v.preventDefault();click(x,y,e)}}}el.appendChild(e)}));return f}
+function frame(f){const g=board($("#bd"),LV[cur],f);$("#bd").setAttribute("aria-label","Bi ở hàng "+(g.y+1)+", cột "+(g.x+1));$("#vars").textContent="Hướng: "+["lên","phải","xuống","trái"][g.d]+" · Vị trí: hàng "+(g.y+1)+", cột "+(g.x+1)+" · điểm = "+g.sc+" · đã nhặt "+g.sc+" sao"}
+function say(t,k){const m=$("#msg");m.textContent=t;m.className="msg"+(k?" "+k:"")}
+function stop(){if(A&&A.tm)clearInterval(A.tm);A=null}
+function start(auto){if(A&&A.i<A.F.length-1){if(!auto)tick();return}stop();TR=null;PK=null;pdStart();const L=LV[cur],r=exec(prog,L);S.att[cur]=(S.att[cur]||0)+1;save();A={F:r.F,res:r.res,i:0,tm:null};frame(A.F[0]);drawP();if(r.res.code==='inv'){fin();return}sfx("go");biSay("Chúng mình cùng thử nhé!",1);if(auto)play()}
+function play(){if(!A||A.tm||A.i>=A.F.length-1)return;A.tm=setInterval(tick,320)}
+function tick(){if(!A)return;if(A.i<A.F.length-1){const pa=A.F[A.i];A.i++;frame(A.F[A.i]);drawP();stepSfx(pa,A.F[A.i])}if(A.i>=A.F.length-1){clearInterval(A.tm);A.tm=null;fin()}}
+function fin(){const r=A.res,FF=A.F;A=null;drawP();TR=new Set(FF.map(f=>f.x+","+f.y));histo(FF,prog);pdCmp(FF,r);frame(FF[FF.length-1]);if(r.ok){win()}else{S.err[r.code]=(S.err[r.code]||0)+1;errRec(cur,r.code);save();mood("🤔");sfx(r.code==="wall"?"wall":"bad");biSay("Không sao, mình thử lại nhé!",1);say(r.msg+" Bi tin em sửa được!","bad");if((S.att[cur]||0)>=3)$("#sol").hidden=false}}
+function win(){const L=LV[cur],n=prog.length,ref=tk(L.sol).length,s=n<=ref?3:n<=ref+3?2:1,old=S.ok[cur]||0;winRec(cur,old);mood("🎉");sfx("win");biSay("Tuyệt vời! Em đã tìm được lời giải!",1);let rw="";
+if(s>old){const d=s-old;S.ok[cur]=s;S.xp+=(old?0:20)+d*10;S.co+=d*5;if(!S.tm[cur])S.tm[cur]=Math.round((Date.now()-t0)/1000);rw=" Thưởng: +"+d+" ⭐, +"+d*5+" 💰"+(old?"":", +20 XP")+"."}else rw=" (Phần thưởng màn này đã nhận.)";
+save();renderTop();wmap();bchk();const m=$("#msg");m.className="msg ok win";m.textContent="Tuyệt vời! "+"⭐".repeat(s)+" Em dùng "+n+" khối."+rw+" Em đã học: "+L.k;
+sumBox(m,cur,s,n,ref);if(cur<LV.length-1){const b=document.createElement("button");b.className="btn y";b.textContent="Màn tiếp theo";b.style.marginLeft="8px";b.onclick=()=>pick(cur+1);m.appendChild(b)}}
+$("#run").onclick=()=>{if(A&&A.i<A.F.length-1){play();return}start(true)};$("#stp").onclick=()=>start(false);
+$("#pau").onclick=()=>{if(A&&A.tm){clearInterval(A.tm);A.tm=null}};
+$("#rep").onclick=()=>{stop();drawP();start(true)};$("#clr").onclick=()=>{stop();TR=null;prog=[];drawP();frame(null)};$("#rst").onclick=()=>{stop();TR=null;drawP();frame(null);say("Bi đã về chỗ xuất phát.")};
+$("#hint").onclick=()=>{const h=LV[cur].h;S.hint[cur]=(S.hint[cur]||0)+1;LHg(cur).h++;save();$("#hbox").textContent="💡 "+h[Math.min(hi,h.length-1)];hi++};
+$("#sol").onclick=()=>{$("#hbox").textContent="Lời giải: "+tk(LV[cur].sol).map(b=>NM[b.t]+(b.n?" "+b.n+" lần":"")).join(" → ")};
+/* câu hỏi */
+/* câu hỏi: ngân hàng 44 câu. k=chủ đề, v=mức (1 nhận biết, 2 thông hiểu, 3 vận dụng), st=đối chiếu SGK: ok / fix / gt (cần GV đối chiếu) */
+const HINT={tt:"Lệnh trước chạy trước, lệnh sau chạy sau.",lap:"Nhân số lần lặp với số việc trong khối lệnh được lặp.",rn:"Kiểm tra điều kiện: đúng thì làm việc đó, sai thì bỏ qua hoặc làm việc khác.",bien:"Biến lưu một giá trị; biểu thức tính hoặc so sánh các giá trị.",loi:"Chạy từng bước và so với kịch bản để tìm chỗ sai.",kb:"Kịch bản trả lời: có nhân vật nào, bối cảnh nào, hành động gì."};
+const mc=(id,k,b,v,q,r,w,why,s,st)=>({id,k,b,v,t:"mc",q,r,w:w.split("|"),why,s,st:st||"ok"});
+const tf=(id,k,b,v,q,r,why,s,st)=>({id,k,b,v,t:"tf",q,r:r?"Đúng":"Sai",why,s,st:st||"ok"});
+const od=(id,k,b,v,q,it,why,s,st)=>({id,k,b,v,t:"od",q,it,why,s,st:st||"ok"});
+const pr=(id,k,b,v,q,map,p,ask,why,s)=>({id,k,b,v,t:"pr",q,map,p,ask,why,s,st:"gt"});
+const fx=(id,k,b,v,q,ln,bad,why,s,st)=>({id,k,b,v,t:"fx",q,ln,bad,why,s,st:st||"ok"});
+const SIM="Luật mô phỏng Robot Bi; SGK dùng Scratch";
+const QB=[
+mc("Q01","tt","Bài 10",1,"Trong cấu trúc tuần tự, các lệnh được thực hiện thế nào?","Lần lượt theo thứ tự","Ngẫu nhiên|Từ dưới lên trên|Chỉ thực hiện lệnh cuối","Các lệnh chạy lần lượt, lệnh nào đứng trước thì chạy trước.","Khớp SGK tr.52 (ghi nhớ Bài 10)"),
+tf("Q02","tt","Bài 10",2,"Đổi thứ tự các lệnh có thể làm Bi đi tới chỗ khác.",true,"Thứ tự lệnh quyết định đường đi.","Đúng theo mô phỏng; SGK chưa nêu trực tiếp","gt"),
+mc("Q03","tt","Bài 10",2,"Bi cần tiến 2 ô rồi rẽ phải. Thứ tự đúng là gì?","Tiến, Tiến, Rẽ phải","Rẽ phải, Tiến, Tiến|Tiến, Rẽ phải, Tiến|Rẽ phải, Rẽ phải","Làm đúng theo từng bước đã nêu.",SIM,"gt"),
+mc("Q04","lap","Bài 11",1,"Việc phải làm đi làm lại nhiều lần được mô tả bằng cấu trúc nào?","Cấu trúc lặp","Cấu trúc rẽ nhánh|Cấu trúc tuần tự|Không có cấu trúc nào","Trong cấu trúc lặp, công việc được thực hiện lặp lại.","Khớp SGK tr.56–57"),
+mc("Q05","lap","Bài 11",2,"Lặp 3 lần [Tiến 1 ô] thì Bi tiến mấy ô?","3 ô","1 ô|2 ô|4 ô","3 lần × 1 ô = 3 ô.","Vận dụng khái niệm lặp (SGK tr.56); số ô là luật Bi"),
+tf("Q06","lap","Bài 11",2,"Trong trò chơi Robot Bi, khối Lặp không có khối Hết lặp vẫn chạy được.",false,"Trò chơi cần khối Hết lặp để biết nhóm lệnh nào được lặp.","ĐÃ SỬA: ghi rõ đây là luật của trò chơi, không phải Scratch","fix"),
+mc("Q07","lap","Bài 11",3,"Lặp 2 lần [Tiến, Rẽ phải] thì Bi làm gì?","Tiến, Rẽ phải, Tiến, Rẽ phải","Tiến, Tiến, Rẽ phải, Rẽ phải|Tiến, Rẽ phải|Rẽ phải, Rẽ phải, Tiến, Tiến","Cả nhóm lệnh được làm lần lượt 2 lần.","Vận dụng khái niệm lặp (SGK tr.56)"),
+mc("Q08","rn","Bài 13",1,"Câu nào mô tả cấu trúc rẽ nhánh?","Nếu trời mưa thì mang ô","Chép bài 5 lần|Đi thẳng rồi rẽ phải|Lưu tệp vào thư mục","Có điều kiện để chọn làm hay không làm.","Khớp SGK tr.62 (nếu … thì …)"),
+tf("Q09","rn","Bài 13",2,"Khi điều kiện không đúng, việc đi sau “thì” (dạng thiếu) không được làm.",true,"Điều kiện không thỏa thì công việc không được thực hiện.","Khớp SGK tr.62–63 (dạng thiếu)"),
+mc("Q10","rn","Bài 13",2,"“Nếu chạm tường thì rẽ trái”: Bi chưa chạm tường thì sao?","Không rẽ, đi tiếp","Vẫn rẽ trái|Dừng lại|Quay đầu","Chưa chạm tường thì điều kiện chưa đúng.","Tương tự “bật lại nếu chạm cạnh” (SGK tr.59)"),
+mc("Q11","bien","Bài 14",1,"Thông tin nhập vào từ bàn phím được lưu ở đâu?","Trong biến","Trong thư mục|Trên sân khấu|Không được lưu","Thông tin nhập từ bàn phím được lưu trong biến.","ĐÃ SỬA theo SGK tr.67–68 (câu cũ “Biến dùng để làm gì?” quá chung)","fix"),
+mc("Q12","bien","Bài 16",2,"Điểm đang bằng 2. Khi điểm tăng thêm 1 thì điểm bằng?","3","1|2|21","2 + 1 = 3.","Tình huống như “Mèo bắt bóng” (SGK tr.78–79); cách viết là của trò chơi","gt"),
+tf("Q13","bien","Bài 16",2,"Mỗi lần Bi nhặt một sao, điểm có thể tăng thêm 1.",true,"Lệnh nhặt sao làm điểm tăng.","Luật trò chơi, gần với “Mèo bắt bóng” (SGK tr.78)","gt"),
+mc("Q14","bien","Bài 15",2,"Cổng chỉ mở khi điểm = 3. Bi có 2 điểm thì cổng?","Chưa mở","Đã mở|Tự mở sau 1 giây|Biến mất","2 chưa bằng 3 nên điều kiện sai.","Khớp phép so sánh “bằng” (SGK tr.74)"),
+mc("Q15","loi","Bài 12",2,"Bi cần tiến 4 ô nhưng chỉ Lặp 3 lần. Cách sửa?","Sửa số lần lặp thành 4","Thêm Rẽ trái|Xóa Hết lặp|Đổi bản đồ","Số lần lặp phải khớp số bước cần đi.",SIM+"; SGK nêu “chạy thử” (tr.59)","gt"),
+mc("Q16","loi","Bài 16",2,"Bi đi xuống, mong muốn đi lên. Lệnh nào nhiều khả năng sai?","Hướng rẽ","Số sao|Màu bản đồ|Tên màn","Rẽ sai hướng làm đường đi lệch.",SIM,"gt"),
+mc("Q17","loi","Bài 16",1,"Khi chương trình chưa đúng ý, việc làm tốt đầu tiên là gì?","Chạy thử từng bước để tìm chỗ sai","Xóa hết làm lại|Đoán bừa|Bỏ cuộc","Quan sát từng bước giúp thấy lệnh sai.","SGK có mục tiêu “chạy thử” (tr.78); “sửa lỗi” cần GV đối chiếu","gt"),
+mc("Q18","kb","Bài 16",1,"Trước khi tạo chương trình, nên làm gì?","Viết kịch bản","Gõ lệnh bất kỳ|Chờ máy tự làm|Xóa sân khấu","Kịch bản giúp xác định các công việc chương trình cần làm.","Khớp SGK tr.78–79"),
+tf("Q19","loi","Bài 16",1,"Chạy thử rồi sửa chương trình là một phần của quá trình lập trình.",true,"Chạy thử giúp phát hiện chỗ chưa đúng để sửa.","SGK nêu “chạy thử”; ý “sửa” cần GV đối chiếu","gt"),
+mc("Q20","lap","Bài 11",1,"Lệnh lặp “liên tục” trong Scratch thực hiện khối lệnh bên trong thế nào?","Lặp lại không dừng","Chỉ một lần|Đúng 10 lần|Dừng sau 1 giây","Lặp liên tục: khối lệnh được lặp không dừng.","SGK tr.57"),
+mc("Q21","rn","Bài 13",1,"Cấu trúc rẽ nhánh dạng đủ có dạng nào?","Nếu <điều kiện> thì <công việc 1>, nếu không thì <công việc 2>","Nếu <điều kiện> thì <công việc>|Lặp lại <công việc> 10 lần|Khi bấm vào cờ xanh thì <công việc>","Dạng đủ có thêm nhánh “nếu không thì”.","SGK tr.63"),
+mc("Q22","bien","Bài 15",2,"Biến a = 30 và b = 30. Biểu thức a = b có kết quả nào?","Đúng","Sai|60|0","a và b cùng bằng 30 nên phép so sánh bằng cho kết quả đúng.","SGK tr.74 (bảng a = 30, b = 30)"),
+mc("Q23","bien","Bài 15",2,"Biến a = 15 và b = 5. Biểu thức a / b có kết quả bằng bao nhiêu?","3","10|20|75","15 chia 5 bằng 3.","SGK tr.73 (bảng biểu thức)"),
+mc("Q24","bien","Bài 14",1,"Trong Scratch, thông tin nhập từ bàn phím được lưu vào biến nào?","Biến “trả lời”","Biến “điểm”|Biến “cạnh”|Không biến nào","Lệnh hỏi và đợi lưu câu trả lời vào biến có sẵn tên “trả lời”.","SGK tr.67–68"),
+od("Q25","tt","Bài 10",1,"Sắp xếp các lệnh của chương trình “Xin chào!” theo đúng thứ tự.",["Khi bấm vào cờ xanh","Di chuyển 100 bước","Nói “Xin chào!” trong 3 giây","Phát âm thanh Meow đến hết","Nói “Rất vui được gặp các bạn.”"],"Các lệnh chạy lần lượt từ trên xuống.","SGK tr.52–53"),
+od("Q26","tt","Bài 10",1,"Xếp lệnh để Bi đi từ S đến cổng 🏁 trên bản đồ chữ L (Bi quay sang phải).",["Tiến 4 ô","Rẽ trái","Tiến 4 ô"],"Hết hàng dưới rồi mới rẽ lên.",SIM,"gt"),
+od("Q27","lap","Bài 11",2,"Sắp xếp để khối lệnh được lặp lại 3 lần (Hình 77b).",["Khi bấm vào cờ xanh","Lặp lại 3 lần","Di chuyển 10 bước","Trang phục kế tiếp","Đợi 1 giây"],"Khối lệnh cần lặp nằm trong lệnh lặp, bên dưới “Lặp lại 3 lần”.","SGK tr.56 (Hình 77)"),
+od("Q28","lap","Bài 12",2,"Sắp xếp các hành động của vẹt bay (Hình 78).",["Di chuyển 10 bước","Trang phục kế tiếp","Đợi 1 giây","Bật lại nếu chạm cạnh"],"Đi, vỗ cánh, đợi, rồi kiểm tra chạm cạnh.","SGK tr.59"),
+od("Q29","rn","Bài 13",1,"Sắp xếp thành câu mô tả cấu trúc rẽ nhánh dạng thiếu.",["nếu","đèn tín hiệu cho người đi bộ màu xanh","thì","em đi qua đường"],"Nếu <điều kiện> thì <công việc>.","SGK tr.62"),
+od("Q30","rn","Bài 13",3,"Sắp xếp chương trình để Bi tự tìm đường khi chạm tường.",["Lặp 8 lần","Nếu chạm tường thì rẽ trái","Tiến 1 ô","Hết lặp"],"Mỗi vòng: kiểm tra tường trước rồi mới tiến.",SIM,"gt"),
+od("Q31","bien","Bài 14",2,"Sắp xếp chương trình “Xin chào bạn…” (Hình 84).",["Khi bấm vào cờ xanh","Hỏi “Tên của bạn là gì?” và đợi","Nói kết hợp “Xin chào bạn” và trả lời"],"Phải hỏi và nhập tên trước, rồi mới nói câu chào có tên.","SGK tr.67"),
+od("Q32","kb","Bài 16",2,"Sắp xếp các việc từ ý tưởng đến chương trình.",["Viết kịch bản","Chọn lệnh phù hợp với từng công việc","Tạo chương trình","Chạy thử chương trình"],"Kịch bản trước, rồi chọn lệnh, tạo chương trình và chạy thử.","SGK tr.78–79"),
+pr("Q33","tt","Bài 10",1,"Bi sẽ dừng ở ô nào? Bấm vào ô em đoán.",B5,"F F F L F F","pos","Tiến 3 ô sang phải, rẽ trái, tiến 2 ô lên.",SIM),
+pr("Q34","lap","Bài 11",2,"Bi sẽ dừng ở ô nào? Bấm vào ô em đoán.",B5,"N4 F E L N2 F E","pos","Lặp 4 lần tiến 4 ô, rẽ trái, lặp 2 lần tiến 2 ô.",SIM),
+pr("Q35","lap","Bài 11",3,"Bi sẽ dừng ở ô nào? Bấm vào ô em đoán.",B5,"N3 F E L N2 F E R F","pos","3 ô sang phải, rẽ trái đi lên 2 ô, rẽ phải tiến thêm 1 ô.",SIM),
+pr("Q36","rn","Bài 13",3,"Bi sẽ dừng ở ô nào? Bấm vào ô em đoán.",B5,"N6 I F E","pos","4 vòng đầu Bi tiến tới tường; vòng 5 chạm tường nên rẽ trái rồi tiến; vòng 6 tiến thêm.",SIM),
+pr("Q37","bien","Bài 16",2,"Chạy xong, điểm bằng mấy?",['.....','.....','.....','.....','S***G'],"F P F P","sc","Bi nhặt sao ở ô 1 và ô 2, mỗi sao điểm tăng 1.",SIM),
+pr("Q38","bien","Bài 15",3,"Chạy xong, điểm bằng mấy?",['.....','.....','.....','.....','S*.*G'],"N4 F P E","sc","Chỉ ô 1 và ô 3 có sao nên điểm bằng 2.",SIM),
+fx("Q39","lap","Bài 11",1,"Bi cần tiến 4 ô nhưng chỉ đi được 3 ô. Dòng nào sai?",["Lặp 3 lần","   Tiến 1 ô","Hết lặp"],0,"Phải lặp 4 lần để tiến đủ 4 ô.",SIM,"gt"),
+fx("Q40","rn","Bài 13",2,"Bi cần rẽ trái khi chạm tường nhưng lại đi xuống. Dòng nào sai?",["Lặp 8 lần","   Nếu chạm tường thì rẽ phải","   Tiến 1 ô","Hết lặp"],1,"Cần rẽ trái; rẽ phải làm Bi quay xuống.",SIM,"gt"),
+fx("Q41","tt","Bài 10",1,"Bi cần tiến 2 ô rồi rẽ trái nhưng đã rẽ trước khi tiến. Dòng nào đặt sai chỗ?",["Rẽ trái","Tiến 1 ô","Tiến 1 ô"],0,"Rẽ trái phải nằm sau hai lệnh tiến.",SIM,"gt"),
+fx("Q42","bien","Bài 16",2,"Bi nhặt sao nhưng điểm không tăng. Dòng nào sai?",["Lặp 4 lần","   Tiến 1 ô","   Tăng điểm lên 0","Hết lặp"],2,"Phải tăng điểm lên 1 thì điểm mới tăng.","Gần với “Mèo bắt bóng” (SGK tr.78); cách viết là của trò chơi","gt"),
+fx("Q43","bien","Bài 15",3,"Cổng chỉ mở khi điểm bằng 3 nhưng Bi đủ 3 điểm mà cổng không mở. Dòng nào sai?",["Nếu điểm > 3 thì mở cổng","Nếu không thì đóng cổng"],0,"Điều kiện phải là điểm = 3; 3 không lớn hơn 3.","SGK tr.74 (phép so sánh)"),
+fx("Q44","kb","Bài 16",2,"Kịch bản “Mèo bắt bóng”: có mèo và bóng, mèo theo con trỏ chuột, chạm bóng thì điểm tăng 1. Dòng nào KHÔNG thuộc kịch bản?",["Có hai nhân vật là mèo và quả bóng","Mèo di chuyển theo con trỏ chuột","Mỗi lần mèo chạm bóng thì điểm tăng 1","Mèo kêu gâu gâu khi chạm bóng"],3,"Kịch bản chỉ nêu nhân vật, sân khấu và hành động đã mô tả.","SGK tr.78–79")];
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const pn=p=>tk(p).map(b=>NM[b.t]+(b.n?" "+b.n+" lần":"")).join(" → ");
+function quiz(box,ids,done){let i=0,ok=0;(function nx(){if(i>=ids.length){done(ok);return}
+const id=ids[i],q=QB[id];box.innerHTML="";box.append(el("span","tag","Câu "+(i+1)+"/"+ids.length+" · "+q.b),el("h3","",q.q));
+const body=el("div"),fb=el("p","sub"),ft=el("div");box.append(body,fb,ft);let fin=false;
+const hb=el("button","btn alt","💡 Gợi ý");hb.onclick=()=>{fb.textContent="💡 "+HINT[q.k]};ft.appendChild(hb);
+const settle=(g,keep)=>{if(fin)return;fin=true;sfx(g?"ok":"bad");if(g){ok++;if(!NS&&!S.got[id]){S.got[id]=1;S.xp+=3;S.co+=1}}else if(!NS)S.err[q.k]=(S.err[q.k]||0)+1;if(!NS)qrec(q.id,g);if(!g&&qw)qw.push(id);save();renderTop();if(!keep)fb.textContent=(g?"Đúng rồi! ":"Chưa đúng, không sao nhé. Gợi ý: "+HINT[q.k]+" ")+q.why;const n=el("button","btn",i+1<ids.length?"Câu tiếp":"Xem kết quả");n.onclick=()=>{i++;nx()};ft.replaceChildren(n)};
+if(q.t==="mc"||q.t==="tf"){(q.t==="tf"?["Đúng","Sai"]:shuf([q.r,...q.w])).forEach(t=>{const b=el("button","o",t);b.onclick=()=>{if(fin)return;const g=t===q.r;b.classList.add(g?"ok":"bad");body.querySelectorAll(".o").forEach(x=>{if(x.textContent===q.r)x.classList.add("ok")});settle(g)};body.appendChild(b)})}
+else if(q.t==="od"){let a=shuf(q.it);while(a.join("|")===q.it.join("|"))a=shuf(q.it);
+const dr=()=>{body.innerHTML="";a.forEach((t,j)=>{const r=el("div","blk");r.append((j+1)+". "+t);const m=el("span","m");[["▲",-1],["▼",1]].forEach(([s,k])=>{const x=el("button","",s);x.setAttribute("aria-label",k<0?"Đưa lên":"Đưa xuống");x.onclick=()=>{if(a[j+k]!==undefined){[a[j],a[j+k]]=[a[j+k],a[j]];dr()}};m.appendChild(x)});r.appendChild(m);body.appendChild(r)})};dr();
+const c=el("button","btn","Kiểm tra");c.onclick=()=>{const bad=a.map((t,j)=>t===q.it[j]?0:j+1).filter(Boolean);if(!bad.length){settle(true);fb.textContent="Đúng rồi! "+q.why}else{settle(false,true);fb.textContent="Chưa đúng. Xem lại vị trí: "+bad.join(", ")+". Em có thể sắp xếp lại và bấm Kiểm tra (không tính thêm điểm)."}ft.prepend(c)};ft.prepend(c)}
+else if(q.t==="pr"){const L={map:q.map,need:0},last=exec(tk(q.p),L).F.slice(-1)[0];body.append(el("p","",pn(q.p)),el("p","sub","Bi bắt đầu ở ô S, quay sang phải."));const bd=el("div","board");body.appendChild(bd);
+const ans=g=>{if(fin)return;board(bd,L,last);settle(g);fb.textContent+=" (Bi dừng ở hàng "+(last.y+1)+", cột "+(last.x+1)+", điểm = "+last.sc+".)"};
+if(q.ask==="pos")board(bd,L,null,(x,y)=>ans(x===last.x&&y===last.y));
+else{board(bd,L,null);const o=el("div");["0","1","2","3","4"].forEach(t=>{const b=el("button","o",t);b.onclick=()=>{if(fin)return;b.classList.add(String(last.sc)===t?"ok":"bad");ans(String(last.sc)===t)};o.appendChild(b)});body.appendChild(o)}}
+else{q.ln.forEach((l,j)=>{const b=el("button","o",l);b.style.whiteSpace="pre-wrap";b.onclick=()=>{if(fin)return;b.classList.add(j===q.bad?"ok":"bad");body.querySelectorAll(".o")[q.bad].classList.add("ok");settle(j===q.bad)};body.appendChild(b)})}
+})()}
+/* trò chơi */
+const GM=document.getElementById("gm"),G={};
+const GL=[["🐞 Thợ săn lỗi","hunt"],["🧩 Ghép cặp","pair"],["🔮 Dự đoán Bi","pred"],["🎡 Vòng quay","wheel"],["🏟️ Đấu trường","arena"]];
+GL.forEach(([t,k])=>{const b=document.createElement("button");b.className="btn alt";b.textContent=t;b.style.width="auto";b.onclick=()=>G[k]();$("#gl").appendChild(b)});
+function best(k,v){if(v>(S.gm[k]||0)){S.gm[k]=v;save()}}
+G.arena=()=>{show("game");const ids=shuf(QB.map((_,i)=>i)).slice(0,10);GM.innerHTML="";const bx=document.createElement("div");GM.appendChild(bx);bx.innerHTML="<h3>Đấu trường tin học</h3><p>10 câu ngẫu nhiên, mỗi câu trả lời một lần. Điểm: 1 câu đúng = 1 điểm. Sai thì không bị trừ.</p>";const s=document.createElement("button");s.className="btn";s.textContent="Vào đấu trường";s.onclick=()=>quiz(bx,ids,ok=>{best("arena",ok);bx.innerHTML="<h3>Kết quả: "+ok+"/10</h3><p>"+(ok>=8?"Giỏi quá!":"Em làm tốt rồi, thử lại để nắm chắc hơn.")+"</p>";const r=document.createElement("button");r.className="btn";r.textContent="Chơi lại";r.onclick=G.arena;bx.appendChild(r)});bx.appendChild(s)};
+G.wheel=()=>{const T={tt:"Tuần tự",lap:"Lặp",rn:"Rẽ nhánh",bien:"Biến",loi:"Sửa lỗi"},ks=Object.keys(T);GM.innerHTML="<h3>Vòng quay kiến thức</h3><p>Bấm Quay để Bi chọn chủ đề và 1 câu hỏi.</p>";const o=document.createElement("div"),b=document.createElement("button");b.className="btn y";b.textContent="Quay!";GM.append(b,o);b.onclick=async()=>{b.disabled=true;let k;for(let i=0;i<8;i++){k=ks[Math.floor(Math.random()*5)];o.innerHTML="<h3>🎡 "+T[k]+"</h3>";await sleep(120)}const pool=QB.map((q,i)=>i).filter(i=>QB[i].k===k),fresh=pool.filter(i=>!S.got[i]),id=shuf(fresh.length?fresh:pool)[0];quiz(o,[id],ok=>{o.innerHTML="<h3>"+(ok?"Chính xác! 🎉":"Cố lên, quay tiếp nhé!")+"</h3>";b.disabled=false})}};
+G.hunt=()=>{const D=[["Bi cần tiến 4 ô rồi rẽ trái, nhưng dừng sớm.",["Lặp 3 lần","   Tiến 1 ô","Hết lặp","Rẽ trái"],0,"Lặp 3 lần chỉ tiến 3 ô. Phải lặp 4 lần."],["Bi gặp tường phải rẽ trái nhưng lại quay xuống.",["Lặp 8 lần","   Nếu chạm tường thì rẽ phải","   Tiến 1 ô","Hết lặp"],1,"Cần rẽ trái, rẽ phải làm Bi quay xuống."],["Bi nhặt sao nhưng điểm không tăng.",["Lặp 4 lần","   Tiến 1 ô","   điểm = điểm + 0","Hết lặp"],2,"Phải cộng 1 thì điểm mới tăng."]];let i=0,ok=0;(function nx(){if(i>=D.length){best("hunt",ok);GM.innerHTML="<h3>Thợ săn lỗi: "+ok+"/"+D.length+"</h3>";const r=document.createElement("button");r.className="btn";r.textContent="Chơi lại";r.onclick=G.hunt;GM.appendChild(r);return}const d=D[i];GM.innerHTML="<h3>🐞 Tìm dòng lệnh sai ("+(i+1)+"/3)</h3><p>"+d[0]+"</p>";let f=false;d[1].forEach((l,j)=>{const b=document.createElement("button");b.className="o";b.style.whiteSpace="pre";b.textContent=l;b.onclick=()=>{if(f)return;f=true;if(j===d[2]){ok++;b.classList.add("ok")}else{b.classList.add("bad");GM.querySelectorAll(".o")[d[2]].classList.add("ok");S.err.hunt=(S.err.hunt||0)+1;save()}const p=document.createElement("p");p.textContent=d[3];const n=document.createElement("button");n.className="btn";n.textContent="Tiếp";n.onclick=()=>{i++;nx()};GM.append(p,n)};GM.appendChild(b)})})()};
+G.pair=()=>{const P=[["Cấu trúc tuần tự","Các lệnh chạy lần lượt từ trên xuống"],["Cấu trúc lặp","Thực hiện một nhóm lệnh nhiều lần"],["Cấu trúc rẽ nhánh","Chọn việc làm tùy theo điều kiện"],["Biến","Nơi lưu giá trị có thể thay đổi"],["Biểu thức","Phép tính hoặc so sánh cho ra một giá trị"],["Kịch bản","Các bước nghĩ ra trước khi viết chương trình"]];let a=null,ok=0,tries=0;GM.innerHTML="<h3>🧩 Ghép cặp thông minh</h3><p class='sub'>Chọn một khái niệm rồi chọn chức năng tương ứng. Điểm = số cặp đúng ngay lần đầu.</p>";const L=document.createElement("div"),R=document.createElement("div"),w=document.createElement("div");w.className="g";const m=document.createElement("p");[L,R].forEach(x=>w.appendChild(x));GM.append(w,m);let first=0;const mk=(box,items,side)=>shuf(items).forEach(t=>{const b=document.createElement("button");b.className="o";b.textContent=t[side];b.onclick=()=>{if(b.disabled)return;if(side===0){L.querySelectorAll(".o").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");a=t;return}if(!a){m.textContent="Chọn khái niệm bên trái trước nhé.";return}tries++;if(a===t){b.disabled=true;[...L.children].find(x=>x.textContent===a[0]).disabled=true;b.classList.add("ok");if(tries===ok+1)first++;ok++;m.textContent="Đúng rồi!";a=null;if(ok===P.length){best("pair",first);m.textContent="Hoàn thành! Đúng ngay lần đầu: "+first+"/6."}}else{m.textContent="Chưa khớp, thử lại nhé."}};box.appendChild(b)});mk(L,P,0);mk(R,P,1)};
+G.pred=()=>{const PR=[{map:B5,p:"F F L F F"},{map:B5,p:"N3 F E R N2 F E"},{map:['.....','.....','.....','.....','S***G'],p:"N4 F P E",pt:1}];const d=PR[Math.floor(Math.random()*PR.length)],L={map:d.map,max:99,need:0},r=exec(tk(d.p),L),last=r.F[r.F.length-1];GM.innerHTML="<h3>🔮 Bi sẽ đến ô nào?</h3><p>Chương trình: <b>"+tk(d.p).map(b=>NM[b.t]+(b.n?" "+b.n+" lần":"")).join(" → ")+"</b></p><p class='sub'>Bi bắt đầu quay sang phải. Bấm vào ô em đoán Bi sẽ dừng.</p>";const bd=document.createElement("div");bd.className="board";const m=document.createElement("p");GM.append(bd,m);let f=false;board(bd,L,null,(x,y,e)=>{if(f)return;f=true;const g=x===last.x&&y===last.y;e.classList.add("pk");board(bd,L,last);m.textContent=(g?"Đúng rồi! ":"Chưa đúng. ")+"Bi dừng ở hàng "+(last.y+1)+", cột "+(last.x+1)+(d.pt?", điểm = "+last.sc:"")+". Em nhớ các lệnh chạy lần lượt và lặp đủ số lần.";if(g)best("pred",1);else{S.err.pred=(S.err.pred||0)+1;save()}const n=document.createElement("button");n.className="btn";n.textContent="Câu khác";n.onclick=G.pred;m.appendChild(n)})};
+/* thành tích */
+function ach(){const bg=BGS();$("#bdg").innerHTML="<h3>Huy hiệu</h3>"+badgeHTML(bg);$("#wl").innerHTML="<h3>Tiến trình 5 thế giới</h3>"+[1,2,3,4,5].map(w=>{const ls=LV.map((l,i)=>[l,i]).filter(x=>x[0].w===w),d=ls.filter(x=>S.ok[x[1]]).length;return"<div>"+WN[w]+": "+d+"/"+ls.length+(d===ls.length?" 🎁 Hộp quà mở khóa!":"")+"</div>"}).join("")}
+/* giáo viên */
+function rows(){return LV.map((l,i)=>[i+1,l.n,S.att[i]||0,S.ok[i]||0,S.hint[i]||0,S.tm[i]||""])}
+function rep(){const TL={mc:"Trắc nghiệm",tf:"Đúng/Sai",od:"Sắp xếp",pr:"Dự đoán",fx:"Tìm lỗi"},SL={ok:"Đúng (khớp SGK)",fix:"Cần sửa – đã sửa",gt:"Cần GV đối chiếu"};$("#aud").innerHTML="";const ah=el("h3","","Kiểm định ngân hàng câu hỏi ("+QB.length+" câu)"),aw=el("div"),at=el("table");aw.style.overflowX="auto";at.innerHTML="<tr><th>ID</th><th>Bài</th><th>Loại</th><th>Câu hỏi</th><th>Đối chiếu SGK</th><th>Ghi chú / nguồn</th></tr>";QB.forEach(q=>{const r=at.insertRow();[q.id,q.b,TL[q.t],q.q,SL[q.st],q.s].forEach(x=>{r.insertCell().textContent=x})});aw.appendChild(at);$("#aud").append(ah,aw);$("#code").value=S.code||"";$("#tb").innerHTML="<tr><th>Màn</th><th>Nội dung</th><th>Lượt chạy</th><th>Sao</th><th>Gợi ý</th><th>Giây (lần đầu qua)</th></tr>"+rows().map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("");const ek=Object.entries(S.err).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>({wall:"đụng tường",loop:"lặp quá dài",gate:"thiếu điểm mở cổng",end:"chưa tới đích",inv:"thiếu Hết lặp",tt:"tuần tự",lap:"lặp",rn:"rẽ nhánh",bien:"biến",loi:"sửa lỗi",kb:"kịch bản",c1:"Chủ đề 1",c2:"Chủ đề 2",c3:"Chủ đề 3",c4:"Chủ đề 4",c5:"Chủ đề 5",hunt:"thợ săn lỗi",pred:"dự đoán"}[k]||k)+" ("+v+")").join(", ");$("#gs").textContent="Tổng sao "+stars()+" · XP "+S.xp+" · câu đã đúng "+Object.keys(S.got).length+"/"+QB.length+" · lỗi hay gặp: "+(ek||"chưa có")+" · kỷ lục trò chơi: "+(JSON.stringify(S.gm)==="{}"?"chưa có":JSON.stringify(S.gm))+" · dự đoán: "+S.pd.qok+"/"+S.pd.q+" ý đúng ("+S.pd.l+" lượt, "+S.pd.lok+" lượt đúng hết) · thử thách ít lệnh nhất: "+CH.filter(c=>S.lm[c.id]&&S.lm[c.id].b<99).length+"/"+CH.length+" màn"}
+$("#code").oninput=e=>{S.code=e.target.value.trim();save()};
+async function cb(t){try{await navigator.clipboard.writeText(t);$("#gmsg").textContent="Đã sao chép."}catch(e){$("#gmsg").textContent="Trình duyệt không cho sao chép. Hãy chép tay từ bảng."}}
+$("#cp").onclick=()=>cb("Mã HS: "+(S.code||"(chưa nhập)")+"\n"+rows().map(r=>"Màn "+r[0]+": "+r[2]+" lượt, "+r[3]+" sao").join("\n")+"\n"+$("#gs").textContent);
+$("#cv").onclick=()=>cb("Mã HS,Màn,Nội dung,Lượt chạy,Sao,Gợi ý,Giây\n"+rows().map(r=>[S.code||"",...r].join(",")).join("\n"));
+let wc=0;$("#wp").onclick=()=>{if(!wc){wc=1;$("#wp").textContent="Bấm lần nữa để xác nhận xóa";setTimeout(()=>{wc=0;$("#wp").textContent="Xóa dữ liệu máy này"},4000);return}S=defS();save();wc=0;$("#wp").textContent="Xóa dữ liệu máy này";renderTop();rep();pick(0);sndUI();LM.pg=[];LS.cur=null;bchk();$("#gmsg").textContent="Đã xóa dữ liệu."};
+window.onerror=()=>{try{say("Có lỗi nhỏ xảy ra. Em bấm Đặt lại bản đồ nhé.","bad")}catch(e){}};
+/* ===== NÂNG CẤP v3: âm thanh, dự đoán, ít lệnh nhất, tủ đồ ===== */
+let BM="🤖",TR=null,PK=null,AC=null,lastV=0;
+/* --- âm thanh (WebAudio + SpeechSynthesis, không cần máy chủ) --- */
+function actx(){if(AC===null){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){AC=0}}if(AC&&AC.state==="suspended")AC.resume();return AC}
+const TN={add:[[660,.07]],del:[[300,.08]],mv:[[480,.05]],go:[[520,.09],[700,.09]],step:[[360,.04,"triangle"]],turn:[[560,.05,"triangle"]],star:[[880,.07],[1170,.1]],wall:[[160,.18,"sawtooth"]],ok:[[660,.08],[880,.12]],bad:[[300,.12],[240,.16]],win:[[523,.1],[659,.1],[784,.1],[1047,.22]],ach:[[784,.1],[988,.1],[1175,.1],[1568,.25]],reward:[[700,.07],[900,.07],[1100,.12]]};
+function sfx(k){const s=S.snd;if(!s.on||!s.vol)return;const a=actx();if(!a)return;let t=a.currentTime;(TN[k]||[]).forEach(([f,d,ty])=>{try{const o=a.createOscillator(),g=a.createGain();o.type=ty||"sine";o.frequency.value=f;g.gain.setValueAtTime(s.vol/100*.25,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02);t+=d*.9}catch(e){}})}
+function biSay(t,v){const b=$("#bub");if(b)b.textContent="💬 "+t;if(v&&S.snd.on&&S.snd.vc&&S.snd.vol&&("speechSynthesis"in window)&&Date.now()-lastV>5000){lastV=Date.now();try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";u.volume=S.snd.vol/100;const vv=speechSynthesis.getVoices().find(x=>/^vi/i.test(x.lang));if(vv)u.voice=vv;speechSynthesis.speak(u)}catch(e){}}}
+function stepSfx(a,b){sfx(b.sc>a.sc?"star":b.d!==a.d?"turn":(b.x!==a.x||b.y!==a.y)?"step":"")}
+function sndUI(){$("#snd").textContent=S.snd.on?"🔊":"🔇";$("#snd").setAttribute("aria-pressed",String(!!S.snd.on));$("#vol").value=S.snd.vol;$("#vc").checked=!!S.snd.vc}
+$("#snd").onclick=()=>{S.snd.on=S.snd.on?0:1;save();sndUI();sfx("ok")};
+$("#vol").oninput=e=>{S.snd.vol=+e.target.value;save()};$("#vol").onchange=()=>sfx("ok");
+$("#vc").onchange=e=>{S.snd.vc=e.target.checked?1:0;save();if(S.snd.vc)biSay("Chào em, mình là Bi!",1)};
+sndUI();
+/* --- Robot Bi dạng SVG ghép bộ phận --- */
+function biSVG(c,sz,m,hop){c=c||{};const w=c.w||"w0",h=c.h||"h0",g=c.g||"g0",a=c.a||"a0",e=c.e||"e0",
+P={w0:["#3d8bfd","#1f6feb"],w1:["#f6f9ff","#b9cbe8"],w2:["#e9eef7","#9fb2db"],w3:["#e03a3a","#a62424"],w4:["#2f3e63","#1b2542"],w5:["#34b36b","#1f8a4e"],w6:["#c9a05a","#8b6a2e"],w7:["#ffd23f","#d9a400"]}[w]||["#3d8bfd","#1f6feb"],
+D={w0:'<path d="M50 62 L60 74 L70 62Z" fill="#fff"/><path d="M57 74h6l2 18-5 6-5-6z" fill="#d03b34"/>',
+w1:'<path d="M52 62 L60 90 L68 62" fill="none" stroke="#9fb2db" stroke-width="2.5"/><rect x="69" y="86" width="7" height="18" rx="3" fill="#3fd0c8" stroke="#12807a"/><line x1="60" y1="90" x2="60" y2="112" stroke="#b9cbe8" stroke-width="2"/>',
+w2:'<ellipse cx="60" cy="63" rx="20" ry="4.5" fill="#fff" stroke="#9fb2db"/><rect x="46" y="78" width="28" height="18" rx="4" fill="#14264a"/><circle cx="53" cy="87" r="3" fill="#ff6b6b"/><circle cx="61" cy="87" r="3" fill="#4cd698"/><circle cx="69" cy="87" r="3" fill="#ffd23f"/>',
+w3:'<path d="M60 72 L74 86 L60 102 L46 86Z" fill="#ffd23f" stroke="#a67c00" stroke-width="2"/><text x="60" y="93" font-size="15" font-weight="800" text-anchor="middle" fill="#e03a3a" font-family="Nunito,Arial,sans-serif">B</text>',
+w4:'<text x="60" y="92" font-size="16" font-weight="800" text-anchor="middle" fill="#3fd0c8" font-family="Consolas,monospace">&lt;/&gt;</text><path d="M52 62 Q52 74 56 80M68 62 Q68 74 64 80" stroke="#8fa8de" stroke-width="2" fill="none"/>',
+w5:'<circle cx="60" cy="88" r="13" fill="#fff"/><path d="M52 92 Q54 78 68 80 Q68 92 54 94Z" fill="#34b36b"/><path d="M53 93 L63 83" stroke="#1f8a4e" stroke-width="1.5"/>',
+w6:'<path d="M36 64 L62 112M84 64 L58 112" stroke="#8b6a2e" stroke-width="5"/><rect x="38" y="92" width="14" height="12" rx="3" fill="#a98342"/><rect x="68" y="92" width="14" height="12" rx="3" fill="#a98342"/><circle cx="60" cy="82" r="6" fill="#fff" stroke="#8b6a2e" stroke-width="2"/><path d="M60 78 L62 82 L60 86 L58 82Z" fill="#d03b34"/>',
+w7:'<path d="M48 62 L60 80 L72 62 L66 62 L60 70 L54 62Z" fill="#d03b34"/><circle cx="60" cy="92" r="9" fill="#fff" stroke="#a67c00" stroke-width="2.5"/><path d="M60 85 l2.3 4.7 5.2.8-3.8 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1-3.8-3.6 5.2-.8z" fill="#ffd23f"/>'}[w]||"";
+let s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" width="'+sz+'" height="'+sz+'" aria-hidden="true"'+(hop?' class="hop"':'')+'>';
+if(e==="e3")s+='<circle cx="60" cy="78" r="62" fill="#ffd23f" opacity=".25"/><circle cx="60" cy="78" r="58" fill="none" stroke="#ffd23f" stroke-width="3" stroke-dasharray="6 5"/>';
+if(a==="a3")s+='<path d="M32 64 L18 130 Q60 144 102 130 L88 64Z" fill="#7a4de0" stroke="#4d2aa8" stroke-width="2"/>';
+if(a==="a1")s+='<rect x="22" y="68" width="16" height="38" rx="7" fill="#d9801a" stroke="#8a4f0c" stroke-width="2"/>';
+s+='<ellipse cx="60" cy="144" rx="30" ry="5" fill="#000" opacity=".12"/><rect x="42" y="110" width="13" height="26" rx="5" fill="#4b5b82"/><rect x="65" y="110" width="13" height="26" rx="5" fill="#4b5b82"/><ellipse cx="48" cy="137" rx="10" ry="5" fill="#14264a"/><ellipse cx="72" cy="137" rx="10" ry="5" fill="#14264a"/>';
+s+='<rect x="18" y="66" width="11" height="36" rx="5.5" fill="'+P[1]+'"/><rect x="91" y="66" width="11" height="36" rx="5.5" fill="'+P[1]+'"/><rect x="32" y="62" width="56" height="52" rx="12" fill="'+P[0]+'" stroke="'+P[1]+'" stroke-width="2.5"/>'+D;
+if(a==="a1")s+='<rect x="38" y="64" width="4" height="34" rx="2" fill="#d9801a"/><rect x="78" y="64" width="4" height="34" rx="2" fill="#d9801a"/>';
+if(a==="a2")s+='<rect x="36" y="58" width="48" height="10" rx="5" fill="#d03b34"/><rect x="66" y="64" width="10" height="28" rx="5" fill="#d03b34"/><path d="M68 74h6M68 82h6" stroke="#fff" stroke-width="2"/>';
+s+='<line x1="60" y1="14" x2="60" y2="3" stroke="#14264a" stroke-width="3"/><circle cx="60" cy="3" r="4.5" fill="#ff6b6b"/><rect x="29" y="13" width="62" height="48" rx="15" fill="#e3eefc" stroke="#1f4aa8" stroke-width="3"/><rect x="23" y="28" width="7" height="14" rx="3" fill="#7a8fb8"/><rect x="90" y="28" width="7" height="14" rx="3" fill="#7a8fb8"/>';
+if(w==="w3")s+='<rect x="35" y="27" width="50" height="17" rx="8" fill="#14264a"/>';
+const ey=w==="w3"?"#fff":"#14264a";
+s+='<circle cx="46" cy="36" r="5.5" fill="'+ey+'"/><circle cx="74" cy="36" r="5.5" fill="'+ey+'"/><circle cx="47.8" cy="34" r="1.8" fill="#8fa8de"/><circle cx="75.8" cy="34" r="1.8" fill="#8fa8de"/>';
+if(m==="🤩")s+=[46,74].map(x=>'<path d="M'+x+' 28l2.6 5.2 5.7.8-4.1 4 1 5.7-5.2-2.7-5.2 2.7 1-5.7-4.1-4 5.7-.8z" fill="#ffd23f" stroke="#14264a" stroke-width="1.5"/>').join("");
+s+=(m==="🎉"||m==="🤩")?'<path d="M46 47 Q60 66 74 47Z" fill="#14264a"/>':m==="🤔"?'<path d="M50 52h20" stroke="#14264a" stroke-width="3" stroke-linecap="round"/>':'<path d="M48 49 Q60 58 72 49" fill="none" stroke="#14264a" stroke-width="3" stroke-linecap="round"/>';
+if(g==="g1")s+='<circle cx="46" cy="36" r="10" fill="none" stroke="#14264a" stroke-width="3"/><circle cx="74" cy="36" r="10" fill="none" stroke="#14264a" stroke-width="3"/><path d="M56 36h8" stroke="#14264a" stroke-width="3"/>';
+if(g==="g2")s+='<rect x="34" y="28" width="24" height="15" rx="6" fill="#14264a"/><rect x="62" y="28" width="24" height="15" rx="6" fill="#14264a"/><path d="M58 33h4" stroke="#14264a" stroke-width="3"/><path d="M38 31h6M66 31h6" stroke="#8fa8de" stroke-width="2"/>';
+if(g==="g3")s+='<rect x="29" y="29" width="62" height="13" rx="6" fill="#6b7aa6" opacity=".9"/><circle cx="46" cy="36" r="11" fill="#3fd0c8" fill-opacity=".45" stroke="#ffd23f" stroke-width="3"/><circle cx="74" cy="36" r="11" fill="#3fd0c8" fill-opacity=".45" stroke="#ffd23f" stroke-width="3"/>';
+if(h==="h1")s+='<circle cx="60" cy="37" r="37" fill="#bfe4ff" fill-opacity=".3" stroke="#fff" stroke-width="3.5"/><path d="M36 12 Q44 4 54 6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>';
+if(h==="h2")s+='<path d="M31 24 Q60 -6 89 24Z" fill="#1f6feb" stroke="#14264a" stroke-width="2.5"/><rect x="70" y="20" width="30" height="7" rx="3.5" fill="#14264a"/><circle cx="60" cy="4" r="3.5" fill="#ffd23f"/>';
+if(h==="h3")s+='<ellipse cx="60" cy="21" rx="44" ry="8" fill="#b5894a" stroke="#6b4a1c" stroke-width="2"/><path d="M38 21 Q40 0 60 0 Q80 0 82 21Z" fill="#c9a05a" stroke="#6b4a1c" stroke-width="2"/><rect x="38" y="13" width="44" height="6" fill="#6b4a1c"/>';
+if(h==="h4")s+='<path d="M34 20 L38 2 L49 13 L60 -1 L71 13 L82 2 L86 20Z" fill="#ffd23f" stroke="#a67c00" stroke-width="2.5"/><circle cx="60" cy="12" r="3" fill="#d03b34"/>';
+if(e==="e1")s+=[[14,22],[104,34],[20,96],[100,100]].map(([x,y])=>'<path d="M'+x+' '+(y-8)+' L'+(x+2.5)+' '+(y-2.5)+' L'+(x+8)+' '+y+' L'+(x+2.5)+' '+(y+2.5)+' L'+x+' '+(y+8)+' L'+(x-2.5)+' '+(y+2.5)+' L'+(x-8)+' '+y+' L'+(x-2.5)+' '+(y-2.5)+'Z" fill="#ffd23f" stroke="#f0a800"/>').join("");
+if(e==="e2")s+=[[12,20,"#ff6b6b"],[28,6,"#4cd698"],[98,12,"#6aa3ff"],[108,40,"#ffd23f"],[10,70,"#a58bff"],[110,84,"#ff6b6b"],[16,116,"#4cd698"],[104,120,"#6aa3ff"]].map(([x,y,f],i)=>'<rect x="'+x+'" y="'+y+'" width="6" height="9" rx="1.5" fill="'+f+'" transform="rotate('+(i*37)+' '+x+' '+y+')"/>').join("");
+if(m==="🎁")s+='<rect x="84" y="86" width="26" height="22" rx="4" fill="#ff8fa8" stroke="#a62424" stroke-width="2"/><rect x="95" y="86" width="4" height="22" fill="#ffd23f"/><path d="M97 86q-10-12-14-4 4 6 14 4 10 2 14-4-4-8-14 4z" fill="#ffd23f"/>';
+return s+"</svg>"}
+/* --- thành tích (huy hiệu) --- */
+const BGS=()=>[["🔁 Bậc thầy vòng lặp",S.ok[2]&&S.ok[3]],["🔍 Thám tử sửa lỗi",S.ok[8]&&S.ok[9]],["🤖 Nhà lập trình nhí",LV.every((_,i)=>S.ok[i])],["🔮 Nhà tiên tri nhí (5 lượt dự đoán đúng hết)",S.pd.lok>=5],["⚡ Bậc thầy ít lệnh (đạt mức tối ưu hoặc tham chiếu)",CH.some(c=>S.lm[c.id]&&S.lm[c.id].top)],["🧩 Người sửa lỗi kiên trì",Object.keys(S.ok).some(i=>S.ok[i]&&S.lh[i]&&S.lh[i].c==="fixed")],["🎯 Suy nghĩ kỹ",Object.keys(S.ok).filter(i=>S.ok[i]&&S.lh[i]&&S.lh[i].c==="first").length>=3]];
+function bchk(){const e=BGS().filter(x=>x[1]).map(x=>x[0]);if(!S.bgi){S.bgs=e;S.bgi=1;bgDate(e);save();return}const n=e.filter(t=>!S.bgs.includes(t));if(n.length){S.bgs=[...new Set([...S.bgs,...e])];bgDate(n);save();setTimeout(()=>{sfx("ach");mood("🎁");biSay("Em vừa mở khóa thành tích mới: "+n[0]+"!",1)},700)}}
+/* --- Dự đoán trước khi chạy (dùng chung exec với chạy thật) --- */
+const DN=["lên","phải","xuống","trái"],OUT=["Đến đích và hoàn thành nhiệm vụ","Đụng tường","Chưa hoàn thành nhiệm vụ (dừng giữa đường, thiếu sao hoặc chạy quá dài)"];
+const PDnew=()=>({sig:null,locked:false,used:false,run:false,ans:{},qs:[]});let PD=PDnew();
+const sig=()=>JSON.stringify(prog);
+function PDreset(){PD=PDnew();const p=$("#pd");if(p)p.innerHTML=""}
+function newLevel(){TR=null;PK=null;PDreset();$("#hl").innerHTML=""}
+function chk(){if(PD.sig!==null&&PD.sig!==sig()){const w=PD.locked||PD.qs.length>0;PDreset();if(w){say("Em vừa sửa chương trình, nên dự đoán cũ đã hết hiệu lực. Hãy bấm 🔮 để dự đoán lại nhé!");biSay("Chương trình đã đổi, mình dự đoán lại nhé!")}}}
+function pdStart(){if(PD.locked)PD.run=true;else{const o=PD.qs.length>0;PDreset();PD.used=true;PD.sig=sig();if(o)biSay("Em chưa chốt dự đoán nên lượt này Bi chạy luôn. Sửa chương trình để dự đoán lượt mới nhé!")}}
+function pdOpen(){const L=LV[cur];
+if(A&&A.i<A.F.length-1){say("Bi đang chạy. Em chờ Bi chạy xong, hoặc bấm “Đặt lại bản đồ”, rồi dự đoán nhé.");return}
+if(!prog.length){say("Em hãy xếp ít nhất một khối lệnh rồi mới dự đoán nhé.");return}
+if(PD.locked){say("Em đã chốt dự đoán rồi. Bấm Chạy hoặc Từng bước để kiểm chứng nhé.");return}
+if(PD.used){say("Lượt này Bi đã chạy rồi nên không thể dự đoán trước nữa. Em hãy sửa chương trình một chút để bắt đầu lượt dự đoán mới nhé!");return}
+const iv=exec(prog,L).res;if(iv.code==="inv"){say(iv.msg+" Em sửa lại rồi hãy dự đoán nhé.","bad");return}
+const m=pm(L),has=c=>prog.some(b=>b.t===c),qs=[{k:"pos",t:"Bi sẽ dừng ở ô nào? (bấm vào bản đồ nhỏ)"}];
+if("LRIJ".split("").some(has))qs.push({k:"dir",t:"Bi sẽ quay mặt về hướng nào?",o:DN});
+if(has("P")||L.need||m.st.length)qs.push({k:"sc",t:"Bi nhặt được mấy sao? (điểm sau khi chạy bằng mấy?)",o:Array.from({length:m.st.length+1},(_,i)=>i)});
+qs.push({k:"out",t:"Chương trình có hoàn thành nhiệm vụ không?",o:OUT});
+PD={...PDnew(),qs,sig:sig()};pdDraw();sfx("add");say("Hãy đọc kỹ chương trình, trả lời rồi bấm “Chốt dự đoán”. Bi chưa tiết lộ kết quả đâu!")}
+function pdDraw(){const L=LV[cur],p=$("#pd"),lk=PD.locked;p.innerHTML="";const bx=el("div","pdp");bx.append(el("h3","","🔮 Bi dự đoán cùng em"),el("p","sub",lk?"Đã chốt dự đoán (các nút tạm khóa). Bấm Chạy hoặc Từng bước để kiểm chứng.":"Trả lời các câu hỏi rồi bấm “Chốt dự đoán”."));
+PD.qs.forEach(q=>{const d=el("div");d.style.marginTop="8px";d.append(el("b","",q.t));
+if(q.k==="pos"){const bd=el("div","board bs");bd.style.margin="6px 0";d.append(bd);PK=PD.ans.pos?PD.ans.pos.x+","+PD.ans.pos.y:null;board(bd,L,null,lk?null:(x,y)=>{PD.ans.pos={x,y};sfx("add");pdDraw()});PK=null;d.append(el("div","sub",PD.ans.pos?"Em đoán: hàng "+(PD.ans.pos.y+1)+", cột "+(PD.ans.pos.x+1):"Chưa chọn ô."))}
+else{const w=el("div","ch");q.o.forEach((t,i)=>{const on=PD.ans[q.k]===i,b=el("button",on?"btn pp":"btn alt",String(t));b.setAttribute("aria-pressed",String(on));b.disabled=lk;b.onclick=()=>{PD.ans[q.k]=i;sfx("add");pdDraw()};w.append(b)});d.append(w)}
+bx.append(d)});
+if(!lk){const c=el("button","btn pp","🔒 Chốt dự đoán");c.style.marginTop="10px";c.onclick=()=>{const n=PD.qs.filter(q=>PD.ans[q.k]===undefined).length;if(n){say("Em còn "+n+" câu chưa trả lời. Hãy trả lời hết rồi chốt nhé.");return}PD.locked=true;PD.sig=sig();sfx("reward");say("Đã chốt dự đoán! Bây giờ bấm Chạy hoặc Từng bước để xem Bi có làm đúng như em nghĩ không.");biSay("Đã chốt! Cùng kiểm chứng nhé!",1);pdDraw()};bx.append(c)}
+p.append(bx)}
+function explain(FF,r){let mv=0,tn=0,st=0;const tb=new Set,sb=new Set;for(let i=1;i<FF.length;i++){const a=FF[i-1],b=FF[i],k=b.pc>=0&&prog[b.pc]?NM[prog[b.pc].t]:"";if(b.x!==a.x||b.y!==a.y)mv++;if(b.d!==a.d){tn++;tb.add(k)}if(b.sc>a.sc){st++;sb.add(k)}}
+const la=FF[FF.length-1],lb=la.pc>=0?prog[la.pc]:null;
+return "Vì sao Bi ở đó? Bi đã tiến "+mv+" ô, đổi hướng "+tn+" lần, nhặt "+st+" sao, rồi dừng ở hàng "+(la.y+1)+", cột "+(la.x+1)+", quay mặt "+DN[la.d]+". "+(lb?"Khối cuối cùng Bi thực hiện là “"+NM[lb.t]+"” (khối số "+(la.pc+1)+"). ":"")+(tn?"Hướng thay đổi nhờ: "+[...tb].join(", ")+". ":"")+(st?"Điểm tăng nhờ: "+[...sb].join(", ")+". ":"")+(prog.some(b=>b.t==="N")?"Khối Lặp khiến các khối bên trong chạy lại nhiều lần nên Bi đi xa hơn số khối em viết. ":"")+(r.ok?"":r.msg)}
+function pdCmp(FF,r){if(!PD.locked||!PD.run)return;const la=FF[FF.length-1],act={pos:la.x+","+la.y,dir:la.d,sc:la.sc,out:r.code==="win"?0:r.code==="wall"?1:2},ps=v=>"hàng "+(v.y+1)+", cột "+(v.x+1);
+const rows=PD.qs.map(q=>{const a=PD.ans[q.k],pos=q.k==="pos";return{q,ok:pos?a.x+","+a.y===act.pos:a===act[q.k],y:pos?ps(a):String(q.o[a]),t:pos?ps(la):String(q.o[act[q.k]])}});
+const nok=rows.filter(x=>x.ok).length,all=nok===rows.length;S.pd.l++;S.pd.q+=rows.length;S.pd.qok+=nok;if(all)S.pd.lok++;let rw="";
+if(all&&!S.pdr[cur]){S.pdr[cur]=1;S.xp+=5;S.co+=2;rw=" Thưởng lần đầu dự đoán đúng màn này: +5 XP, +2 💰."}
+save();renderTop();PK=PD.ans.pos?PD.ans.pos.x+","+PD.ans.pos.y:null;
+const p=$("#pd");p.innerHTML="";const bx=el("div","pdp");bx.append(el("h3","","🔮 So sánh dự đoán và kết quả"));
+const tb=el("table");tb.innerHTML="<tr><th>Câu hỏi</th><th>Dự đoán của em</th><th>Kết quả thực tế</th><th></th></tr>";
+rows.forEach(x=>{const tr=tb.insertRow();[x.q.t.replace(/ \(.*\)/,""),x.y,x.t,x.ok?"✅ Đúng":"💡 Chưa khớp"].forEach((c,i)=>{const td=tr.insertCell();td.textContent=c;if(i===1)td.className="you";if(i===2)td.className="act"})});
+const w=el("div");w.style.overflowX="auto";w.append(tb);
+bx.append(w,el("p","",all?"Chính xác! Em đã đọc chương trình rất tốt."+rw:"Chưa khớp lần này, nhưng em vừa hiểu thêm cách Bi suy nghĩ rồi! Hãy nhìn đường đi của Bi (viền xanh) và ô em đoán (viền tím nét đứt)."),el("p","",explain(FF,r)),el("p","sub","Em có thể sửa chương trình rồi bấm 🔮 để dự đoán lượt mới."));p.append(bx);
+sfx(all?"ok":"step");biSay(all?"Dự đoán chính xác! Giỏi quá!":"Không sao, cùng xem Bi đã đi thế nào nhé!",all);PD=PDnew();PD.used=true;PD.sig=sig()}
+function histo(FF,pg){const o=$("#hl");o.innerHTML="";FF.slice(1,61).forEach(f=>{const b=pg[f.pc];o.append(el("li","",(b?NM[b.t]:"")+" → hàng "+(f.y+1)+", cột "+(f.x+1)+", hướng "+DN[f.d]+", điểm "+f.sc))});if(FF.length>61)o.append(el("li","sub","… và "+(FF.length-61)+" bước nữa"))}
+$("#pdb").onclick=pdOpen;
+/* --- Thử thách ít lệnh nhất --- */
+/* o = số khối tối ưu đã kiểm tra bằng tìm kiếm vét cạn (mọi chương trình ngắn hơn, Lặp 2–10 lần, được lồng nhau, đều không giải được); ref = lời giải tham chiếu, chưa biết có tối ưu hay không */
+const CH=[
+{id:"c1",lv:"Dễ",n:"Đường thẳng",map:['.....','.....','.....','.....','S...G'],tools:"FNE",need:0,max:6,o:3,sol:"N4 F E"},
+{id:"c2",lv:"Dễ",n:"Chữ L tiết kiệm",map:B5,tools:"FLRNE",need:0,max:9,o:6,sol:"N2 N4 F E L E"},
+{id:"c3",lv:"Trung bình",n:"Hai ngôi sao",map:['.....','.....','.....','.....','S*.*G'],tools:"FNEP",need:2,max:8,o:4,sol:"N4 F P E"},
+{id:"c4",lv:"Trung bình",n:"Cột sao bên phải",map:['....G','....*','....*','....*','S....'],tools:"FLNEP",need:3,max:10,o:7,sol:"N2 N4 F P E L E"},
+{id:"c5",lv:"Khó",n:"Sao rải rác",map:['....G','.....','....*','.....','S*.*.'],tools:"FLNEIP",need:3,max:9,o:5,sol:"N8 F I P E"},
+{id:"c6",lv:"Khó",n:"Mê cung chữ Z",map:ZZ,tools:"FLRNE",need:0,max:18,o:null,ref:15,sol:"N4 F E L N2 F E L N4 F E R N2 F E"}];
+const LM={i:0,pg:[],tk:0,busy:0};
+function lmSay(t,k){const m=$("#lmm");if(m){m.textContent=t;m.className="msg"+(k?" "+k:"")}}
+function lmBoard(f){const c=CH[LM.i];board($("#lmb"),{map:c.map,need:c.need},f)}
+function lmProg(){const c=CH[LM.i],p=$("#lmp");p.innerHTML="";let dp=0;LM.pg.forEach((b,i)=>{if(b.t==="E")dp=Math.max(0,dp-1);const d=el("div","blk "+b.t);d.style.marginLeft=dp*16+"px";d.append(NM[b.t]);
+if(b.t==="N"){const s=el("select");s.setAttribute("aria-label","Số lần lặp");for(let n=2;n<=10;n++){const o=new Option(n,n);o.selected=n===b.n;s.add(o)}s.disabled=!!LM.busy;s.onchange=()=>{b.n=+s.value};d.append(" ",s," lần");dp++}
+const m=el("span","m");[["▲",-1],["▼",1],["✕",0]].forEach(([t,k])=>{const x=el("button","",t);x.setAttribute("aria-label",k?"Đổi chỗ":"Xóa khối");x.disabled=!!LM.busy;x.onclick=()=>{if(!k){LM.pg.splice(i,1);sfx("del")}else if(LM.pg[i+k]){[LM.pg[i],LM.pg[i+k]]=[LM.pg[i+k],LM.pg[i]];sfx("mv")}lmProg()};m.append(x)});d.append(m);p.append(d)});
+if(!LM.pg.length)p.innerHTML="<span class='sub'>Bấm khối ở bảng lệnh để thêm vào.</span>";$("#lmc").textContent="(đã dùng "+LM.pg.length+"/"+c.max+" khối)"}
+function lmStat(){const b=$("#lmst");if(!b)return;let ok=0,top=0,sv=0;const rows=CH.map(c=>{const s=S.lm[c.id],d=s&&s.b<99;if(d){ok++;if(s.top)top++;sv+=Math.max(0,c.max-s.b)}return"<tr><td>"+c.n+"</td><td>"+c.lv+"</td><td>"+(d?s.b:"–")+"</td><td>"+(c.o!=null?c.o+" ✔ tối ưu":c.ref+" (tham chiếu)")+"</td><td>"+(s&&s.top?"🏆":"")+"</td></tr>"});
+b.innerHTML="<h3>Thành tích của em (trên máy này)</h3><p>Màn hoàn thành: <b>"+ok+"/"+CH.length+"</b> · Màn đạt mức tối ưu/tham chiếu: <b>"+top+"</b> · Khối tiết kiệm so với giới hạn của đề: <b>"+sv+"</b></p><div style='overflow-x:auto'><table><tr><th>Màn</th><th>Mức</th><th>Tốt nhất của em</th><th>Mục tiêu</th><th></th></tr>"+rows.join("")+"</table></div><p class='sub'>Bảng này chỉ lưu trên thiết bị đang dùng, không phải bảng xếp hạng trực tuyến.</p>"}
+function lmDraw(){LM.tk++;LM.busy=0;const c=CH[LM.i],R=$("#lm");
+R.innerHTML="<h2>⚡ Thử thách ít lệnh nhất</h2><div class='card'><p>Đưa Bi tới 🏁 (và nhặt đủ sao nếu có) bằng <b>ít khối lệnh nhất</b>. Có nhiều cách giải, em hãy so sánh và rút gọn nhé. Sai không bị trừ điểm.</p><details><summary><b>Cách đếm số khối</b></summary><p>Mỗi khối trong chương trình tính <b>1 khối</b>: Tiến, Rẽ, Nhặt sao, <b>Lặp</b>, <b>Hết lặp</b> và “Nếu chạm tường…”. Khối nằm trong vòng lặp chỉ tính 1 lần viết, dù chạy nhiều lần. “Số lệnh Bi thực hiện” chỉ để em tham khảo, không dùng để chấm.</p><p>“✔ tối ưu” nghĩa là máy đã thử mọi chương trình ngắn hơn bằng các khối của màn (Lặp 2–10 lần, được lồng nhau) mà không có chương trình nào đúng. Màn “tham chiếu” chưa xác định được mức tối ưu tuyệt đối, nên Bi không nói đó là ít nhất.</p></details></div><div class='lv' id='lml' role='group' aria-label='Chọn thử thách'></div>"
++"<div class='card'><span class='tag'>"+c.lv+" · Màn "+(LM.i+1)+"</span><h3>"+c.n+"</h3><div>"+(c.need?"Nhặt đủ "+c.need+" sao rồi đến 🏁.":"Đi tới 🏁.")+" Giới hạn: <b>"+c.max+" khối</b>. Mức đánh giá: "+(c.o!=null?"✔ tối ưu đã kiểm tra bằng máy":"tham chiếu (chưa biết tối ưu tuyệt đối)")+".</div></div>"
++"<div class='lab'><div><div class='board' id='lmb' role='img' aria-label='Bản đồ thử thách'></div><div class='msg' id='lmm' aria-live='polite'>Xếp lệnh rồi bấm Chạy. Hãy nghĩ cách dùng ít khối nhất!</div></div><div><b>Bảng lệnh</b><div class='pal' id='lmpal'></div><b>Chương trình của em</b> <span class='sub' id='lmc'></span><div class='prog' id='lmp'></div><p><button class='btn' id='lmr'>▶ Chạy</button> <button class='btn alt' id='lmx'>Xóa chương trình</button> <button class='btn alt' id='lms' hidden>Xem một cách giải tham chiếu</button></p><div class='sub' id='lmh'></div></div></div><div class='card' id='lmst'></div>";
+const lv=$("#lml");let w="";CH.forEach((x,i)=>{if(x.lv!==w){w=x.lv;lv.append(el("span","sub",w+": "))}const b=el("button","",(S.lm[x.id]&&S.lm[x.id].b<99?"★":"")+(i+1));b.title=x.lv+" – "+x.n;if(i===LM.i)b.setAttribute("aria-current","true");b.onclick=()=>{LM.i=i;LM.pg=[];lmDraw()};lv.append(b)});
+[...c.tools].forEach(t=>{const b=el("button","k"+t,NM[t]);b.onclick=()=>{if(LM.busy){lmSay("Bi đang chạy, em chờ một chút nhé.");return}if(LM.pg.length>=c.max){lmSay("Đã đủ "+c.max+" khối. Hãy bỏ bớt hoặc dùng Lặp.","bad");sfx("wall");return}LM.pg.push(t==="N"?{t:"N",n:4}:{t});sfx("add");lmProg()};$("#lmpal").append(b)});
+$("#lmr").onclick=lmRun;$("#lmx").onclick=()=>{if(LM.busy){lmSay("Bi đang chạy, em chờ một chút nhé.");return}LM.pg=[];sfx("del");lmProg();lmBoard(null)};
+$("#lms").onclick=()=>{$("#lmh").textContent="Một cách giải tham chiếu: "+pn(c.sol)+" (còn có thể có cách khác).";};
+lmProg();lmBoard(null);lmStat()}
+async function lmRun(){if(LM.busy){lmSay("Bi đang chạy, em chờ một chút nhé.");return}const c=CH[LM.i],pg=LM.pg;if(!pg.length){lmSay("Em hãy xếp ít nhất một khối lệnh trước nhé.");return}
+const r=exec(pg,{map:c.map,need:c.need}),k=LM.tk;if(r.res.code==="inv"){sfx("bad");lmSay(r.res.msg+" Em sửa lại rồi chạy nhé.","bad");return}
+LM.busy=1;TR=null;sfx("go");biSay("Chúng mình cùng thử nhé!",1);lmProg();
+for(let i=0;i<r.F.length;i++){if(LM.tk!==k)return;lmBoard(r.F[i]);if(i)stepSfx(r.F[i-1],r.F[i]);await sleep(r.F.length>60?40:140)}
+if(LM.tk!==k)return;LM.busy=0;TR=new Set(r.F.map(f=>f.x+","+f.y));lmBoard(r.F[r.F.length-1]);TR=null;lmProg();
+const ex=r.F.length-1,rs=r.res;
+if(!rs.ok){S.err[rs.code]=(S.err[rs.code]||0)+1;save();sfx(rs.code==="wall"?"wall":"bad");lmSay(rs.msg+" Em sửa chương trình rồi thử lại nhé, sai cũng không bị trừ điểm!","bad");return}
+const n=pg.length,st=S.lm[c.id]||(S.lm[c.id]={b:99,att:0,top:0}),tg=c.o!=null?c.o:c.ref;st.att++;if(n<st.b)st.b=n;
+let t="Chương trình đúng! Em dùng "+n+" khối (Bi thực hiện "+ex+" lệnh).",rw="";
+if(n<=tg){if(!st.top){st.top=1;S.xp+=15;S.co+=5;rw=" Thưởng: +15 XP, +5 💰."}
+t=(c.o!=null?"🏆 Em đạt mức ít khối nhất mà máy đã kiểm tra!":n<c.ref?"🌟 Em dùng ít khối hơn cả lời giải tham chiếu! Bi chưa kiểm tra được mức tối ưu tuyệt đối của màn này.":"⚡ Em đạt mức tham chiếu. Màn này chưa xác định được mức tối ưu tuyệt đối, nên Bi chưa nói đây là ít nhất.")+" "+t+rw}
+else t+=" Còn có thể gọn hơn. Gợi ý: gom các lệnh giống nhau bằng Lặp (kể cả Lặp trong Lặp).";
+t+=" Kỷ lục của em: "+st.b+" khối.";save();renderTop();bchk();lmStat();$("#lms").hidden=false;sfx(n<=tg?"win":"ok");if(n<=tg)biSay("Tuyệt vời! Em đã tìm được lời giải!",1);lmSay(t,"ok")}
+/* --- Tủ đồ của Bi --- */
+/* x = giá bằng xu (cần xác nhận), s = số sao cần có, a = thành tích cần có */
+const WI={w:[["w0","Bi học sinh"],["w1","Bi nhà khoa học"],["w2","Bi phi hành gia",{x:20}],["w3","Bi siêu anh hùng",{x:30}],["w4","Bi kỹ sư lập trình",{s:3}],["w5","Bi bảo vệ môi trường",{x:25}],["w6","Bi thám hiểm",{a:"🔁 Bậc thầy vòng lặp"}],["w7","Bi vô địch",{a:"🤖 Nhà lập trình nhí"}]],
+h:[["h0","Không đội mũ"],["h2","Mũ lập trình"],["h1","Mũ phi hành gia",{x:10}],["h3","Mũ thám hiểm",{x:12}],["h4","Vương miện",{s:10}]],
+g:[["g0","Không đeo kính"],["g1","Kính tròn"],["g2","Kính râm",{x:8}],["g3","Kính bảo hộ",{x:10}]],
+a:[["a0","Không phụ kiện"],["a1","Ba lô",{x:8}],["a2","Khăn choàng",{x:8}],["a3","Áo choàng",{x:15}]],
+e:[["e0","Không hiệu ứng"],["e1","Lấp lánh",{x:6}],["e2","Pháo giấy",{x:12}],["e3","Hào quang vô địch",{a:"🤖 Nhà lập trình nhí"}]]};
+const WCAT={w:"Trang phục",h:"Mũ",g:"Kính",a:"Phụ kiện",e:"Hiệu ứng"},WDEF={w:"w0",h:"h0",g:"g0",a:"a0",e:"e0"};
+const WD={cat:"w",pv:null,sel:"w0",cf:null,
+find(id){for(const k in WI){const t=WI[k].find(x=>x[0]===id);if(t)return t}},
+ok(it){const c=it[2];if(!c)return true;if(S.wd.own.includes(it[0]))return true;if(c.s&&stars()>=c.s)return true;if(c.a){const b=BGS().find(x=>x[0]===c.a);return !!(b&&b[1])}return false},
+txt(it){const c=it[2];return !c?"Miễn phí":c.x?"Mở khóa bằng "+c.x+" 💰":c.s?"Cần có "+c.s+" ⭐ (tự mở khi đủ sao)":"Cần thành tích “"+c.a+"” (tự mở khi đạt)"},
+open(){WD.pv={...S.wd.on};WD.sel=WD.pv[WD.cat];WD.cf=null;WD.draw()},
+msg(t,k){const m=$("#wms");if(m){m.textContent=t;m.className="msg"+(k?" "+k:"")}},
+draw(){const R=$("#tu"),it=WD.find(WD.sel)||WI[WD.cat][0];
+R.innerHTML="<h2>👕 Tủ đồ của Bi</h2><p class='sub'>Trang phục chỉ làm Bi thêm đẹp, không giúp em làm bài dễ hơn hay khó hơn. Em có <b>💰 "+S.co+"</b> và <b>⭐ "+stars()+"</b>. Chọn món bên phải, bấm “Mặc thử”, thích rồi bấm “Lưu trang phục”.</p><div class='wl'><div class='card' style='text-align:center'><div id='wpv'></div><p class='sub' id='wnm'></p><div class='ch' id='wbar' style='justify-content:center'></div></div><div class='card'><div class='ch' id='wct' role='group' aria-label='Danh mục'></div><div class='ch' id='wit' style='margin:10px 0'></div><div id='wdt'></div></div></div><div class='msg' id='wms' aria-live='polite'>Chọn món đồ yêu thích của em nhé!</div>";
+$("#wpv").innerHTML=biSVG(WD.pv,220,"",1);$("#wnm").textContent=Object.keys(WI).map(k=>WD.find(WD.pv[k])[1]).filter(x=>!/^Không/.test(x)).join(" · ")||"Bi mặc định";
+const bar=$("#wbar"),mk=(t,f,c)=>{const b=el("button",c||"btn alt",t);b.onclick=f;bar.append(b)},cyc=d=>{const l=WI.w,i=l.findIndex(x=>x[0]===WD.pv.w),j=(i+d+l.length)%l.length;WD.pv.w=l[j][0];WD.cat="w";WD.sel=l[j][0];WD.cf=null;sfx("add");WD.draw()};
+mk("‹ Trang phục trước",()=>cyc(-1));mk("Trang phục sau ›",()=>cyc(1));
+mk("👗 Mặc thử",()=>{WD.pv[WD.cat]=WD.sel;WD.cf=null;sfx("add");WD.draw();WD.msg(WD.ok(it)?"Bi đang mặc thử “"+it[1]+"”. Thích thì bấm Lưu trang phục nhé!":"Bi mặc thử “"+it[1]+"”. Món này chưa mở khóa nên chưa lưu được.")},"btn y");
+mk("💾 Lưu trang phục",()=>{const bad=Object.keys(WI).map(k=>WD.find(WD.pv[k])).filter(x=>!WD.ok(x));if(bad.length){sfx("wall");WD.msg("Chưa lưu được: "+bad.map(x=>x[1]).join(", ")+" chưa mở khóa. Em hãy mở khóa hoặc đổi món khác nhé.","bad");return}S.wd.on={...WD.pv};save();mood(BM);sfx("reward");biSay("Bi mặc đẹp quá!",1);WD.msg("Đã lưu trang phục!","ok")},"btn");
+mk("↺ Mặc định",()=>{WD.pv={...WDEF};WD.sel=WDEF[WD.cat];WD.cf=null;sfx("del");WD.draw();WD.msg("Bi đã mặc đồ mặc định (xem thử). Bấm Lưu trang phục nếu muốn giữ.")});
+const ct=$("#wct");Object.keys(WCAT).forEach(k=>{const b=el("button",k===WD.cat?"btn":"btn alt",WCAT[k]);b.setAttribute("aria-pressed",String(k===WD.cat));b.onclick=()=>{WD.cat=k;WD.sel=WD.pv[k];WD.cf=null;WD.draw()};ct.append(b)});
+WI[WD.cat].forEach(x=>{const ok=WD.ok(x),b=el("button",x[0]===WD.sel?"btn":"btn alt",(S.wd.on[WD.cat]===x[0]?"✔ ":"")+(ok?"":"🔒 ")+x[1]);b.setAttribute("aria-pressed",String(x[0]===WD.sel));b.onclick=()=>{WD.sel=x[0];WD.cf=null;WD.draw()};$("#wit").append(b)});
+const dt=$("#wdt");dt.append(el("b","",it[1]),el("div","sub",WD.txt(it)+(WD.ok(it)&&it[2]?" · ✔ Đã mở khóa":"")));
+if(!WD.ok(it)&&it[2].x){const b=el("button","btn",WD.cf===it[0]?"Bấm lần nữa để xác nhận trừ "+it[2].x+" 💰":"🔓 Mở khóa ("+it[2].x+" 💰)");b.style.marginTop="8px";b.onclick=()=>{if(S.co<it[2].x){sfx("bad");WD.msg("Chưa đủ xu: cần "+it[2].x+", em đang có "+S.co+". Chơi thêm để nhận xu nhé!","bad");return}if(WD.cf!==it[0]){WD.cf=it[0];WD.draw();return}S.co-=it[2].x;S.wd.own.push(it[0]);WD.cf=null;save();renderTop();sfx("reward");WD.draw();WD.msg("Đã mở khóa “"+it[1]+"”! Còn "+S.co+" 💰.","ok")};dt.append(b)}}};
+/* khởi tạo & kiểm tra dữ liệu lưu */
+S.wd.own=S.wd.own.filter(id=>WD.find(id));
+Object.keys(WDEF).forEach(k=>{const it=WD.find(S.wd.on[k]);if(!it||!WI[k].includes(it)||!WD.ok(it))S.wd.on[k]=WDEF[k]});
+bchk();
+
+/* ===== v4: toàn bộ SGK Tin học 5 (6 chủ đề) ===== */
+let NS=0,qw=null;
+const TOP=[
+{id:"c1",n:"Chủ đề 1. Máy tính và em",ic:"💻"},
+{id:"c2",n:"Chủ đề 2. Mạng máy tính và Internet",ic:"🌐"},
+{id:"c3",n:"Chủ đề 3. Tổ chức lưu trữ, tìm kiếm và trao đổi thông tin",ic:"🗂️"},
+{id:"c4",n:"Chủ đề 4. Đạo đức, pháp luật và văn hoá trong môi trường số",ic:"⚖️"},
+{id:"c5",n:"Chủ đề 5. Ứng dụng tin học",ic:"🎨"},
+{id:"c6",n:"Chủ đề 6. Giải quyết vấn đề với sự trợ giúp của máy tính",ic:"🤖"}];
+const SUBA="A. Sử dụng phần mềm đồ hoạ tạo sản phẩm số đơn giản",SUBB="B. Sử dụng công cụ đa phương tiện hỗ trợ tạo sản phẩm đơn giản";
+/* vt=1: tên bài và số trang đã đối chiếu với ảnh mục lục SGK; vt=0: tên lấy từ trang cũ, cần GV đối chiếu. lv = màn Robot Bi liên quan. */
+const mkL=(id,c,num,t,ic,pg,vt,d,g,k,e,ex,act,sum,o)=>({id,c,num,t,ic,pg,vt,d,g,k,e,ex,act,sum,...(o||{})});
+const LE=[
+mkL("l1","c1","1","Em có thể làm gì với máy tính?","💻",5,1,"Máy tính giúp học tập, giải trí, trao đổi thông tin và tạo sản phẩm số.",
+["Nêu được ví dụ máy tính giúp em giải trí, học tập, tìm kiếm, trao đổi thông tin, hợp tác với bạn bè và tạo sản phẩm số.","Mong muốn sử dụng máy tính thành thạo để làm được nhiều việc hơn."],
+["Mỗi phần mềm có chức năng riêng: luyện gõ phím giúp gõ nhanh và đúng cách; trình chiếu giúp trình bày thông tin sinh động, hấp dẫn.","Máy tính còn giúp em học tập (ví dụ phần mềm Kids Games Learning Science), giải trí và tạo sản phẩm số cùng bạn."],
+"Bài mở đầu: An đã biết dùng chuột, bàn phím, truy cập Internet và tạo văn bản, bài trình chiếu. Em cùng An khám phá máy tính còn giúp được những gì.",
+"Trò chơi Mê cung viết bằng Scratch: dùng các phím mũi tên điều khiển chú chuột từ Lối vào đến Lối ra; thời gian chơi tính bằng giây (SGK tr.6).",
+["Em hãy kể tên một phần mềm em đã dùng và nói phần mềm đó giúp em làm gì.","Ví dụ: phần mềm luyện gõ giúp gõ phím nhanh, đúng; phần mềm trình chiếu giúp trình bày sinh động (SGK tr.5)."],
+"Máy tính giúp em học tập, giải trí, trao đổi thông tin và tạo ra sản phẩm số."),
+mkL("l2","c2","2","Tìm kiếm thông tin trên website","🔎",8,1,"Tìm thông tin phù hợp trên website và hợp tác trong nhóm.",
+["Tìm được trên website những thông tin phù hợp và có ích cho nhiệm vụ.","Hợp tác, chia sẻ thông tin với các bạn trong nhóm."],
+["Truy cập website bằng địa chỉ website (ví dụ thieunien.vn).","Website có các chủ đề thông tin và công cụ tìm kiếm để em tìm nhanh.","Biết rút USB an toàn: chọn biểu tượng USB, chọn Eject, chờ thông báo rồi mới rút (SGK tr.13)."],
+"Nhóm An, Minh, Khoa cần tìm thông tin về Ngày hội Trạng Nguyên nhỏ tuổi trên website báo Thiếu niên Tiền phong và Nhi đồng để làm bài trình chiếu.",
+"Em truy cập website ở Hình 14 (nchmf.gov.vn), xem thông tin theo các chủ đề và dùng công cụ tìm kiếm để tìm thông tin thời tiết ở địa phương.",
+["Quan sát một website: nêu địa chỉ, các chủ đề thông tin và vị trí công cụ tìm kiếm.","Đây là yêu cầu Luyện tập ở SGK tr.13; đáp án tuỳ website em xem."],
+"Biết địa chỉ website, chủ đề thông tin và dùng công cụ tìm kiếm để tìm thông tin cần thiết.",
+{vis:"🖥️ Địa chỉ website → 📂 Chủ đề thông tin → 🔎 Công cụ tìm kiếm → 📄 Thông tin cần tìm"}),
+mkL("l3","c3","3","Tìm kiếm thông tin trong giải quyết vấn đề","🧭",14,1,"Thu thập, tìm kiếm thông tin để giải quyết vấn đề cụ thể.",
+["Giải thích được sự cần thiết, tầm quan trọng của việc thu thập và tìm kiếm thông tin trong giải quyết vấn đề.","Tìm kiếm và chọn được thông tin phù hợp với vấn đề cần giải quyết.","Hợp tác với người khác để giải quyết vấn đề cụ thể."],
+["Để giải quyết vấn đề cần đưa ra quyết định; để có quyết định cần có thông tin.","Thu thập, tìm kiếm thông tin liên quan rất quan trọng khi giải quyết vấn đề.","Chọn thông tin phù hợp với đặc điểm chuyến đi, nhu cầu của mọi người."],
+"Ba bạn An, Minh, Khoa chuẩn bị đồ cho kì nghỉ hè ở Nha Trang, Đà Lạt, Úc; thời tiết mỗi nơi khác nhau nên đồ mang theo cũng khác nhau.",
+"Chọn điểm tham quan ở Sa Pa: điểm gần, điểm xa, điểm phải trèo đèo, lội suối… Gia đình có người già, trẻ em thì không nên chọn điểm xa, vất vả (SGK tr.18).",
+["Gia đình em có người già và trẻ em, em nên tránh chọn điểm tham quan nào?","Điểm ở xa, đường đi vất vả, phải trèo đèo, lội suối."],
+"Có thông tin phù hợp thì quyết định giải quyết vấn đề sẽ tốt hơn."),
+mkL("l4","c3","4","Cây thư mục","🌳",19,1,"Tạo thư mục có cấu trúc cây hợp lí và tìm kiếm tệp, thư mục.",
+["Tạo được các thư mục với cấu trúc cây hợp lí.","Sử dụng được công cụ tìm kiếm trên máy tính để tìm thư mục và tệp."],
+["Sắp xếp, phân loại hợp lí giúp dễ tìm và tìm nhanh hơn.","Nháy đúp chuột vào tên tệp trong kết quả tìm kiếm để mở; nháy nút phải chuột và chọn Open file location để mở thư mục lưu tệp (SGK tr.23).","Khi thực hành ở trường không thay đổi cấu trúc các thư mục khác."],
+"Cây thư mục giống sơ đồ phân nhánh: thư mục gốc chứa các thư mục con, rồi đến các tệp.",
+"So sánh hai cây thư mục “Anh-Bai-tap-nhom” (Hình 18, 19) để biết cây nào sắp xếp hợp lí hơn.",
+["Cây thư mục nào hợp lí hơn: xếp theo từng bạn rồi theo loại ảnh, hay để lẫn lộn?","Cây sắp xếp rõ ràng, phân loại có thứ bậc thì dễ tìm hơn (SGK tr.19)."],
+"Cây thư mục hợp lí giúp dễ tìm và sắp xếp tệp.",
+{vis:"💽 Local Disk (D:)\n └─ 📁 Anh-Bai-tap-nhom\n     ├─ 📁 An\n     ├─ 📁 Khoa\n     └─ 📁 Minh"}),
+mkL("l5","c4","5","Bản quyền nội dung thông tin","©️",24,1,"Tôn trọng tác giả, bản quyền và quyền riêng tư.",
+["Giải thích được một số khái niệm liên quan đến bản quyền nội dung thông tin.","Nhận biết và giải thích sơ lược một số vấn đề đạo đức và tính hợp lệ của việc truy cập nội dung, bảo mật thông tin.","Thể hiện sự tôn trọng tính riêng tư và bản quyền nội dung thông tin.","Không đồng tình với hiện tượng sai trái, gian dối như xem thư riêng hay sao chép tệp của bạn khi chưa được đồng ý."],
+["Ghi rõ tên tác giả và nguồn thông tin khi dùng hình ảnh, bài viết, bài thơ.","Xin phép trước khi sao chép tệp của người khác; không đọc tin nhắn, thư riêng khi chưa được phép."],
+"Các bạn lớp 5A làm báo tường chào mừng ngày Nhà giáo Việt Nam với bài thơ, bài viết, hình ảnh tự sáng tác hoặc sưu tầm.",
+"Bạn Khoa xin phép bạn Minh trước khi sao chép tệp trình chiếu: em đồng tình. Bạn Bình xem sổ ghi chép của anh trai không xin phép: em không đồng tình (SGK tr.27).",
+["Vì sao phải ghi rõ tên tác giả hoặc nguồn của một nội dung?","Để tôn trọng tác giả và bản quyền nội dung thông tin."],
+"Tôn trọng tác giả, ghi rõ nguồn, xin phép và giữ riêng tư cho người khác."),
+mkL("l6","c5","6","Định dạng kí tự và bố trí hình ảnh trong văn bản","🅰️",29,1,"Làm văn bản đẹp, dễ đọc hơn.",
+["Định dạng được kí tự để văn bản đẹp hơn: chọn phông, kiểu, kích thước, màu sắc cho chữ.","Thay đổi được cách bố trí hình ảnh trong văn bản."],
+["Định dạng kí tự: phông chữ, kiểu chữ, cỡ chữ, màu chữ.","Bố trí hình ảnh: chọn hình, dùng nút lệnh bố trí cạnh hình (ví dụ Square – văn bản dàn xung quanh hình), nhấn giữ chuột và kéo hình đến vị trí mới (SGK tr.33)."],
+"Văn bản hướng dẫn làm Kem cầu vồng hoa quả được hai bạn góp ý về hình thức trình bày: nêu hai điều tích cực và một điều mong muốn thay đổi.",
+"Văn bản “Lịch trình chuyến đi tham quan”: tiêu đề phông Arial, cỡ 15, kiểu đậm, màu đỏ; các mốc thời gian kiểu đậm và nghiêng, màu xanh (SGK tr.33).",
+["Muốn tiêu đề nổi bật hơn, em có thể định dạng thế nào?","Chọn cỡ chữ lớn hơn, kiểu đậm hoặc đổi màu chữ."],
+"Định dạng kí tự và đặt hình ảnh hợp lí giúp văn bản đẹp, dễ đọc."),
+mkL("l7","c5","7","Thực hành soạn thảo văn bản","📝",34,1,"Thực hành soạn một văn bản hoàn chỉnh.",
+["Thực hiện thành thạo các thao tác chọn, xoá, sao chép, di chuyển một đoạn văn bản.","Đưa được hình ảnh vào văn bản một cách thành thạo."],
+["Soạn văn bản: gõ nội dung, sao chép các phần giống nhau, chỉnh sửa.","Định dạng, chèn hình ảnh và ghi rõ nguồn hình.","Hoàn thiện: xem lại, sửa lỗi chính tả rồi lưu văn bản."],
+"Em soạn lời một bài hát có nhiều phần lặp lại, nên dùng thao tác sao chép để làm nhanh.",
+"Văn bản lời bài hát (Hình 40): tên bài hát cỡ 16, kiểu đậm; hai dòng cuối (tác giả nhạc và lời) kiểu nghiêng, di chuyển lên sau tên bài hát (SGK tr.36).",
+["Khi có nhiều phần văn bản giống nhau, em nên dùng thao tác nào cho nhanh?","Sao chép và dán, sau đó chỉnh sửa chỗ cần khác."],
+"Chọn, xoá, sao chép, di chuyển, chèn hình và lưu văn bản."),
+mkL("l8a","c5","8A","Làm quen với phần mềm đồ hoạ","🎨",37,1,"Làm quen công cụ của phần mềm đồ hoạ.",
+["Biết phần mềm đồ hoạ và các công cụ chính của phần mềm đồ hoạ.","Sử dụng được một số công cụ cơ bản để tạo sản phẩm đơn giản."],
+["Phần mềm đồ hoạ cung cấp công cụ để vẽ tranh, thiết kế biểu tượng, thiết kế thiệp chúc mừng.","Dùng công cụ như chọn một phần của trang vẽ (Select), lật, đổi màu, tô màu; lưu tệp (ví dụ ChumBongBay)."],
+"Tấm thiệp chúc mừng sinh nhật (Hình 41) là một sản phẩm em có thể tạo bằng phần mềm đồ hoạ.",
+"Vẽ chùm bóng bay: sao chép quả bóng, lật quả bóng thứ hai, đổi màu rồi lưu tệp ChumBongBay (Hình 51–53, SGK tr.42).",
+["Tấm thiệp sinh nhật có thể tạo bằng loại phần mềm nào?","Phần mềm đồ hoạ (SGK tr.37)."],
+"Biết chọn và dùng công cụ cơ bản của phần mềm đồ hoạ để vẽ sản phẩm đơn giản.",{sub:SUBA}),
+mkL("l9a","c5","9A","Sử dụng phần mềm đồ hoạ tạo sản phẩm số","🖼️",43,1,"Tạo tấm thiệp chúc mừng bằng phần mềm Paint.",
+["Sử dụng được phần mềm đồ hoạ để tạo sản phẩm số."],
+["Xác định các thành phần của tấm thiệp: hình ảnh, văn bản,…","Thiệp sinh nhật thường có hình nền, bánh, bóng bay và dòng chữ chúc mừng; thiệp ngày Nhà giáo thường có hình hoa, lời tri ân.","Dùng công cụ Text để nhập lời chúc, chọn phông, cỡ chữ, màu chữ như trong soạn thảo."],
+"Em muốn tự làm thiệp đẹp, ý nghĩa để tặng người thân, thầy cô và bạn bè bằng phần mềm Paint.",
+"Làm tấm thiệp “CHÚC MỪNG SINH NHẬT”: vẽ nền, tạo chùm bóng bay, nhập lời chúc bằng công cụ Text rồi lưu tệp ThiepMungSinhNhat (SGK tr.45).",
+["Thiệp chúc mừng thường có những thành phần nào?","Hình ảnh và văn bản, ví dụ hình nền, bánh, bóng bay và dòng chữ chúc mừng."],
+"Xác định thành phần, vẽ hình, nhập chữ, lưu tệp để hoàn thành tấm thiệp.",{sub:SUBA}),
+mkL("l8b","c5","8B","Làm sản phẩm thủ công theo video hướng dẫn","✂️",46,1,"Làm sản phẩm thủ công đơn giản theo video hướng dẫn.",
+["Tạo được sản phẩm thủ công đơn giản theo video hướng dẫn."],
+["Tìm video trên YouTube (youtube.com) bằng từ khoá, ví dụ “gấp hạc giấy”.","Xem một lượt để biết tổng thể và vật dụng cần chuẩn bị, rồi xem từng bước và làm theo.","Dùng nút tạm dừng, xem lại để làm kĩ hơn."],
+"Ba bạn học gấp giấy theo video hướng dẫn trên Internet để làm sản phẩm thủ công mới.",
+"Origami là nghệ thuật gấp giấy Nhật Bản; em tìm video với từ khoá “gấp giấy origami” và làm theo (SGK tr.48).",
+["Vì sao nên xem video một lượt trước khi làm?","Để biết tổng thể nội dung và những vật dụng cần chuẩn bị."],
+"Tìm video, xem tổng thể, làm theo từng bước và dùng nút tạm dừng khi cần.",{sub:SUBB}),
+mkL("l9b","c5","9B","Thực hành tạo đồ dùng gia đình theo video hướng dẫn","🏠",49,1,"Tạo đồ dùng gia đình từ vật liệu tái chế theo video.",
+["Tạo được sản phẩm thủ công (đồ dùng gia đình) theo video hướng dẫn."],
+["Dùng nhiều loại vật liệu, kéo (để cắt) và keo, băng dính (để dán).","Nên tạo sản phẩm từ vật liệu tái chế để bảo vệ môi trường.","Từ khoá gợi ý: “làm hộp đựng rác từ vật liệu tái chế”."],
+"Các bạn muốn làm hộp bút, thùng rác nhỏ,… giúp góc học tập gọn gàng, ngăn nắp.",
+"Đồ dùng thủ công làm từ ống hút nhựa (Hình 70) hay khung ảnh làm từ vật liệu tái chế (Hình 71), SGK tr.51.",
+["Vì sao nên làm đồ dùng từ vật liệu tái chế?","Để bảo vệ môi trường."],
+"Làm theo video, dùng vật liệu tái chế và dụng cụ an toàn.",{sub:SUBB}),
+mkL("l10","c6","10","Cấu trúc tuần tự","🧩",52,1,"Các lệnh chạy lần lượt từ trên xuống.",
+["Hiểu cấu trúc tuần tự: lệnh nào đứng trước chạy trước.","Xếp lệnh đúng thứ tự để Bi tới đích."],
+["Cấu trúc tuần tự: các lệnh được thực hiện lần lượt.","Đổi thứ tự lệnh có thể cho kết quả khác."],
+"Giống làm theo công thức nấu ăn: bước nào làm trước, bước nào làm sau đều quan trọng.",
+"Chương trình “Xin chào!”: Khi bấm cờ xanh → Di chuyển 100 bước → Nói “Xin chào!”.",
+["Muốn Bi tiến 4 ô rồi rẽ trái, thứ tự đúng là gì?","Tiến, Tiến, Tiến, Tiến, rẽ trái."],
+"Tuần tự: lệnh trước chạy trước, lệnh sau chạy sau.",{lv:0,gm:"Luật trò chơi: Robot Bi bắt đầu ở ô S và quay sang phải."}),
+mkL("l11","c6","11","Cấu trúc lặp","🔁",56,1,"Việc làm nhiều lần được viết gọn bằng lệnh lặp.",
+["Hiểu công việc lặp lại nhiều lần.","Dùng lệnh lặp để rút gọn chương trình."],
+["Cấu trúc lặp: công việc được thực hiện lặp lại.","Scratch có lệnh lặp liên tục và lặp số lần biết trước."],
+"Thay vì viết “Tiến” 4 lần, em chỉ cần “Lặp 4 lần: Tiến”.",
+"Con vẹt vỗ cánh: Lặp lại 3 lần [Di chuyển 10 bước, Trang phục kế tiếp, Đợi 1 giây].",
+["Lặp 3 lần [Tiến 1 ô] thì Bi tiến mấy ô?","3 ô."],
+"Lặp giúp chương trình ngắn hơn.",{lv:2,gm:"Luật trò chơi: khối Lặp cần có khối Hết lặp đi kèm; số lần lặp chọn từ 2 đến 10."}),
+mkL("l12","c6","12","Thực hành sử dụng lệnh lặp","🔂",59,1,"Dùng lệnh lặp trong chương trình đơn giản và chạy thử.",
+["Sử dụng được lệnh lặp trong một số chương trình đơn giản.","Chạy thử được chương trình."],
+["Tạo khối lệnh cho vẹt: di chuyển 10 bước, vỗ cánh (trang phục kế tiếp), đợi 1 giây, bật lại nếu chạm cạnh.","Dùng lệnh lặp số lần biết trước, lặp liên tục, hoặc lặp lại cho đến khi (ví dụ chuột được nhấn).","Chạy thử, quan sát kết quả rồi lưu tệp."],
+"Bạn Khoa mô tả chú vẹt bay liên tục trên sân khấu: nhân vật vẹt, hành động lặp lại.",
+"Vẹt bay liên tục cho đến khi nháy chuột: dùng lệnh “lặp lại cho đến khi chuột được nhấn” (Hình 82, SGK tr.61).",
+["Muốn vẹt bay liên tục cho đến khi nháy chuột, dùng lệnh lặp nào?","Lệnh lặp lại cho đến khi (chuột được nhấn)."],
+"Chọn đúng kiểu lặp, chạy thử và sửa chương trình.",{lv:3,gm:"Luật trò chơi: các màn có tường và số khối tối đa là của Robot Bi."}),
+mkL("l13","c6","13","Cấu trúc rẽ nhánh","🔀",62,1,"Chọn việc làm tuỳ theo điều kiện.",
+["Hiểu dạng thiếu: nếu … thì …","Biết có dạng đủ: nếu … thì …, nếu không thì …"],
+["Dạng thiếu: nếu <điều kiện> thì <công việc>.","Dạng đủ: thêm “nếu không thì <công việc 2>”."],
+"Giống quy tắc qua đường: nếu đèn xanh thì đi, nếu không thì chờ.",
+"Nếu đèn tín hiệu cho người đi bộ màu xanh thì em đi qua đường.",
+["Điều kiện không đúng thì việc sau “thì” (dạng thiếu) có làm không?","Không làm."],
+"Rẽ nhánh: kiểm tra điều kiện rồi mới chọn việc.",{lv:4,gm:"Luật trò chơi: “Nếu chạm tường thì rẽ trái/phải” là khối riêng của Robot Bi, không phải khối có sẵn của Scratch."}),
+mkL("l14","c6","14","Sử dụng biến trong chương trình","📦",67,1,"Biến lưu thông tin để chương trình dùng lại.",
+["Biết biến là nơi lưu một giá trị.","Biết thông tin nhập từ bàn phím lưu trong biến “trả lời”."],
+["Biến lưu thông tin và giá trị có thể thay đổi.","Scratch lưu câu trả lời vào biến “trả lời”."],
+"Biến như chiếc hộp có nhãn: bỏ giá trị vào, lấy ra dùng khi cần.",
+"Chương trình “Xin chào bạn…”: hỏi tên, lưu vào “trả lời”, rồi chào bạn.",
+["Thông tin gõ từ bàn phím được lưu ở đâu?","Trong biến."],
+"Biến lưu giá trị cho chương trình.",{lv:6,gm:"Luật trò chơi: biến “điểm” tăng 1 mỗi lần Bi nhặt một sao."}),
+mkL("l15","c6","15","Sử dụng biểu thức trong chương trình","➕",73,1,"Phép tính và phép so sánh cho ra kết quả.",
+["Biết 4 phép toán số học và 3 phép so sánh.","Biết biểu thức so sánh cho kết quả đúng hoặc sai."],
+["Phép toán: cộng, trừ, nhân, chia.","So sánh: bé hơn, bằng, lớn hơn → đúng hoặc sai."],
+"Biểu thức giống câu hỏi “a có bằng b không?”: câu trả lời chỉ là đúng hoặc sai.",
+"a = 15, b = 5 thì a / b = 3; a = 30, b = 30 thì a = b là đúng.",
+["Điểm = 2, cổng mở khi điểm = 3. Cổng đã mở chưa?","Chưa, vì 2 không bằng 3."],
+"Biểu thức tính hoặc so sánh các giá trị.",{lv:7,gm:"Luật trò chơi: cổng chỉ mở khi điểm = 3 (điều kiện do trò chơi đặt)."}),
+mkL("l16","c6","16","Từ kịch bản đến chương trình","📜",78,1,"Từ ý tưởng đến chương trình hoàn chỉnh.",
+["Viết kịch bản trước khi lập trình.","Chạy thử, tìm lỗi và sửa chương trình."],
+["Kịch bản nêu nhân vật, bối cảnh, hành động.","Quy trình: kịch bản → chọn lệnh → tạo chương trình → chạy thử → sửa."],
+"Nghĩ kĩ trước khi làm giúp em ít sai và nhanh hơn.",
+"Kịch bản “Mèo bắt bóng”: mèo theo con trỏ chuột, chạm bóng thì điểm tăng 1.",
+["Việc đầu tiên trước khi tạo chương trình là gì?","Viết kịch bản."],
+"Kịch bản rõ ràng giúp chuyển thành chương trình nhanh hơn.",{lv:8,gm:"Luật trò chơi: các màn sửa lỗi và “Giải cứu thành phố” do trang này xây dựng."})
+];
+LE.forEach(l=>{if(l.sub==="")delete l.sub});
+/* ---- ngân hàng câu hỏi bổ sung cho Bài 1–9 (4 câu/bài; kiến thức phổ thông, cần GV đối chiếu SGK) ---- */
+const NQ=[
+["l1","mc","Trong trò chơi Mê cung, em dùng phím nào để điều khiển chú chuột?","Các phím mũi tên","Chuột máy tính;Phím cách;Các phím chữ cái","Dùng các phím mũi tên để chuột đi từ Lối vào đến Lối ra.","tr.6"],
+["l1","mc","Trò chơi Mê cung trong bài được viết bằng phần mềm nào?","Scratch","Paint;Phần mềm soạn thảo văn bản;Phần mềm trình chiếu","Trò chơi mê cung là một chương trình viết bằng Scratch.","tr.6"],
+["l1","mc","Thời gian chơi trong trò chơi Mê cung được tính từ lúc nào?","Từ lúc bắt đầu chơi đến khi chuột đến Lối ra","Từ lúc mở máy tính;Từ lúc em đọc bài;Chỉ lúc chuột đứng yên","Thời gian tính bằng giây từ khi bắt đầu đến khi chuột tới Lối ra.","tr.6"],
+["l1","mc","Phần mềm luyện gõ bàn phím giúp em làm gì?","Gõ phím nhanh và đúng cách","Vẽ tranh;Gửi thư điện tử;Làm video","Phần mềm luyện gõ giúp gõ phím nhanh và đúng cách.","tr.5"],
+["l1","mc","Phần mềm trình chiếu giúp em trình bày thông tin như thế nào?","Sinh động, hấp dẫn","Chỉ bằng chữ đen trắng;Không thêm được hình;Chỉ để nghe nhạc","Trình chiếu giúp trình bày thông tin sinh động, hấp dẫn.","tr.5"],
+["l1","tf","Máy tính chỉ dùng để giải trí, không giúp em học tập.",false,"","Máy tính còn giúp học tập, trao đổi thông tin và tạo sản phẩm số.","tr.5"],
+["l2","mc","Nhóm An, Minh, Khoa tìm thông tin về Ngày hội Trạng Nguyên nhỏ tuổi trên website nào?","thieunien.vn","youtube.com;sodulich.hanoi.gov.vn;nchmf.gov.vn","Các bạn tìm trên website báo Thiếu niên Tiền phong và Nhi đồng.","tr.8"],
+["l2","mc","Muốn tìm nhanh thông tin trên một website, em dùng gì của website đó?","Công cụ tìm kiếm","Nút tắt máy;Thanh cuộn;Ổ USB","Website có công cụ tìm kiếm để em tìm thông tin.","tr.13"],
+["l2","mc","Để rút USB an toàn, em chọn biểu tượng USB rồi chọn lệnh nào?","Eject","Delete;Open;Copy","Chọn Eject rồi đợi thông báo có thể rút USB.","tr.13"],
+["l2","od","Sắp xếp các bước ngắt USB khỏi máy tính.",["Nháy chuột vào mũi tên nhỏ ở phía dưới bên phải màn hình nền","Chọn biểu tượng USB, chọn Eject","Đợi thông báo có thể rút USB an toàn","Rút USB ra khỏi cổng USB"],"","Làm lần lượt để tránh làm hỏng USB và tệp.","tr.13"],
+["l2","tf","Em có thể rút USB ngay mà không cần ngắt kết nối.",false,"","Cần ngắt kết nối đúng cách để tránh làm hỏng USB và tệp.","tr.13"],
+["l3","mc","Vấn đề ba bạn An, Minh, Khoa cần giải quyết trong bài là gì?","Chuẩn bị đồ dùng mang theo cho kì nghỉ hè","Chọn môn học mới;Mua máy tính;Làm báo tường","Mỗi bạn đi một nơi nên cần chuẩn bị đồ dùng phù hợp.","tr.14"],
+["l3","mc","Phát biểu nào sau đây là SAI?","Thông tin không có vai trò gì trong giải quyết vấn đề","Để giải quyết vấn đề em cần đưa ra quyết định;Để có quyết định em cần có thông tin;Thu thập, tìm kiếm thông tin rất quan trọng khi giải quyết vấn đề","Thông tin rất quan trọng khi giải quyết vấn đề.","tr.18"],
+["l3","mc","Gia đình có người già và trẻ em, em không nên chọn điểm tham quan nào ở Sa Pa?","Điểm ở xa, phải trèo đèo, lội suối","Nhà thờ đá Sa Pa;Hồ Sa Pa;Chợ đêm Sa Pa","Nên tránh điểm xa, đường đi vất vả.","tr.18"],
+["l3","mc","Việc lựa chọn điểm tham quan phụ thuộc vào điều gì?","Đặc điểm chuyến đi như số ngày, thành phần tham gia, nhu cầu chung","Màu của website;Hãng máy tính;Không phụ thuộc gì","Cần dựa vào kết quả tìm kiếm và đặc điểm của chuyến đi.","tr.18"],
+["l4","mc","Sắp xếp, phân loại hợp lí các tệp và thư mục giúp em điều gì?","Dễ tìm và tìm kiếm nhanh hơn","Máy chạy nhanh hơn;Tệp nhỏ đi;Không có lợi ích","Sắp xếp hợp lí giúp em dễ tìm và tìm kiếm nhanh hơn.","tr.19"],
+["l4","mc","Nháy nút phải chuột vào tên tệp trong kết quả tìm kiếm, em chọn lệnh nào để mở thư mục lưu tệp?","Open file location","Delete;Rename;Copy","Open file location mở thư mục chứa tệp.","tr.23"],
+["l4","mc","Nháy đúp chuột vào tên tệp trong kết quả tìm kiếm sẽ làm gì?","Mở tệp","Xoá tệp;Đổi tên tệp;Tắt máy","Nháy đúp chuột để mở tệp.","tr.23"],
+["l4","tf","Em có thể dùng công cụ tìm kiếm trên máy tính để tìm thư mục và tệp.",true,"","Mục tiêu bài: sử dụng công cụ tìm kiếm để tìm thư mục và tệp.","tr.19"],
+["l4","mc","Khi thực hành ở phòng máy, em cần lưu ý gì?","Không thay đổi cấu trúc các thư mục khác trên máy tính","Xoá hết thư mục của bạn;Đổi tên mọi tệp;Tắt máy ngay","Đó là lưu ý của bài.","tr.23"],
+["l5","mc","Vì sao phải ghi rõ tên tác giả hoặc nguồn của nội dung em dùng?","Để tôn trọng tác giả và bản quyền nội dung","Để tệp nặng hơn;Để máy chạy nhanh;Không cần ghi","Ghi nguồn thể hiện sự tôn trọng bản quyền nội dung thông tin.","tr.24"],
+["l5","tf","Đọc tin nhắn trên điện thoại của người khác khi chưa được phép là việc nên làm.",false,"","Cần tôn trọng tính riêng tư của người khác.","tr.28"],
+["l5","mc","Bạn Khoa xin phép bạn Minh trước khi sao chép tệp trình chiếu. Em thấy việc đó thế nào?","Đồng tình","Không đồng tình;Sai quy định;Không liên quan","Xin phép trước khi sao chép thể hiện sự tôn trọng.","tr.27"],
+["l5","mc","Bạn Bình xem sổ ghi chép của anh trai mà không xin phép. Em thấy việc đó thế nào?","Không đồng tình","Đồng tình;Rất tốt;Không liên quan","Cần xin phép khi dùng đồ riêng của người khác.","tr.27"],
+["l5","mc","Em chia sẻ thông tin riêng tư (nhật kí, hình ảnh) của người khác khi chưa xin phép. Việc đó thế nào?","Không đồng tình vì không tôn trọng tính riêng tư","Đồng tình vì vui;Đồng tình vì nhanh;Không liên quan","Cần xin phép trước khi chia sẻ.","tr.28"],
+["l6","mc","Định dạng kí tự gồm việc chọn những gì cho chữ?","Phông, kiểu, kích thước và màu sắc","Chỉ tên tệp;Chỉ màu nền máy tính;Chỉ âm lượng","Định dạng kí tự: chọn phông, kiểu, kích thước, màu sắc cho chữ.","tr.29"],
+["l6","mc","Muốn văn bản dàn xung quanh hình ảnh, em chọn cách bố trí nào?","Square","Delete;Save;Open","Square: văn bản dàn xung quanh hình ảnh.","tr.33"],
+["l6","mc","Muốn di chuyển hình ảnh đến vị trí mới, em làm thế nào?","Nháy chuột vào hình, nhấn giữ và di chuyển chuột","Nhấn phím cách;Đóng phần mềm;Gõ tên hình","Nhấn giữ và di chuyển chuột để đưa hình đến vị trí mới.","tr.33"],
+["l6","mc","Tiêu đề “Lịch trình chuyến đi tham quan” được yêu cầu định dạng thế nào?","Phông Arial, cỡ 15, kiểu đậm, màu đỏ","Phông Tahoma, cỡ 13, kiểu nghiêng, màu xanh;Cỡ 8, không đậm;Không cần định dạng","Đúng theo yêu cầu Luyện tập.","tr.33"],
+["l6","tf","Khi chọn hình ảnh, nút lệnh bố trí hình xuất hiện bên cạnh hình.",true,"","Bước 1: chọn hình ảnh, nút lệnh xuất hiện bên cạnh hình.","tr.33"],
+["l7","mc","Khi có nhiều phần văn bản giống nhau, em nên dùng thao tác nào cho nhanh?","Sao chép","Xoá toàn bộ;Gõ lại từng chữ;Đóng tệp","Sao chép các phần văn bản giống nhau rồi chỉnh sửa.","tr.34"],
+["l7","mc","Bước cuối khi hoàn thiện văn bản là gì?","Xem lại, sửa lỗi chính tả và lưu văn bản","Tắt máy ngay;Xoá hết;Không cần lưu","Hoàn thiện và lưu văn bản.","tr.36"],
+["l7","mc","Trong văn bản lời bài hát (Hình 40), tên bài hát được định dạng thế nào?","Cỡ chữ 16, kiểu chữ đậm","Cỡ chữ 8, kiểu nghiêng;Không định dạng;Màu trắng","Theo yêu cầu Luyện tập.","tr.36"],
+["l7","mc","Hai dòng thông tin tác giả nhạc và lời được định dạng kiểu chữ nào?","Kiểu nghiêng","Kiểu đậm;Gạch chân;Kiểu bình thường","Dòng thông tin tác giả kiểu nghiêng.","tr.36"],
+["l7","tf","Khi chèn hình minh hoạ vào văn bản, em nên ghi rõ nguồn hình ảnh.",true,"","Yêu cầu chèn hình và ghi rõ nguồn.","tr.36"],
+["l8a","mc","Loại phần mềm nào có thể dùng để tạo tấm thiệp chúc mừng sinh nhật?","Phần mềm đồ hoạ","Phần mềm soạn thảo văn bản;Phần mềm trình chiếu;Phần mềm luyện tập chuột","Thiệp sinh nhật là sản phẩm tạo bằng phần mềm đồ hoạ.","tr.37"],
+["l8a","mc","Phần mềm đồ hoạ giúp em làm gì?","Vẽ tranh, thiết kế biểu tượng, thiết kế thiệp chúc mừng","Chỉ gõ văn bản;Chỉ gửi thư;Chỉ nghe nhạc","Phần mềm đồ hoạ hỗ trợ thiết kế đồ hoạ trên máy tính.","tr.37"],
+["l8a","mc","Trong Paint, công cụ nào dùng để chọn một phần của trang vẽ?","Select","Rotate;Fill with color;Eraser","Select dùng để chọn một phần trang vẽ.","tr.42"],
+["l8a","mc","Chùm bóng bay trong bài được lưu với tên nào?","ChumBongBay","ThiepMungSinhNhat;VetBay3;HanhDongCuaVet","Bước 7: lưu tệp với tên ChumBongBay.","tr.42"],
+["l9a","mc","Thiệp sinh nhật thường có những thành phần nào?","Hình nền, bánh, bóng bay và dòng chữ chúc mừng","Chỉ có bảng tính;Chỉ có video;Không có thành phần nào","Nội dung thiệp thể hiện qua hình ảnh, văn bản.","tr.43"],
+["l9a","mc","Thiệp chúc mừng ngày Nhà giáo Việt Nam thường có gì?","Hình hoa và lời tri ân thầy cô giáo","Hình xe ô tô;Chỉ có số;Không có gì","Thiệp ngày Nhà giáo có hình hoa và lời tri ân.","tr.43"],
+["l9a","mc","Muốn nhập lời chúc lên tấm thiệp, em dùng công cụ nào?","Công cụ viết chữ Text","Công cụ tẩy;Công cụ lật hình;Công cụ thu phóng","Chọn công cụ Text rồi nháy vào nền tấm thiệp để nhập chữ.","tr.45"],
+["l9a","mc","Tấm thiệp ở phần thực hành được lưu với tên nào?","ThiepMungSinhNhat","ChumBongBay;VetBay3;MeCung","Bước e) lưu với tên ThiepMungSinhNhat.","tr.45"],
+["l9a","mc","Muốn sao chép một hình trong phần mềm đồ hoạ, hình đó phải vẽ ở đâu?","Ở vùng trống","Trên hình khác;Ngoài màn hình;Trong thùng rác","Để thuận tiện cho việc sao chép, hình phải vẽ ở vùng trống.","tr.45"],
+["l8b","mc","Website nào được dùng để tìm video hướng dẫn gấp giấy?","YouTube (youtube.com)","thieunien.vn;nchmf.gov.vn;sodulich.hanoi.gov.vn","Bước 1: truy cập youtube.com.","tr.48"],
+["l8b","mc","Từ khoá dùng để tìm video gấp hạc giấy là gì?","gấp hạc giấy","trò chơi mê cung;làm kem;vẽ bóng bay","Dùng từ khoá “gấp hạc giấy” để tìm video.","tr.48"],
+["l8b","mc","Vì sao nên xem video một lượt trước khi làm?","Để biết tổng thể nội dung và vật dụng cần chuẩn bị","Để bỏ qua các bước;Để xoá video;Không có lí do","Xem một lượt để biết tổng thể và vật dụng cần chuẩn bị.","tr.48"],
+["l8b","mc","Muốn xem kĩ từng bước và có thời gian gấp giấy, em dùng nút nào?","Nút tạm dừng","Nút tắt máy;Nút xoá;Nút đóng cửa sổ","Dùng nút tạm dừng, xem lại,… để xem kĩ hơn.","tr.48"],
+["l8b","mc","Origami là gì?","Nghệ thuật gấp giấy Nhật Bản","Một phần mềm vẽ;Một loại bàn phím;Một trò chơi mê cung","Origami là nghệ thuật gấp giấy Nhật Bản.","tr.48"],
+["l9b","mc","Vì sao nên tạo sản phẩm từ vật liệu tái chế?","Để bảo vệ môi trường","Để tốn nhiều tiền;Để làm máy chạy nhanh;Không có lí do","Nên tạo sản phẩm từ vật liệu tái chế để bảo vệ môi trường.","tr.49"],
+["l9b","mc","Từ khoá gợi ý tìm video làm hộp đựng rác là gì?","làm hộp đựng rác từ vật liệu tái chế","gấp hạc giấy;vẽ bóng bay;luyện gõ phím","Từ khoá gợi ý trong phần Lưu ý.","tr.49"],
+["l9b","mc","Em dùng dụng cụ nào để cắt và dán khi làm đồ dùng?","Kéo (để cắt) và keo hoặc băng dính (để dán)","Chuột và bàn phím;Máy in;Ổ USB","Bài nêu kéo để cắt, keo, băng dính để dán.","tr.49"],
+["l9b","mc","Trong Luyện tập, các đồ dùng thủ công ở Hình 70 được làm từ vật liệu nào?","Ống hút nhựa","Vỏ hộp sữa;Giấy origami;Que kem","Hình 70: đồ dùng thủ công làm từ ống hút nhựa.","tr.51"],
+["l9b","tf","Ở Bài 9B, em chỉ được dùng giấy để làm sản phẩm.",false,"","Bài này có thể dùng nhiều loại vật liệu khác nhau.","tr.49"],
+["l12","mc","Bi cần tiến 5 ô nhưng chạy xong chỉ đi được 4 ô. Em nên làm gì?","Tăng số lần lặp thêm 1","Xoá hết chương trình;Thêm lệnh rẽ trái;Đổi tên màn","Số lần lặp phải khớp số bước cần đi (luật trò chơi).",""],
+["l12","mc","Muốn vẹt bay liên tục cho đến khi nháy chuột, em dùng lệnh nào?","Lặp lại cho đến khi (chuột được nhấn)","Lặp lại 3 lần;Đợi 1 giây;Bật lại nếu chạm cạnh","Dùng lệnh lặp lại cho đến khi để lặp đến khi nháy chuột.","tr.61"],
+["l12","tf","Trong bài thực hành, vẹt có hành động bật lại nếu chạm cạnh sân khấu.",true,"","Hành động thứ 4 của vẹt là bật lại nếu chạm cạnh.","tr.59"]];
+NQ.forEach(a=>{const [l,t,q,r,w,why,src]=a,tp=LE.find(x=>x.id===l).c,base={id:"N"+(QB.length+1),k:tp,b:"Bài "+l.slice(1).toUpperCase(),v:1,l,q,why,s:src?"Khớp SGK "+src:"Luật mô phỏng Robot Bi; cần GV đối chiếu",st:src?"ok":"gt"};QB.push(t==="tf"?{...base,t:"tf",r:r?"Đúng":"Sai"}:t==="od"?{...base,t:"od",it:r}:{...base,t:"mc",r,w:w.split(";")})});
+Object.assign(HINT,{c1:"Nhớ lại ích lợi và cách dùng máy tính đúng cách.",c2:"Nghĩ đến trình duyệt, từ khoá và việc kiểm tra thông tin.",c3:"Nghĩ về cách chọn từ khoá và cách tổ chức thư mục.",c4:"Tôn trọng tác giả: xin phép và ghi nguồn.",c5:"Nhớ các bước làm sản phẩm và công cụ của phần mềm.",c6:HINT.tt});
+/* ---- tiện ích ---- */
+const nrm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").toLowerCase();
+const lidOf=q=>q.l||("l"+q.b.replace(/\D*(\d+\w*)/,"$1").toLowerCase());
+const QL=id=>QB.map((q,i)=>i).filter(i=>lidOf(QB[i])===id);
+const tpOf=i=>{const l=LE.find(x=>x.id===lidOf(QB[i]));return l?l.c:"c6"};
+const LD=id=>S.les.done[id]?"done":S.les.seen[id]?"doing":"new";
+const LP=id=>{if(S.les.done[id])return 100;if(!S.les.seen[id])return 0;const p=S.pq[id];return 20+Math.round(.7*(p?p.best:0))};
+const STX={done:"✅ Đã hoàn thành",doing:"📖 Đang học",new:"⚪ Chưa học"};
+const mkBar=p=>{const x=el("div","xp"),i=el("i");i.style.width=p+"%";x.style.width="100%";x.append(i);return x};
+const mkSel=(opts,val,fn)=>{const s=document.createElement("select");opts.forEach(([v,t])=>{const o=new Option(t,v);o.selected=String(v)===String(val);s.add(o)});s.onchange=()=>fn(s.value);return s};
+const lsec=(t,...n)=>{const c=el("div","card");c.append(el("h3","",t),...n);return c};
+const ulOf=a=>{const u=el("ul");a.forEach(x=>u.append(el("li","",x)));return u};
+function qrec(id,g){const r=S.qs[id]||(S.qs[id]={a:0,w:0});if(g){r.a++;S.rv=S.rv.filter(x=>x!==id)}else{r.w++;if(!S.rv.includes(id))S.rv.push(id)}}
+function mix(pool,n){const by={};shuf(pool).forEach(i=>(by[tpOf(i)]=by[tpOf(i)]||[]).push(i));const ks=Object.keys(by),out=[];let k=0;while(out.length<n&&ks.some(t=>by[t].length)){const t=ks[k++%ks.length];if(by[t].length)out.push(by[t].shift())}return shuf(out)}
+function runSet(box,ids,ns,lid,again){if(!ids.length){box.textContent="Chưa có câu hỏi phù hợp.";return}NS=ns;qw=[];
+quiz(box,ids,ok=>{const wr=qw||[];NS=0;qw=null;const n=ids.length,pc=Math.round(ok/n*100);
+if(!ns){S.ex.att++;S.ex.ok+=ok;S.ex.tot+=n;if(lid){const p=S.pq[lid]||(S.pq[lid]={att:0,ok:0,tot:0,best:0});p.att++;p.ok+=ok;p.tot+=n;p.best=Math.max(p.best,pc);S.qh.push([lid,pc,Date.now()]);if(S.qh.length>60)S.qh.shift()}save();sfx(pc>=80?"win":"ok");bchk()}
+box.innerHTML="";box.append(el("h3","","Kết quả: "+ok+"/"+n+" ("+pc+"%)"),el("p","sub",ns?"Chế độ luyện tập: không tính điểm, không ghi vào báo cáo.":"Điểm đã được ghi vào báo cáo. Mỗi câu chỉ nhận thưởng XP một lần."));
+if(wr.length){box.append(el("b","","Những câu cần xem lại:"));const u=el("ul");wr.forEach(i=>{const q=QB[i];u.append(el("li","",q.b+": "+q.q+" → "+q.why))});box.append(u)}else box.append(el("p","","Em trả lời đúng tất cả. Giỏi quá! 🎉"));
+const r=el("button","btn","↻ Làm lại (đề mới)");r.onclick=again;box.append(r)})}
+/* ---- Học cùng Bi ---- */
+const LS={q:"",tp:"all",st:"all",cur:null,
+open(id){LS.cur=id;show("hoc");window.scrollTo(0,0)},
+render(){const R=$("#hoc");if(LS.cur){LS.detail(R);return}R.innerHTML="";
+const done=LE.filter(l=>S.les.done[l.id]).length,doing=LE.filter(l=>LD(l.id)==="doing").length;
+R.append(el("h2","","Học cùng Bi"));
+const sm=el("div","card");sm.append(el("p","","Tất cả "+LE.length+" bài theo mục lục SGK · ✅ đã học "+done+" · 📖 đang học "+doing+" · ⚪ chưa học "+(LE.length-done-doing)),el("p","sub","Tiến độ bài học ở đây tách riêng với tiến độ vượt màn trong “Thực hành cùng Bi”."));
+const tg=el("div","g");TOP.forEach(tp=>{const ls=LE.filter(l=>l.c===tp.id),d=ls.filter(l=>S.les.done[l.id]).length,c=el("button","card");c.style.cssText="text-align:left;font:inherit;color:inherit;cursor:pointer;margin:0";c.append(el("b","",tp.ic+" "+tp.n),el("div","sub",d+"/"+ls.length+" bài"),mkBar(d/ls.length*100));c.onclick=()=>{LS.tp=tp.id;LS.render()};tg.append(c)});sm.append(tg);
+if(S.les.last){const l=LE.find(x=>x.id===S.les.last);if(l){const b=el("button","btn y","▶ Tiếp tục bài đang học: Bài "+l.num);b.style.marginTop="10px";b.onclick=()=>LS.open(l.id);sm.append(b)}}
+R.append(sm);
+const f=el("div","card row"),q=el("input");q.type="text";q.placeholder="Tìm theo tên bài hoặc số bài…";q.value=LS.q;q.setAttribute("aria-label","Tìm bài học");q.oninput=()=>{LS.q=q.value;LS.grid()};
+f.append(q,mkSel([["all","Tất cả chủ đề"],...TOP.map(t=>[t.id,t.n.split(".")[0]+". "+t.n.split(". ")[1].slice(0,28)])],LS.tp,v=>{LS.tp=v;LS.grid()}),mkSel([["all","Mọi trạng thái"],["new","Chưa học"],["doing","Đang học"],["done","Đã hoàn thành"]],LS.st,v=>{LS.st=v;LS.grid()}));
+const g=el("div");g.id="lsg";R.append(f,g);LS.grid()},
+grid(){const g=$("#lsg");g.innerHTML="";const q=nrm(LS.q.trim());let any=0;
+TOP.forEach(tp=>{if(LS.tp!=="all"&&LS.tp!==tp.id)return;const ls=LE.filter(l=>l.c===tp.id&&(LS.st==="all"||LD(l.id)===LS.st)&&(!q||nrm("bai "+l.num+" "+l.t+" "+tp.n).includes(q)));if(!ls.length)return;any=1;
+g.append(el("h3","",tp.ic+" "+tp.n));const gr=el("div","g");gr.style.marginBottom="14px";let sb="";
+ls.forEach(l=>{if(l.sub&&l.sub!==sb){sb=l.sub;const h=el("div","sub",l.sub);h.style.cssText="grid-column:1/-1;font-weight:800";gr.append(h)}gr.append(LS.card(l))});g.append(gr)});
+if(!any)g.append(el("p","sub","Không có bài phù hợp. Thử từ khoá khác nhé."))},
+card(l){const c=el("div","card lc "+l.c),st=LD(l.id);c.append(el("span","tag","Bài "+l.num+(l.vt?"":" ⚠")),el("h3","",l.ic+" "+l.t),el("div","sub",l.d),el("div","",STX[st]),mkBar(LP(l.id)),el("div","sub",LP(l.id)+"% hoàn thành"));const b=el("button","btn y","Học ngay");b.onclick=()=>LS.open(l.id);c.append(b);return c},
+detail(R){const l=LE.find(x=>x.id===LS.cur),i=LE.indexOf(l),tp=TOP.find(t=>t.id===l.c);S.les.seen[l.id]=1;S.les.last=l.id;save();R.innerHTML="";
+const bk=el("button","btn alt","← Danh sách bài học");bk.onclick=()=>{LS.cur=null;LS.render()};R.append(bk);
+const h=el("div","card");h.append(el("span","tag","Bài "+l.num),el("h2","",l.ic+" "+l.t),el("div","sub",tp.n+(l.sub?" · "+l.sub:"")),el("div","sub","Trạng thái: "+STX[LD(l.id)]+" · "+LP(l.id)+"%"));
+const nt=el("div","warn","✔ Tên bài và số trang (tr."+l.pg+") khớp mục lục SGK. Phần tóm lược do AI soạn theo các trang SGK của bài; ví dụ và luật trò chơi được ghi chú riêng. GV nên đối chiếu lần cuối.");nt.style.marginTop="6px";h.append(nt);R.append(h);
+R.append(lsec("🎯 Mục tiêu cần đạt",ulOf(l.g)),lsec("📚 Kiến thức trọng tâm",ulOf(l.k)),lsec("💬 Giải thích dễ hiểu",el("p","",l.e)),lsec("🌟 Ví dụ minh hoạ",el("p","",l.ex)));
+if(l.vis){const p=el("pre","vis",l.vis);R.append(lsec("🖼️ Sơ đồ minh hoạ",p))}
+const a=el("div"),ab=el("button","btn alt","Xem gợi ý đáp án"),ap=el("p","ok");ab.onclick=()=>{ap.textContent=l.act[1];sfx("ok")};a.append(el("p","",l.act[0]),ab,ap);R.append(lsec("🔍 Hoạt động khám phá",a));
+if(l.gm){const gx=el("p","",l.gm);R.append(lsec("🎮 Luật riêng của trò chơi Robot Bi (không phải kiến thức/cú pháp Scratch)",gx))}
+if(l.lv!==undefined){const b=el("button","btn pp","🗺️ Thực hành cùng Bi");b.onclick=()=>{const k=Math.min(l.lv,open());pick(k);show("lap")};R.append(lsec("🛠️ Thực hành",el("p","",""),b))}
+const ids=QL(l.id),bx=el("div"),st=el("div","row");
+const go=ns=>()=>runSet(bx,shuf(ids),ns,l.id,go(ns));
+const b1=el("button","btn","Làm bài tính điểm ("+ids.length+" câu)"),b2=el("button","btn alt","Luyện tập không tính điểm");b1.onclick=go(0);b2.onclick=go(1);st.append(b1,b2);
+const pq=S.pq[l.id];R.append(lsec("✏️ Bài tập tương tác",el("p","sub",pq?"Đã làm "+pq.att+" lần · tốt nhất "+pq.best+"% · đúng "+pq.ok+"/"+pq.tot:"Chưa làm bài tính điểm. Mỗi câu có gợi ý, giải thích và được làm lại."),st,bx));
+R.append(lsec("📌 Tổng kết",el("p","",l.sum)));
+const nv=el("div","row"),dn=el("button",S.les.done[l.id]?"btn alt":"btn y",S.les.done[l.id]?"✔ Đã hoàn thành (bấm để bỏ đánh dấu)":"✅ Đánh dấu đã hoàn thành");
+dn.onclick=()=>{if(S.les.done[l.id]){delete S.les.done[l.id]}else{S.les.done[l.id]=1;S.les.rw=S.les.rw||{};if(!S.les.rw[l.id]){S.les.rw[l.id]=1;S.xp+=10;S.co+=2;biSay("Em hoàn thành một bài học rồi!",1)}sfx("win")}save();renderTop();LS.render()};
+const pv=el("button","btn alt","◀ Bài trước"),nx=el("button","btn","Học bài tiếp theo ▶");pv.disabled=i===0;nx.disabled=i===LE.length-1;pv.onclick=()=>LS.open(LE[i-1].id);nx.onclick=()=>LS.open(LE[i+1].id);
+nv.append(pv,dn,nx);R.append(nv);
+const note=el("p","sub","Mục lục SGK không có phần ôn tập riêng cuối chủ đề. SGK có “Bảng giải thích thuật ngữ” ở tr.83; trang chưa đưa mục này vào. GV bổ sung vào mảng LE nếu cần.");R.append(note)}};
+/* ---- Luyện tập & Ôn tập tổng hợp ---- */
+const CNT=[[5,"5 câu"],[10,"10 câu"],[15,"15 câu"],[20,"20 câu"],[30,"30 câu"]];
+const PR={lid:"l1",n:10,ns:0,render(){const R=$("#lp");R.innerHTML="";R.append(el("h2","","✏️ Luyện tập theo bài"));const c=el("div","card"),r=el("div","row"),bx=el("div");
+const run=()=>runSet(bx,shuf(QL(PR.lid)).slice(0,PR.n),PR.ns,PR.lid,run);
+r.append(mkSel(LE.map(l=>[l.id,"Bài "+l.num+" – "+l.t+" ("+QL(l.id).length+" câu)"]),PR.lid,v=>PR.lid=v),mkSel(CNT.slice(0,3),PR.n,v=>PR.n=+v),mkSel([[0,"Tính điểm"],[1,"Không tính điểm"]],PR.ns,v=>PR.ns=+v));
+const go=el("button","btn","Bắt đầu");go.onclick=run;const rv=el("button","btn alt","Ôn lại câu đã sai ("+S.rv.length+")");rv.onclick=()=>{const ids=S.rv.map(x=>QB.findIndex(q=>q.id===x)).filter(i=>i>=0);runSet(bx,shuf(ids).slice(0,15),PR.ns,null,rv.onclick)};
+r.append(go,rv);c.append(el("p","sub","Chọn bài, số câu và chế độ. Có chế độ không tính điểm; mỗi câu trả lời chỉ tính một lần."),r);R.append(c,bx)}};
+const RV={sc:"all",n:10,ns:0,render(){const R=$("#ot");R.innerHTML="";R.append(el("h2","","📝 Ôn tập tổng hợp"));const c=el("div","card"),r=el("div","row"),bx=el("div");
+const pool=()=>QB.map((q,i)=>i).filter(i=>RV.sc==="all"||(RV.sc[0]==="t"?tpOf(i)===RV.sc.slice(2):lidOf(QB[i])===RV.sc.slice(2)));
+const run=()=>{const p=pool();runSet(bx,mix(p,Math.min(RV.n,p.length)),RV.ns,RV.sc[0]==="l"?RV.sc.slice(2):null,run)};
+const os=[["all","Toàn bộ chương trình (đề ngẫu nhiên, đủ các chủ đề)"],...TOP.map(t=>["t:"+t.id,t.n]),...LE.map(l=>["l:"+l.id,"Bài "+l.num+" – "+l.t])];
+r.append(mkSel(os,RV.sc,v=>RV.sc=v),mkSel(CNT,RV.n,v=>RV.n=+v),mkSel([[0,"Tính điểm"],[1,"Không tính điểm"]],RV.ns,v=>RV.ns=+v));
+const go=el("button","btn","Tạo đề và làm bài");go.onclick=run;r.append(go);c.append(el("p","sub","Đề lấy ngẫu nhiên từ ngân hàng "+QB.length+" câu, xen kẽ các chủ đề. Câu mang nhãn “cần GV đối chiếu” xem ở tab Giáo viên."),r);R.append(c,bx);
+const ws=Object.entries(S.qs).filter(x=>x[1].w>0).sort((a,b)=>b[1].w-a[1].w).slice(0,5),wc=el("div","card");wc.append(el("h3","","📉 Nội dung em hay trả lời sai"));
+if(!ws.length)wc.append(el("p","sub","Chưa có dữ liệu. Làm bài tính điểm để Bi ghi nhận nhé."));else{const u=el("ul");ws.forEach(([id,v])=>{const q=QB.find(x=>x.id===id);if(q)u.append(el("li","",q.b+": "+q.q+" (sai "+v.w+" lần)"))});wc.append(u)}
+const tb=el("table");tb.innerHTML="<tr><th>Chủ đề</th><th>Đúng</th><th>Sai</th></tr>";TOP.forEach(t=>{let a=0,w=0;Object.entries(S.qs).forEach(([id,v])=>{const i=QB.findIndex(x=>x.id===id);if(i>=0&&tpOf(i)===t.id){a+=v.a;w+=v.w}});const row=tb.insertRow();[t.n,a,w].forEach(x=>row.insertCell().textContent=x)});
+const sw=el("div");sw.style.overflowX="auto";sw.append(tb);wc.append(sw);R.append(wc)}};
+/* ---- Trang chủ ---- */
+/* ---- bản đồ thế giới ---- */
+const WSV={1: '<rect width="160" height="80" fill="#bfe4ff"/><path d="M-5 70Q50 50 100 62T170 55V80H-5z" fill="#7fd6a0"/><path d="M10 68Q80 54 150 60" stroke="#fff" stroke-width="5" fill="none" stroke-dasharray="8 7"/><rect x="128" y="22" width="3" height="40" fill="#23365B"/><path d="M131 22l20 7-20 7z" fill="#FF8FA8"/><rect x="24" y="40" width="22" height="22" rx="7" fill="#3478F6"/><circle cx="31" cy="49" r="3" fill="#fff"/><circle cx="40" cy="49" r="3" fill="#fff"/>', 2: '<rect width="160" height="80" fill="#cdf5ea"/><path d="M-5 72Q60 60 170 70V80H-5z" fill="#5cc98e"/><g fill="#2f9e66"><path d="M30 60l14-34 14 34z"/><path d="M70 62l16-40 16 40z"/><path d="M112 60l13-30 13 30z"/></g><g fill="#8b5a2b"><rect x="42" y="60" width="4" height="8"/><rect x="84" y="62" width="4" height="8"/><rect x="123" y="60" width="4" height="8"/></g><path d="M60 14a14 14 0 1 1 14 14" stroke="#c25e0e" stroke-width="4" fill="none"/><path d="M70 24l6 4-1-8z" fill="#c25e0e"/>', 3: '<rect width="160" height="80" fill="#ffeeb8"/><g fill="#a9d2f5"><rect x="12" y="30" width="30" height="50"/><rect x="48" y="18" width="28" height="62"/><rect x="118" y="26" width="30" height="54"/></g><g fill="#FFD65A"><rect x="18" y="38" width="6" height="8"/><rect x="30" y="38" width="6" height="8"/><rect x="54" y="28" width="6" height="8"/><rect x="66" y="28" width="6" height="8"/></g><path d="M88 80V46a14 14 0 0 1 28 0v34z" fill="#23365B"/><path d="M92 80V48a10 10 0 0 1 20 0v32z" fill="#37D6C0" opacity=".8"/><text x="102" y="68" font-size="14" text-anchor="middle" fill="#fff" font-weight="800">?</text>', 4: '<rect width="160" height="80" fill="#ffe4cf"/><path d="M-5 70Q60 58 170 68V80H-5z" fill="#e8c27a"/><rect x="54" y="38" width="52" height="30" rx="6" fill="#c59b6d" stroke="#8b5a2b" stroke-width="3"/><path d="M54 48h52" stroke="#8b5a2b" stroke-width="3"/><rect x="76" y="46" width="8" height="10" rx="2" fill="#FFD65A"/><path d="M80 12l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="#FFD65A" stroke="#d9a400" stroke-width="2"/><text x="24" y="40" font-size="14" fill="#c25e0e" font-weight="800">x = 3</text>', 5: '<rect width="160" height="80" fill="#e6defc"/><path d="M60 70V34l-12-14h36l-12 14v36z" fill="#fff" stroke="#7B63E8" stroke-width="3"/><path d="M56 56h28v14H56z" fill="#9A83F7"/><circle cx="64" cy="48" r="3" fill="#9A83F7"/><circle cx="76" cy="42" r="2" fill="#9A83F7"/><g transform="translate(120 40)" fill="#7B63E8"><circle r="14"/><circle r="6" fill="#e6defc"/><path d="M-3-20h6v7h-6zM-3 13h6v7h-6zM-20-3h7v6h-7zM13-3h7v6h-7z"/></g><path d="M100 18l4 8 9 1-6 6 2 9-9-5-9 5 2-9-6-6 9-1z" fill="#FFD65A"/>'};
+const WDS=["","Bắt đầu hành trình: xếp lệnh đúng thứ tự.","Dùng vòng lặp để đi đường dài gọn hơn.","Rẽ nhánh khi gặp tường.","Nhặt sao và dùng biến điểm.","Tìm lỗi và sửa chương trình."];
+function worldMap(R){R.append(el("h3","","🗺️ Bản đồ thế giới học tập"));const g=el("div","g wm"),first=[];LV.forEach((l,i)=>{if(first[l.w]===undefined)first[l.w]=i});
+for(let w=1;w<=5;w++){const ls=LV.map((l,i)=>i).filter(i=>LV[i].w===w),d=ls.filter(i=>S.ok[i]).length,lock=first[w]>open();
+const c=el("div","card world w"+w+(lock?" lock":"")),im=el("div","wi");im.setAttribute("aria-hidden","true");im.innerHTML='<svg viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg">'+WSV[w]+'</svg>';
+const b=el("button","btn y",lock?"🔒 Chưa mở":"Vào khám phá");b.disabled=lock;b.onclick=()=>{pick(Math.min(first[w],open()));show("lap")};
+c.append(im,el("h3","",WN[w]),el("div","sub",WDS[w]),el("div","",lock?"🔒 Hoàn thành màn trước để mở":d===ls.length?"✅ Đã hoàn thành "+ls.length+"/"+ls.length+" màn":"📖 Đã vượt "+d+"/"+ls.length+" màn"),mkBar(d/ls.length*100),b);g.append(c)}
+R.append(g)}
+function HM(){const R=$("#hm");R.innerHTML="";const done=LE.filter(l=>S.les.done[l.id]).length,pc=Math.round(done/LE.length*100);
+const c=el("div","card");c.append(el("h2","","Tiến độ của em"),el("p","",done+"/"+LE.length+" bài đã hoàn thành ("+pc+"%) · "+(LE.length-done)+" bài chưa xong"),mkBar(pc));
+const l=LE.find(x=>x.id===S.les.last),b=el("button","btn y",l?"▶ Tiếp tục bài đang học: Bài "+l.num:"▶ Bắt đầu Bài 1");b.style.marginTop="10px";b.onclick=()=>LS.open(l?l.id:"l1");c.append(b);
+if(SAVEERR)c.append(el("p","warn","⚠ Trình duyệt không cho lưu dữ liệu (bộ nhớ đầy hoặc bị chặn). Tiến độ có thể mất khi tải lại trang."));R.append(c);worldMap(R);
+R.append(el("h3","","Các chủ đề"));const g=el("div","g");TOP.forEach(tp=>{const ls=LE.filter(x=>x.c===tp.id),d=ls.filter(x=>S.les.done[x.id]).length,k=el("button","card");k.style.cssText="text-align:left;font:inherit;color:inherit;cursor:pointer;margin:0";k.append(el("b","",tp.ic+" "+tp.n),el("div","sub",d+"/"+ls.length+" bài"),mkBar(d/ls.length*100));k.onclick=()=>{LS.tp=tp.id;LS.cur=null;show("hoc")};g.append(k)});R.append(g);
+const q=el("div","card");q.style.marginTop="12px";q.append(el("h3","","⚡ Luyện tập nhanh"));const r=el("div","row");
+const q1=el("button","btn","10 câu ngẫu nhiên"),q2=el("button","btn alt","Ôn câu đã sai ("+S.rv.length+")"),q3=el("button","btn alt","Đấu trường kiến thức");
+q1.onclick=()=>{RV.sc="all";RV.n=10;RV.ns=0;show("ot");$("#ot .btn").click()};q2.onclick=()=>{show("lp");$("#lp .btn.alt").click()};q3.onclick=()=>{G.arena()};r.append(q1,q2,q3);q.append(r);R.append(q);
+const f=el("div","card");f.append(el("h3","","🎮 Trò chơi nổi bật"));const fr=el("div","row");[["🐞 Thợ săn lỗi","hunt"],["🔮 Dự đoán Bi","pred"],["🧩 Ghép cặp","pair"]].forEach(([t,k])=>{const x=el("button","btn alt",t);x.onclick=()=>{show("game");G[k]()};fr.append(x)});f.append(fr);R.append(f);
+const a=el("div","card");a.append(el("h3","","🏅 Thành tích gần đây"));const rc=S.bgs.slice(-3).reverse();if(rc.length)a.append(ulOf(rc));else a.append(el("p","sub","Chưa có thành tích. Hoàn thành màn chơi hoặc bài học để mở khoá!"));R.append(a)}
+/* ---- Giáo viên: báo cáo theo bài ---- */
+function csvQ(s){return '"'+String(s).replace(/"/g,'""')+'"'}
+const TF={tp:"all",ls:"all"};
+function lrows(){return LE.filter(l=>(TF.tp==="all"||l.c===TF.tp)&&(TF.ls==="all"||l.id===TF.ls)).map(l=>{const p=S.pq[l.id]||{att:0,ok:0,tot:0,best:0};let w=0;QL(l.id).forEach(i=>{const v=S.qs[QB[i].id];if(v)w+=v.w});return{l,st:STX[LD(l.id)],p,w}})}
+function repX(){const R=$("#gx");R.innerHTML="";const c=el("div","card");c.append(el("h3","","Tiến độ bài học và kết quả luyện tập (toàn bộ SGK)"),el("p","sub","Tiến độ bài học (đánh dấu hoàn thành) tách riêng với tiến độ vượt màn ở bảng bên dưới."));
+if(SAVEERR)c.append(el("p","warn","⚠ Trình duyệt không lưu được dữ liệu trên máy này."));
+const r=el("div","row");r.append(mkSel([["all","Mọi chủ đề"],...TOP.map(t=>[t.id,t.n])],TF.tp,v=>{TF.tp=v;TF.ls="all";repX()}),mkSel([["all","Mọi bài"],...LE.filter(l=>TF.tp==="all"||l.c===TF.tp).map(l=>[l.id,"Bài "+l.num+" – "+l.t])],TF.ls,v=>{TF.ls=v;repX()}));c.append(r);
+const rs=lrows(),tb=el("table");tb.innerHTML="<tr><th>Bài</th><th>Tên bài</th><th>Trạng thái</th><th>Lần luyện</th><th>Đúng/Tổng</th><th>Tốt nhất</th><th>Lượt sai (tích luỹ)</th></tr>";
+rs.forEach(x=>{const row=tb.insertRow();[x.l.num,x.l.t+(x.l.vt?"":" ⚠"),x.st,x.p.att,x.p.ok+"/"+x.p.tot,x.p.best+"%",x.w].forEach(v=>row.insertCell().textContent=v)});
+const w=el("div");w.style.overflowX="auto";w.append(tb);c.append(w);
+const ids=new Set(rs.map(x=>x.l.id)),hard=Object.entries(S.qs).filter(([id,v])=>v.w>0&&ids.has(lidOf(QB.find(q=>q.id===id)||{b:"",l:""}))).sort((a,b)=>b[1].w-a[1].w).slice(0,5);
+c.append(el("h3","","Nội dung học sinh hay gặp khó khăn"));if(!hard.length)c.append(el("p","sub","Chưa có dữ liệu."));else{const u=el("ul");hard.forEach(([id,v])=>{const q=QB.find(x=>x.id===id);u.append(el("li","",q.b+": "+q.q+" (sai "+v.w+", đúng "+v.a+")"))});c.append(u)}
+const csv=()=>"Mã HS,Chủ đề,Bài,Tên bài,Trạng thái,Lần luyện,Đúng,Tổng,Tốt nhất %,Lượt sai\n"+rs.map(x=>[csvQ(S.code||""),csvQ(TOP.find(t=>t.id===x.l.c).n),csvQ(x.l.num),csvQ(x.l.t),csvQ(x.st),x.p.att,x.p.ok,x.p.tot,x.p.best,x.w].join(",")).join("\n");
+const m=el("span","sub"),r2=el("p"),d=el("button","btn","⬇ Tải CSV (mở bằng Excel)"),cp=el("button","btn alt","Sao chép CSV");
+d.onclick=()=>{try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv()],{type:"text/csv;charset=utf-8"}));a.download="tien_do_tin_hoc_5.csv";document.body.append(a);a.click();a.remove();m.textContent=" Đã tạo tệp CSV."}catch(e){m.textContent=" Không tải được, hãy dùng nút Sao chép CSV."}};
+cp.onclick=async()=>{try{await navigator.clipboard.writeText(csv());m.textContent=" Đã sao chép."}catch(e){m.textContent=" Trình duyệt không cho sao chép."}};
+r2.append(d," ",cp,m);c.append(r2,el("p","sub","Tổng số lần làm bài tính điểm: "+S.ex.att+" · câu đúng "+S.ex.ok+"/"+S.ex.tot+". Dữ liệu chỉ nằm trong trình duyệt của máy này."));R.append(c)}
+
+/* ===== v5: Hỏi Bi, gợi ý cá nhân hoá, đánh giá quá trình, giáo viên, cảnh báo lưu ===== */
+const ERRN={wall:"Bi đụng tường",gate:"Bi tới cổng nhưng chưa đủ sao",loop:"Chương trình chạy quá dài (lặp mãi)",inv:"Khối Lặp và Hết lặp chưa đủ cặp",end:"Bi dừng giữa đường"};
+const CATN={first:"Đúng ngay lượt chạy đầu",hint:"Đúng sau khi dùng gợi ý",fixed:"Hoàn thành sau khi tự sửa lỗi"};
+/* Lịch sử theo màn: f=số lượt chưa tới đích, h=số gợi ý đã xem, c=hình thức hoàn thành lần đầu, lc=mã lỗi gần nhất, ec=đếm lỗi */
+function LHg(i){const o=S.lh[i]||(S.lh[i]={f:0,h:0,c:"",lc:"",ec:{}});if(!o.ec||typeof o.ec!=="object")o.ec={};return o}
+function winRec(i,old){const o=LHg(i);if(!old&&!o.c)o.c=o.f===0?(o.h===0?"first":"hint"):"fixed";o.lc="";save()}
+function errRec(i,code){const o=LHg(i);o.f++;o.lc=code;o.ec[code]=(o.ec[code]||0)+1}
+const fmtD=s=>{const p=String(s).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s};
+
+/* ---- Cảnh báo lưu dữ liệu ---- */
+function svWarn(){if(!document.body)return;let b=document.getElementById("svb");const m=SAVEERR?"⚠ Trình duyệt không lưu được dữ liệu (bộ nhớ đầy hoặc bị chặn). Tiến độ có thể mất khi tải lại trang. Em nhờ thầy/cô kiểm tra cài đặt trình duyệt.":(LOADERR?"⚠ Dữ liệu cũ trên máy này không đọc được nên em bắt đầu lại từ đầu. Bản gốc đã được sao lưu (khóa bi5v2_bak) để thầy/cô kiểm tra.":"");if(!m){if(b)b.hidden=true;return}if(!b){b=document.createElement("div");b.id="svb";b.setAttribute("role","alert");document.body.prepend(b)}b.textContent=m;b.hidden=false}
+
+/* ---- Huy hiệu: điều kiện, ý nghĩa, ngày nhận ---- */
+const BDE=[["Vượt màn 3 và màn 4 (dùng khối Lặp).","Em biết rút gọn chương trình bằng vòng lặp."],["Vượt màn 9 và màn 10 (tìm và sửa lệnh lỗi).","Em biết tìm lỗi và sửa lỗi trong chương trình."],["Vượt cả 12 màn.","Em đã đi hết hành trình cùng Bi."],["Dự đoán đúng hết 5 lượt trước khi chạy.","Em biết suy nghĩ và dự đoán trước khi chạy."],["Đạt mức tối ưu hoặc tham chiếu ở một thử thách Ít lệnh nhất.","Em biết viết chương trình gọn."],["Hoàn thành một màn sau khi chạy chưa tới đích rồi tự sửa.","Kiên trì sửa lỗi là kỹ năng của lập trình viên."],["Có 3 màn đúng ngay lượt chạy đầu.","Em biết suy nghĩ kỹ trước khi chạy."]];
+function badgeHTML(bg){return bg.map(([t,k],i)=>{const d=BDE[i]||["",""];return"<div><b>"+(k?"✅ ":"🔒 ")+t+"</b><br><small>Điều kiện: "+d[0]+"</small><br><small>Ý nghĩa: "+d[1]+"</small>"+(k?"<br><small>"+(S.bgd[t]?"Nhận ngày "+fmtD(S.bgd[t]):"Nhận trước khi hệ thống ghi ngày")+"</small>":"")+"</div>"}).join("")}
+function bgDate(list){const d=new Date().toISOString().slice(0,10);list.forEach(t=>{if(!S.bgd[t])S.bgd[t]=d})}
+
+/* ---- Thế giới: câu chuyện, mục tiêu, thử thách cuối, tổng kết ---- */
+const WST=["",{s:"Thành phố tri thức bị mất điện! Bi cần đi đúng đường để bật lại cổng thành.",g:"Hiểu rằng các lệnh chạy lần lượt và thứ tự lệnh quyết định kết quả."},{s:"Đường rừng dài hơn Bi nghĩ. Bi cần cách gọn hơn để đi hết.",g:"Dùng khối Lặp để rút gọn chương trình."},{s:"Rừng có tường chắn bất ngờ. Bi chỉ biết đường khi chạm tường.",g:"Dùng lệnh “Nếu chạm tường thì…” để Bi tự chọn hướng rẽ."},{s:"Kho báu có những ngôi sao, cổng chỉ mở khi đủ điểm.",g:"Dùng điểm (một con số Bi nhớ) và nhặt sao để mở cổng."},{s:"Chương trình của Bi bị lỗi. Em là thám tử sửa lỗi!",g:"Tìm lỗi, sửa lỗi và kết hợp nhiều cấu trúc."}];
+function WI2(){const R=document.getElementById("wi");if(!R)return;const w=LV[cur].w,ls=LV.map((l,i)=>[l,i]).filter(x=>x[0].w===w),dn=ls.filter(x=>S.ok[x[1]]).length,fin=ls[ls.length-1];
+R.innerHTML="";const d=el("details","card wi");if(!WI2.c)WI2.c={};d.open=!!WI2.o;d.ontoggle=()=>{WI2.o=d.open};d.append(el("summary","","📖 Thế giới "+w+": "+WN[w]+" ("+dn+"/"+ls.length+" màn)"));
+d.append(el("p","","📜 "+WST[w].s),el("p","","🎯 Mục tiêu: "+WST[w].g),el("p","sub","🏁 Thử thách cuối thế giới: màn "+(fin[1]+1)+" – "+fin[0].n+(S.ok[fin[1]]?" (đã hoàn thành)":"")));
+d.append(el("h4","",dn===ls.length?"✅ Tổng kết kiến thức em đã học":"Em sẽ học trong thế giới này"));d.append(ulOf([...new Set(ls.map(x=>x[0].k))]));
+if(dn===ls.length)d.append(el("p","ok","🎁 Em đã mở hộp quà của thế giới này!"));R.append(d)}
+
+/* ---- Tổng kết sau màn chơi (đánh giá vì sự tiến bộ) ---- */
+function sumBox(m,i,s,n,ref){const o=LHg(i),L=LV[i],d=el("div","sumb");d.append(el("h4","","📋 Tổng kết màn "+(i+1)));const good=[],prac=[],nx=[];
+if(o.c==="first")good.push("Em chạy đúng ngay lượt đầu, chứng tỏ em đã suy nghĩ kỹ trước khi chạy.");
+else if(o.c==="hint")good.push("Em biết xin gợi ý đúng lúc để tiến lên. Dùng gợi ý là một cách học tốt.");
+else if(o.c==="fixed")good.push("Em đã tự tìm lỗi và sửa chương trình đến khi đúng ("+o.f+" lượt chưa tới đích trước đó).");
+if(n<=ref)good.push("Chương trình của em gọn bằng hoặc ngắn hơn cách tham chiếu ("+ref+" khối).");
+if(!good.length)good.push("Em đã hoàn thành màn này.");
+if(s<3)prac.push("Em có thể thử rút gọn chương trình xuống còn khoảng "+ref+" khối để đạt ⭐⭐⭐, không cần vội.");
+const ec=Object.entries(o.ec||{}).sort((a,b)=>b[1]-a[1])[0];if(ec&&ERRN[ec[0]])prac.push("Lỗi em hay gặp ở màn này: “"+ERRN[ec[0]]+"”. Lần sau em thử chạy từng bước để thấy Bi đi thế nào.");
+if(!prac.length)prac.push("Em đã nắm tốt nội dung màn này. Hãy thử thêm màn khác.");
+if(i<LV.length-1)nx.push("Màn "+(i+2)+": "+LV[i+1].n);if(s===3)nx.push("Thử thách mở rộng: vào “Ít lệnh nhất” để viết chương trình gọn hơn nữa.");
+d.append(el("b","","Em đã làm tốt:"),ulOf(good),el("b","","Em có thể luyện thêm:"),ulOf(prac),el("b","","Em có thể thử tiếp:"),ulOf(nx));m.append(d)}
+
+/* ---- Hỏi Bi: trợ giúp theo quy tắc sư phạm (KHÔNG phải AI tạo sinh) ---- */
+const CPT=[
+{n:"Tuần tự",e:"Tuần tự nghĩa là các lệnh chạy lần lượt từ trên xuống: lệnh trước xong rồi mới đến lệnh sau.",v:"Muốn sang đường: nhìn trái, nhìn phải, rồi mới bước. Đổi thứ tự thì kết quả khác hẳn.",q:"Nếu đổi chỗ “Rẽ trái” và “Tiến”, Bi còn đến được cổng không? Em đoán rồi thử."},
+{n:"Lặp",e:"Khi một việc phải làm nhiều lần giống nhau, ta dùng khối Lặp thay vì viết lại nhiều lần. Mỗi khối Lặp cần một khối Hết lặp.",v:"Thay vì viết “Tiến” bốn lần, ta viết: Lặp 4 lần [Tiến].",q:"Lặp 3 lần [Tiến, Rẽ phải] thì Bi làm tất cả bao nhiêu lệnh?"},
+{n:"Nếu… thì (điều kiện)",e:"Trong mê cung của Bi, có lệnh “Nếu chạm tường thì rẽ trái/phải”. Bi chỉ rẽ khi điều kiện đúng. (Đây là lệnh riêng của Robot Bi, không phải khối Scratch.)",v:"Nếu trời mưa thì mang ô. Không mưa thì không cần mang.",q:"Bi đi thẳng mà chưa chạm tường thì lệnh “Nếu chạm tường thì rẽ” có làm gì không?"},
+{n:"Điểm (biến)",e:"Điểm là một con số Bi ghi nhớ. Mỗi lần nhặt sao, điểm tăng thêm 1. Cổng có thể chỉ mở khi điểm đủ.",v:"Giống như bảng điểm trò chơi: mỗi lần ghi bàn thì tăng 1.",q:"Cổng cần điểm = 3 mà Bi mới nhặt 2 sao. Bi cần làm gì?"},
+{n:"Lỗi và sửa lỗi",e:"Lỗi là chỗ chương trình làm khác điều em muốn. Cách sửa: chạy từng bước, tìm bước Bi đi sai, sửa MỘT chỗ rồi chạy lại.",v:"Làm bài toán sai thì ta tìm bước tính sai chứ không bỏ cả bài.",q:"Khi Bi đụng tường ở khối số 5, em nên xem lại những khối nào trước?"},
+{n:"Thuật toán",e:"Thuật toán là các bước rõ ràng, theo thứ tự, để giải quyết một việc.",v:"Các bước đánh răng: lấy kem, chải, súc miệng. Ai làm theo cũng được kết quả giống nhau.",q:"Em hãy kể 3 bước để Bi đi từ chỗ xuất phát đến cổng ở màn đang chơi."},
+{n:"Dự đoán trước khi chạy",e:"Trước khi bấm Chạy, em đoán Bi sẽ đi đâu. Nếu đoán sai, em học được điều mới về chương trình.",v:"Như đoán kết quả thí nghiệm rồi mới làm thí nghiệm.",q:"Bấm nút 🔮 Dự đoán trong tab Thực hành cùng Bi và thử một lần nhé."}];
+const W2C={1:0,2:1,3:2,4:3,5:4};
+const HB={lv:null,ci:null,lvl:0,
+hint(i,k){const L=LV[i],o=LHg(i),c=o.lc;
+if(k===1){const m={wall:"Bi vừa đụng tường. Trước khối đó Bi đang quay mặt hướng nào? Em thử chạy từng bước để xem.",gate:"Bi tới cổng nhưng chưa đủ sao. Trên đường đi còn ô ⭐ nào Bi chưa đi qua?",loop:"Chương trình chạy quá dài. Khối Lặp lặp bao nhiêu lần, và Hết lặp đã đúng chỗ chưa?",inv:"Mỗi khối Lặp cần một khối Hết lặp. Em đếm lại số cặp nhé.",end:"Bi dừng giữa đường. Từ chỗ Bi dừng đến 🏁 còn cần những lệnh gì?"};return m[c]||"Em đã nhìn kỹ bản đồ chưa? Em đoán Bi cần đi qua những ô nào để đến 🏁?"}
+if(k===2){const m={wall:"Hãy xem các khối Rẽ và Tiến gần chỗ Bi đụng tường.",gate:"Hãy xem chương trình đã có khối “Nhặt sao” ở đúng chỗ có ⭐ chưa.",loop:"Hãy xem các số trong khối Lặp và vị trí khối Hết lặp.",inv:"Hãy xem lại các khối Lặp và Hết lặp.",end:"Hãy đếm xem còn thiếu bao nhiêu ô để tới cổng."};return (L.h&&L.h[0]?L.h[0]+" ":"")+(m[c]||"")}
+const cp=CPT[W2C[L.w]];return "Cách nghĩ: "+cp.e+" Ví dụ tương tự: "+cp.v+" Kiến thức của màn này: "+L.k+" Em hãy tự làm: (1) tìm đường từ Bi đến 🏁 trên bản đồ, (2) viết ra từng đoạn đi thẳng và đoạn rẽ, (3) đoạn nào lặp lại thì thử gom lại, (4) chạy từng bước để kiểm tra."},
+use(i,k){const o=LHg(i);o.h++;S.hb[k]=(S.hb[k]||0)+1;S.hint[i]=(S.hint[i]||0)+1;save()},
+render(){const R=$("#hb");R.innerHTML="";if(HB.lv===null)HB.lv=Math.min(cur,open());
+R.append(el("h2","","💬 Hỏi Bi – Cùng tìm lời giải"));
+const nt=el("div","card");nt.append(el("p","","Bi sẽ gợi ý để em tự tìm ra lời giải, chứ không làm thay em."),el("p","sub","ℹ️ Bi trả lời theo các quy tắc sư phạm có sẵn trong trang này. Đây không phải AI tạo sinh. Bi không gửi dữ liệu ra ngoài máy và không cần em nhập tên hay thông tin cá nhân."));R.append(nt);
+const a=el("div","card");a.append(el("h3","","1. Bi giải thích khái niệm"));const row=el("div","row");CPT.forEach((c,i)=>{const b=el("button","btn alt",c.n);b.onclick=()=>{HB.ci=i;HB.render();const f=$("#hb [data-cp]");if(f)f.focus()};if(HB.ci===i)b.setAttribute("aria-pressed","true");row.append(b)});a.append(row);
+if(HB.ci!==null){const c=CPT[HB.ci],bx=el("div","hbo");bx.tabIndex=-1;bx.setAttribute("data-cp","1");bx.append(el("h4","",c.n),el("p","","📘 "+c.e),el("p","","🧩 Ví dụ: "+c.v),el("p","","🤔 Em thử nghĩ: "+c.q));a.append(bx)}R.append(a);
+const b=el("div","card");b.append(el("h3","","2. Bi giúp em ở một màn chơi"));const r2=el("div","row");r2.append(mkSel(LV.map((l,i)=>[String(i),"Màn "+(i+1)+" – "+l.n]).slice(0,open()+1),String(HB.lv),v=>{HB.lv=+v;HB.lvl=0;HB.render()}));const go=el("button","btn alt","Mở màn này để thực hành");go.onclick=()=>{show("lap");pick(HB.lv)};r2.append(go);b.append(r2);
+const i=HB.lv,o=LHg(i);b.append(el("p","sub",o.lc?"Lần chạy gần nhất ở màn này: "+ERRN[o.lc]+".":"Chưa có lần chạy lỗi gần đây ở màn này. Hãy chạy thử rồi quay lại để Bi giúp phân tích."));
+const hr=el("div","row");[["Mức 1 – Gợi ý nhẹ",1],["Mức 2 – Gợi ý cụ thể",2],["Mức 3 – Giải thích",3]].forEach(([t,k])=>{const x=el("button","btn "+(k===1?"":"alt"),t);x.onclick=()=>{if(k>HB.lvl+1){hbo.textContent="Em thử mức "+(HB.lvl+1)+" trước nhé, Bi sẽ gợi ý từ nhẹ đến cụ thể.";return}HB.use(i,k);HB.lvl=Math.max(HB.lvl,k);hbo.textContent="💡 "+HB.hint(i,k);biSay(k===3?"Mình cùng nghĩ từng bước nhé!":"Em thử nghĩ xem nhé!")};hr.append(x)});b.append(hr);
+const hbo=el("div","hbo");hbo.id="hbo";hbo.setAttribute("aria-live","polite");b.append(hbo,el("p","sub","Xem gợi ý không bị tính là thất bại. Bi chỉ ghi lại để thầy/cô biết em cần hỗ trợ ở đâu."));R.append(b);
+const c3=el("div","card");c3.append(el("h3","","3. Trước khi chạy, em hãy dự đoán"),el("p","","Nhìn chương trình và đoán: Bi sẽ dừng ở ô nào? Có chạm tường không? Sau đó mới bấm Chạy để kiểm tra."));R.append(c3)}};
+
+/* ---- Gợi ý cá nhân hoá (theo dữ liệu thật trên máy này) ---- */
+function recNext(){
+if(S.asg){const m=/^(lv|ls):(.+)$/.exec(S.asg);if(m){if(m[1]==="lv"&&LV[+m[2]]){const i=Math.min(+m[2],open());return{t:"Màn "+(i+1)+": "+LV[i].n,why:"Thầy/cô giao nhiệm vụ này (ghi trên máy này).",lb:"Bắt đầu màn",go:()=>{show("lap");pick(i)},rw:"Thưởng lần đầu: +20 XP và tối đa 3 ⭐."}}
+if(m[1]==="ls"){const l=LE.find(x=>x.id===m[2]);if(l)return{t:"Luyện tập Bài "+l.num+" – "+l.t,why:"Thầy/cô giao nhiệm vụ này (ghi trên máy này).",lb:"Bắt đầu luyện tập",go:()=>{PR.lid=l.id;show("lp")},rw:"+3 XP cho mỗi câu đúng lần đầu."}}}}
+const tot=Object.values(S.att).reduce((a,b)=>a+b,0)+S.ex.att;if(tot<2&&!Object.keys(S.les.done).length)return null;
+if(Array.isArray(S.rv)&&S.rv.length>=3)return{t:"Ôn lại "+S.rv.length+" câu đã làm chưa đúng",why:"Em có một số câu chưa đúng. Ôn lại giúp em nhớ kiến thức lâu hơn.",lb:"Ôn tập ngay",go:()=>show("ot"),rw:"+3 XP cho mỗi câu đúng lần đầu."};
+let wk=null;LE.forEach(l=>{const p=S.pq[l.id];if(p&&p.tot>=4&&p.ok/p.tot<0.6&&(!wk||p.ok/p.tot<wk.r))wk={l,r:p.ok/p.tot,p}});
+if(wk)return{t:"Luyện tập Bài "+wk.l.num+" – "+wk.l.t,why:"Em đã trả lời đúng "+wk.p.ok+"/"+wk.p.tot+" câu ở bài này. Luyện thêm một lượt ngắn sẽ giúp em chắc hơn.",lb:"Luyện tập bài này",go:()=>{PR.lid=wk.l.id;show("lp")},rw:"+3 XP cho mỗi câu đúng lần đầu."};
+const te=Object.entries(S.err).reduce((a,b)=>a+b[1],0),top=Object.entries(S.err).sort((a,b)=>b[1]-a[1])[0];
+if(top&&te>=3&&top[1]/te>=0.5){const mp={loop:2,inv:2,wall:1,gate:6,end:0},i=Math.min(mp[top[0]]!==undefined?mp[top[0]]:0,open());return{t:"Luyện lại: màn "+(i+1)+" – "+LV[i].n,why:"Gần đây nhiều lượt chạy gặp tình huống “"+ERRN[top[0]]+"”. Một màn ngắn này giúp em luyện đúng phần đó trước khi sang màn khó hơn.",lb:"Thử màn này",go:()=>{show("lap");pick(i)},rw:"Em có thể nhận thêm ⭐ nếu chương trình gọn hơn."}}
+const i=open();if(i===LV.length-1&&S.ok[i])return{t:"Thử thách “Ít lệnh nhất”",why:"Em đã vượt hết các màn. Hãy thử viết chương trình gọn hơn.",lb:"Vào thử thách",go:()=>show("lm"),rw:"Đạt mức tối ưu sẽ mở huy hiệu."};
+return{t:"Màn "+(i+1)+": "+LV[i].n,why:"Đây là màn tiếp theo trong hành trình của em.",lb:"Bắt đầu màn",go:()=>{show("lap");pick(i)},rw:"Thưởng lần đầu: +20 XP và tối đa 3 ⭐."}}
+function recHome(){const R=$("#hm");if(!R)return;const c=el("div","card rec");c.append(el("h3","","🎯 Nhiệm vụ hôm nay"));const r=recNext();
+if(!r){c.append(el("p","sub","Bi chưa có đủ thông tin để gợi ý đáng tin cậy. Em hãy thử vài màn hoặc bài luyện tập, Bi sẽ gợi ý sau."));const b=el("button","btn y","Bắt đầu màn 1");b.onclick=()=>{show("lap");pick(0)};c.append(b)}
+else{c.append(el("p","","Mục tiêu: "+r.t),el("p","sub","Vì sao Bi gợi ý: "+r.why),el("p","sub","🎁 "+r.rw));const b=el("button","btn y",r.lb);b.onclick=r.go;c.append(b)}
+R.prepend(c)}
+
+/* ---- Bảng giáo viên: biểu đồ từ dữ liệu thật ---- */
+function barRow(l,pc,tx){const d=el("div","brow");d.append(el("span","bl",l));const t=el("div","bt");const f=el("i");f.style.width=Math.max(0,Math.min(100,pc))+"%";t.append(f);d.append(t,el("span","bv",tx));return d}
+function dl(name,txt){try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+txt],{type:"text/csv;charset=utf-8"}));a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return 1}catch(e){return 0}}
+function lvRows(){return LV.map((l,i)=>{const o=S.lh[i]||{};return[i+1,l.n,S.ok[i]||0,S.att[i]||0,S.hint[i]||0,o.f||0,CATN[o.c]||(S.ok[i]?"Chưa ghi nhận":"")]})}
+function repY(){const R=$("#gy");if(!R)return;R.innerHTML="";const att=Object.values(S.att).reduce((a,b)=>a+b,0),has=att>0||S.ex.att>0||Object.keys(S.les.done).length>0;
+const nt=el("div","card");nt.append(el("h3","","📊 Tổng quan học tập (máy này)"),el("p","sub","Mỗi máy lưu dữ liệu của một người dùng. Trang chưa có lớp học trực tuyến hay đồng bộ nhiều máy; muốn gom số liệu cả lớp, hãy xuất CSV từng máy."));
+if(!has){nt.append(el("p","warn","Chưa có dữ liệu trên máy này."),el("p","","Hướng dẫn: nhập mã học sinh ẩn danh, cho học sinh chơi ở các tab Thực hành cùng Bi, Luyện tập hoặc Ôn tập, rồi quay lại đây để xem biểu đồ."));R.append(nt)}
+else{R.append(nt);
+const c1=el("div","card");c1.append(el("h4","","Tỷ lệ hoàn thành màn chơi"));const dn=LV.filter((_,i)=>S.ok[i]).length;c1.append(barRow("Tất cả",dn/LV.length*100,dn+"/"+LV.length));for(let w=1;w<=5;w++){const ls=LV.map((l,i)=>[l,i]).filter(x=>x[0].w===w),d=ls.filter(x=>S.ok[x[1]]).length;c1.append(barRow(WN[w],d/ls.length*100,d+"/"+ls.length))}R.append(c1);
+const c2=el("div","card");c2.append(el("h4","","Cách hoàn thành màn (lần đầu)"),el("p","sub","Dùng gợi ý hay sửa lỗi đều là cách học tốt, không bị coi là thất bại."));const cc={first:0,hint:0,fixed:0};LV.forEach((_,i)=>{const o=S.lh[i];if(o&&cc[o.c]!==undefined&&S.ok[i])cc[o.c]++});Object.keys(cc).forEach(k=>c2.append(barRow(CATN[k],dn?cc[k]/dn*100:0,String(cc[k]))));const star3=LV.filter((_,i)=>S.ok[i]===3).length,adv=CH.filter(c=>S.lm[c.id]&&S.lm[c.id].top).length;c2.append(el("p","sub","Thử thách nâng cao: "+star3+" màn đạt ⭐⭐⭐ · "+adv+" thử thách Ít lệnh nhất đạt mức tối ưu/tham chiếu · Lượt xem Hỏi Bi: mức 1 = "+(S.hb[1]||0)+", mức 2 = "+(S.hb[2]||0)+", mức 3 = "+(S.hb[3]||0)));R.append(c2);
+const c3=el("div","card");c3.append(el("h4","","Lỗi thường gặp khi chạy chương trình"));const es=Object.entries(S.err).filter(x=>ERRN[x[0]]).sort((a,b)=>b[1]-a[1]),mx=es.length?es[0][1]:1;if(!es.length)c3.append(el("p","sub","Chưa ghi nhận lỗi nào."));es.forEach(([k,v])=>c3.append(barRow(ERRN[k],v/mx*100,String(v))));if(es.length)c3.append(el("p","sub","Gợi ý ôn tập: nếu “"+ERRN[es[0][0]]+"” xuất hiện nhiều, cho học sinh dùng nút ▶ Từng bước và tab Hỏi Bi."));R.append(c3);
+const c4=el("div","card");c4.append(el("h4","","Mức nắm vững theo chủ đề (từ bài luyện tập)"));let any=0;TOP.forEach(t=>{let ok=0,tt=0;LE.filter(l=>l.c===t.id).forEach(l=>{const p=S.pq[l.id];if(p){ok+=p.ok;tt+=p.tot}});if(tt){any=1;c4.append(barRow(t.n,ok/tt*100,Math.round(ok/tt*100)+"% ("+ok+"/"+tt+")"))}});if(!any)c4.append(el("p","sub","Chưa có bài luyện tập nào được tính điểm."));R.append(c4);
+const c5=el("div","card");c5.append(el("h4","","Tiến bộ qua các lần luyện tập gần đây"));const qh=Array.isArray(S.qh)?S.qh.slice(-12):[];if(qh.length<2)c5.append(el("p","sub","Cần ít nhất 2 lần luyện tập tính điểm để xem sự tiến bộ."));else qh.forEach((q,i)=>c5.append(barRow("Lần "+(i+1),q[1],q[1]+"%")));R.append(c5);
+const c6=el("div","card");c6.append(el("h4","","Chi tiết từng màn chơi"));const tb=el("table");tb.innerHTML="<tr><th>Màn</th><th>Tên</th><th>Sao</th><th>Lượt chạy</th><th>Gợi ý</th><th>Lượt chưa tới đích</th><th>Hình thức</th></tr>";lvRows().forEach(r=>{const x=tb.insertRow();r.forEach(v=>x.insertCell().textContent=v)});const w=el("div");w.style.overflowX="auto";w.append(tb);c6.append(w);
+const bt=el("button","btn alt","⬇ Tải CSV màn chơi");bt.onclick=()=>{const t="Mã HS,Màn,Tên màn,Sao,Lượt chạy,Gợi ý,Lượt chưa tới đích,Hình thức\n"+lvRows().map(r=>[csvQ(S.code||""),...r.map(csvQ)].join(",")).join("\n");const m=el("span","sub",dl("man_choi_Robot_Bi.csv",t)?" Đã tạo tệp CSV.":" Trình duyệt chặn tải tệp.");bt.after(m)};c6.append(bt);R.append(c6)}
+const g=el("div","card");g.append(el("h4","","📌 Giao nhiệm vụ (chỉ lưu trên máy này)"));const opts=[["","— Chưa giao —"],...LV.map((l,i)=>["lv:"+i,"Màn "+(i+1)+" – "+l.n]),...LE.map(l=>["ls:"+l.id,"Luyện tập Bài "+l.num+" – "+l.t])];const rr=el("div","row");const sl=mkSel(opts,S.asg,v=>{S.asg=v;save();repY()});rr.append(sl);g.append(rr,el("p","sub",S.asg?"Học sinh sẽ thấy nhiệm vụ này ở “Nhiệm vụ hôm nay” trên Trang chủ.":"Chưa giao nhiệm vụ nào."));R.append(g)}
+
+svWarn();renderTop();pick(open());show("home");
+</script></body></html>
